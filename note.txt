@@ -1,0 +1,1 @@
+To setup python 3 virtualenv: virtualenv -p python3 env_name
