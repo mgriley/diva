@@ -1,4 +1,11 @@
-# import reports
+# TODO: import reports
+import matplotlib
+# use the Agg backend, which is non-interactivate (just for PNGs)
+# this way, a separate script isn't started by matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt, mpld3
+import numpy as np
+import pandas as pd
 from flask import Flask, render_template
 app = Flask(__name__)
 
@@ -8,13 +15,19 @@ def register_report(name, figure_generator):
     report_generators[name] = figure_generator
 
 # figure out how to do it like below. Decorators are made 
-# for that purpose!
+# for this purpose!
 #@reports.add('report_name', [widget_list])
 def figure_a():
-    return '<div>Figure A</div>'
+    plt.figure()
+    plt.plot([3,1,4,1,5], 'ks-', mec='w', mew=5, ms=20)
+    htmlString = mpld3.fig_to_html(plt.gcf()) 
+    return htmlString
 
 def figure_b():
-    return '<div>Figure B</div>'
+    plt.figure()
+    plt.plot([1, 2, 3, 4], 'ks-', mec='w', mew=5, ms=20)
+    htmlString = mpld3.fig_to_html(plt.gcf())
+    return htmlString
 
 register_report('foo', figure_a)
 register_report('bar', figure_b)
