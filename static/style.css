@@ -1,0 +1,15 @@
+#wrap {
+    width:500px;
+    margin:0;
+    auto;
+}
+
+#body {
+    overflow:auto
+}
+
+#sidebar {
+    float: left;
+    width: 150px;
+    min-height:400px;
+}

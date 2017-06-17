@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DIY Dashboard</title>
+    <link rel="stylesheet" type="text/css" href={{ url_for('static', filename='style.css') }}>
+</head>
+<body>
+    <div id="wrap">
+        <div id="header">Header</div>
+        <ul id="sidebar">
+            {% for report in reports %}
+                <li><a href="{{report.href}}">{{report.name}}</a></li>
+            {% endfor %}
+        </ul>
+        <div id="main">
+            {% block main %}
+                Welcome to DIY Dashboard
+            {% endblock %}
+        </div>
+    </div>
+</body>
+</html>
