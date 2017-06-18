@@ -1,0 +1,8 @@
+<div id="figure">
+    {{ figureHTML | safe }}
+</div>
+<form>
+    {% for widgetHTML in widgetsHTML %}
+        {{ widgetHTML | safe }}
+    {% endfor %}
+</form>
