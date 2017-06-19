@@ -7,14 +7,13 @@ import matplotlib.pyplot as plt, mpld3
 import numpy as np
 import pandas as pd
 from enum import Enum
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 app = Flask(__name__)
 app.config['DEBUG'] = True
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 
 class Widget:
-    def jsonToValue(self, json):
-        return json['value']
+    pass
 
 class TextWidget(Widget):
     def __init__(self, default=""):
@@ -23,6 +22,9 @@ class TextWidget(Widget):
     def generateHTML(self, widgetId):
         return render_template('text_widget.html', name=widgetId)
 
+    def parseForm(self, formData):
+        return formData
+
 class FloatWidget(Widget):
     def __init__(self, default=0):
         self.default = default
@@ -30,21 +32,29 @@ class FloatWidget(Widget):
     def generateHTML(self, widgetId):
         return render_template('float_widget.html', name=widgetId)
 
+    def parseForm(self, formData):
+        return float(formData)
+
 report_generators = {}
 
-def get_default_inputs(widgets):
+# given map of form data, return a map of inputs 
+def parse_widget_form_data(widgets, widgetFormData):
     inputs = {}
     for keyVal in widgets:
         name = keyVal[0]
         widget = keyVal[1]
-        inputs[name] = widget.default
+        formData = widgetFormData.get(name, None)
+        if formData == None:
+            inputs[name] = widget.default;
+        else:
+            inputs[name] = widget.parseForm(formData)
     return inputs
 
 def register_report(name, figure_generator, widgets=[]):
-    def generate():
+    def generate(widgetFormData={}):
         figureHTML = ''
         if len(widgets) > 0:
-            inputs = get_default_inputs(widgets)
+            inputs = parse_widget_form_data(widgets, widgetFormData)
             figureHTML = figure_generator(inputs)
         else:
             figureHTML = figure_generator() 
@@ -58,14 +68,24 @@ def register_report(name, figure_generator, widgets=[]):
                 widgetsHTML=widgetsHTML)
     report_generators[name] = generate
 
+# TODO: I think there is a way to write it like:
+# figure_a(floatName, textName), without the whole inputs array thing
+# (can pass in a dict of named params, and * operator I think)
+# saves the user from indexing into the array every time they want
+# to access an input
+# also: can get the function's param names and use as the dict
+# for the widget names. so can just input a list of widgets into
+# the register function
+
 # figure out how to do it like below. Decorators are made 
 # for this purpose!
 #@reports.add('report_name', [widget_list])
 def figure_a(inputs):
+    print(inputs)
     plt.figure()
     plt.plot([3,1,4,1,inputs['floatName']], 'ks-', mec='w', mew=5, ms=20)
     htmlString = mpld3.fig_to_html(plt.gcf()) 
-    return htmlString
+    return '<p>' + inputs['textName'] + '</p>' + htmlString
 register_report('foo', figure_a, [('textName', TextWidget("yo")), ('floatName', FloatWidget(20))])
 
 def figure_b():
@@ -108,4 +128,12 @@ def index(reportname=None):
                 reports=reports,
                 reportHTML=htmlOutput)
 
+# TODO: just send the updated figure, not the entire report page
+# right now widgets are also included
+@app.route('/<reportname>', methods=['POST'])
+def updateFigure(reportname):
+    # TODO: check if exists, with get and None
+    generator = report_generators[reportname]
+    reportHTML = generator(request.form)
+    return reportHTML
 

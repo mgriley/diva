@@ -1,8 +1,9 @@
 <div id="figure">
     {{ figureHTML | safe }}
 </div>
-<form>
+<form id="widgetform">
     {% for widgetHTML in widgetsHTML %}
         {{ widgetHTML | safe }}
     {% endfor %}
+    <input type="submit" value="reload">
 </form>
