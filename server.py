@@ -101,6 +101,11 @@ def figure_c():
     # TODO: set some basic formatting on the html table
     return df.to_html()
 
+def figure_d(inputs):
+    print(inputs)
+    return '<p>' + inputs['textA'] + ', ' + inputs['textB'] + '</p>'
+register_report('yoo', figure_d, [('textA', TextWidget("aaaaaaaa")), ('textB', TextWidget('bbbbbbb'))])
+
 register_report('bar', figure_b)
 register_report('pan', figure_c)
 
@@ -134,6 +139,7 @@ def index(reportname=None):
 def updateFigure(reportname):
     # TODO: check if exists, with get and None
     generator = report_generators[reportname]
-    reportHTML = generator(request.form)
+    print(request.get_json())
+    reportHTML = generator(request.get_json())
     return reportHTML
 

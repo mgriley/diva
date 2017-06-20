@@ -1,6 +1,7 @@
 <div id="figure">
     {{ figureHTML | safe }}
 </div>
+<script src="{{ url_for('static', filename='widgets.js') }}"></script>
 <form id="widgetform">
     {% for widgetHTML in widgetsHTML %}
         {{ widgetHTML | safe }}
