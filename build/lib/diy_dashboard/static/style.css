@@ -1,0 +1,30 @@
+body {
+    margin: 0;
+    padding: 0;
+    background: #fff;
+    color: #333;
+    font-family: "Lato", sans-serif;
+    font-size: 1em;
+}
+
+.wrapper {
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 230px 1fr;
+    height: 100vh;
+}
+
+.sidebar {
+    grid-column: 1;
+    background-color: #333;
+    color: #ccc;
+    overflow: auto;
+}
+
+.main {
+    grid-column: 2;
+    overflow: auto;
+}
+
+

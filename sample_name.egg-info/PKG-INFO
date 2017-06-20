@@ -1,0 +1,11 @@
+Metadata-Version: 1.0
+Name: sample-name
+Version: 1.0.0
+Summary: sample python project
+Home-page: project homepage, use github link
+Author: Matthew Riley
+Author-email: mgriley97@gmail.com
+License: MIT
+Description: longer description
+Keywords: sample dashboard analytics plotting
+Platform: UNKNOWN

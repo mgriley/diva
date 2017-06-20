@@ -8,10 +8,8 @@ import numpy as np
 import pandas as pd
 from enum import Enum
 import inspect
-from flask import Flask, render_template, request
-app = Flask(__name__)
-app.config['DEBUG'] = True
-app.config['TEMPLATES_AUTO_RELOAD'] = True
+from flask import render_template, request
+from diy_dashboard import app
 
 class Widget:
     pass
@@ -101,6 +99,10 @@ reporter = Reporter()
 # def figure_too_few():
     # return '<p>dksjalf</p>'
 # register_report('too_few', figure_too_few, [TextWidget('meh')])
+
+@reporter.display('simple')
+def simple_figure():
+    return '<p>simple foo</p>'
 
 @reporter.display('too_many', [FloatWidget(6.5)])
 def figure_extra(a, b=6):
