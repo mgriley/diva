@@ -2,18 +2,13 @@ $('#widgetform').ready(function() {
     $('#widgetform').on("submit", function(formEvent) {
         // prevent default action of get request
         formEvent.preventDefault();
-        //console.log($(this).serialize());
-        //var formData = $(this).serialize();
-        // accumulate the values of the various widgets
-        var valueMap = {};
-        for (var key in widgetMap) {
-            valueMap[key] = widgetMap[key].getCurrentValue(key);
-        }
+        // accumulate the values of all widgets
+        valueMap = FigureWidgets.getValues();
         console.log('form values: ' + valueMap);
         var currentPath = window.location.pathname;
         var callback = function(data) {
             console.log(data);
-            $('.main').html(data);
+            $('#figure').html(data);
         }
         $.ajax({
             url: currentPath,

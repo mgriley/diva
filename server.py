@@ -51,22 +51,27 @@ def parse_widget_form_data(widgets, widgetFormData):
     return inputs
 
 def register_report(name, figure_generator, widgets=[]):
-    def generate(widgetFormData={}):
+    def decorated_generator(widgetFormData={}):
         figureHTML = ''
         if len(widgets) > 0:
             inputs = parse_widget_form_data(widgets, widgetFormData)
             figureHTML = figure_generator(inputs)
         else:
-            figureHTML = figure_generator() 
+            figureHTML = figure_generator()
+        return figureHTML
+    # NB: widgets must also be generated b/c jinja render_templates
+    # requires an app context to run
+    def widgets_generator():
         widgetsHTML = []
         for keyVal in widgets:
             name = keyVal[0]
             widget = keyVal[1]
             widgetsHTML.append(widget.generateHTML(name))
-        return render_template('figure_report.html',
-                figureHTML=figureHTML,
-                widgetsHTML=widgetsHTML)
-    report_generators[name] = generate
+        return widgetsHTML
+
+    report_generators[name] = {
+            'figure_generator': decorated_generator,
+            'widgets_generator': widgets_generator}
 
 # TODO: I think there is a way to write it like:
 # figure_a(floatName, textName), without the whole inputs array thing
@@ -124,22 +129,21 @@ def index(reportname=None):
         return render_template(
                 'index.html', reports=reports)
     else:
-        # TODO: ensure that generator actually exists
-        generator = report_generators[reportname]
-        # TODO: pass the generator any args from widgets
-        htmlOutput = generator()
+        # TODO: ensure that generator exists
+        figure_report = report_generators[reportname]
+        figure_html = figure_report['figure_generator']()
+        widgets_html = figure_report['widgets_generator']()
         return render_template(
-                'report.html',
+                'figure_report.html',
                 reports=reports,
-                reportHTML=htmlOutput)
+                figureHTML=figure_html,
+                widgetsHTML=widgets_html)
 
-# TODO: just send the updated figure, not the entire report page
-# right now widgets are also included
 @app.route('/<reportname>', methods=['POST'])
 def updateFigure(reportname):
-    # TODO: check if exists, with get and None
-    generator = report_generators[reportname]
     print(request.get_json())
-    reportHTML = generator(request.get_json())
+    figure_report = report_generators[reportname]
+    figure_generator = figure_report['figure_generator']
+    reportHTML = figure_generator(request.get_json())
     return reportHTML
 

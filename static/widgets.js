@@ -1,5 +1,18 @@
-// Setup a mechanism to aggregate the state of all of the form's widgets
-// TODO: ensure that upon page change this data structure is discarded
+var FigureWidgets = {};
+(function(obj) {
+    // map from name to widget
+    obj.widgetMap = {};
 
-// map from widget name to function that returns the widget's value
-var widgetMap = {};
+    obj.add = function(name, widget) {
+        obj.widgetMap[name] = widget;
+    };
+
+    obj.getValues = function() {
+        var values = {};
+        for (var name in obj.widgetMap) {
+            values[name] = obj.widgetMap[name].getCurrentValue(name);
+        }
+        return values;
+    };
+})(FigureWidgets);
+

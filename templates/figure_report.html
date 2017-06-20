@@ -1,10 +1,13 @@
-<div id="figure">
-    {{ figureHTML | safe }}
-</div>
-<script src="{{ url_for('static', filename='widgets.js') }}"></script>
-<form id="widgetform">
-    {% for widgetHTML in widgetsHTML %}
-        {{ widgetHTML | safe }}
-    {% endfor %}
-    <input type="submit" value="reload">
-</form>
+{% extends "index.html" %}
+{% block main %}
+    <div id="figure">
+        {{ figureHTML | safe }}
+    </div>
+    <script src="{{ url_for('static', filename='widgets.js') }}"></script>
+    <form id="widgetform">
+        {% for widgetHTML in widgetsHTML %}
+            {{ widgetHTML | safe }}
+        {% endfor %}
+        <input type="submit" value="reload">
+    </form>
+{% endblock %}
