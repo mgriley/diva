@@ -6,47 +6,10 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt, mpld3
 import numpy as np
 import pandas as pd
-from enum import Enum
 import inspect
 from flask import render_template, request
 from diy_dashboard import app
-
-class Widget:
-    pass
-
-class TextWidget(Widget):
-    def __init__(self, default=""):
-        self.default = default
-
-    def generateHTML(self, widgetId):
-        return render_template('text_widget.html', name=widgetId)
-
-    def parseForm(self, formData):
-        return formData
-
-class FloatWidget(Widget):
-    def __init__(self, default=0):
-        self.default = default
-
-    def generateHTML(self, widgetId):
-        return render_template('float_widget.html', name=widgetId)
-
-    def parseForm(self, formData):
-        return float(formData)
-
-
-# given map of form data, return a map of inputs 
-def parse_widget_form_data(widgets, widgetFormData):
-    inputs = {}
-    for keyVal in widgets:
-        name = keyVal[0]
-        widget = keyVal[1]
-        formData = widgetFormData.get(name, None)
-        if formData == None:
-            inputs[name] = widget.default;
-        else:
-            inputs[name] = widget.parseForm(formData)
-    return inputs
+from diy_dashboard.widgets import *
 
 def get_report_generators(figure_generator, widgets=[]):
     # transform widgets to tuple array, of (argName, widget)
@@ -99,6 +62,13 @@ reporter = Reporter()
 # def figure_too_few():
     # return '<p>dksjalf</p>'
 # register_report('too_few', figure_too_few, [TextWidget('meh')])
+
+@reporter.display('widget test', [TextWidget('hello'),
+        FloatWidget(1.5),
+        IntWidget(2),
+        CheckBox()])
+def widgets_test(a, b, c, d):
+    return '<p>{} {} {} {}</p>'.format(a, b, c, d)
 
 @reporter.display('simple')
 def simple_figure():

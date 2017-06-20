@@ -4,7 +4,7 @@ $('#widgetform').ready(function() {
         formEvent.preventDefault();
         // accumulate the values of all widgets
         valueMap = FigureWidgets.getValues();
-        console.log('form values: ' + valueMap);
+        console.log('form values: ' + JSON.stringify(valueMap));
         var currentPath = window.location.pathname;
         var callback = function(data) {
             console.log(data);
