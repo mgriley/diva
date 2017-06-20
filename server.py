@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt, mpld3
 import numpy as np
 import pandas as pd
 from enum import Enum
+import inspect
 from flask import Flask, render_template, request
 app = Flask(__name__)
 app.config['DEBUG'] = True
@@ -51,14 +52,20 @@ def parse_widget_form_data(widgets, widgetFormData):
     return inputs
 
 def register_report(name, figure_generator, widgets=[]):
+    # transform widgets to tuple array, of (argName, widget)
+    # this gives each widget a unique key b/c arg names must be unique
+    argNames = inspect.getargspec(figure_generator)[0]
+    assert len(argNames) >= len(widgets), \
+            ("there are more widgets than function "
+            "arguments for function \"{}\"").format(figure_generator.__name__)
+    for index, widget in enumerate(widgets):
+        widgets[index] = (argNames[index], widget)
+    print(widgets)
+
     def decorated_generator(widgetFormData={}):
-        figureHTML = ''
-        if len(widgets) > 0:
-            inputs = parse_widget_form_data(widgets, widgetFormData)
-            figureHTML = figure_generator(inputs)
-        else:
-            figureHTML = figure_generator()
-        return figureHTML
+        inputs = parse_widget_form_data(widgets, widgetFormData)
+        return figure_generator(**inputs)
+
     # NB: widgets must also be generated b/c jinja render_templates
     # requires an app context to run
     def widgets_generator():
@@ -73,31 +80,29 @@ def register_report(name, figure_generator, widgets=[]):
             'figure_generator': decorated_generator,
             'widgets_generator': widgets_generator}
 
-# TODO: I think there is a way to write it like:
-# figure_a(floatName, textName), without the whole inputs array thing
-# (can pass in a dict of named params, and * operator I think)
-# saves the user from indexing into the array every time they want
-# to access an input
-# also: can get the function's param names and use as the dict
-# for the widget names. so can just input a list of widgets into
-# the register function
+# generates an assertion error (unit test this later)
+# def figure_too_few():
+    # return '<p>dksjalf</p>'
+# register_report('too_few', figure_too_few, [TextWidget('meh')])
+
+def figure_extra(a, b=6):
+    return '<p>{} {}</p>'.format(a, b)
+register_report('too_many', figure_extra, [FloatWidget(6.5)])
+
+def figure_dec(a, b, c):
+    return '<p>{} {} {}</p>'.format(a, b, c)
+register_report('dec', figure_dec, [TextWidget('yo'), FloatWidget(2.5), TextWidget('ha')])
 
 # figure out how to do it like below. Decorators are made 
 # for this purpose!
 #@reports.add('report_name', [widget_list])
-def figure_a(inputs):
-    print(inputs)
+def figure_a(textName, floatName):
+    print('inputs: {} {}'.format(textName, floatName))
     plt.figure()
-    plt.plot([3,1,4,1,inputs['floatName']], 'ks-', mec='w', mew=5, ms=20)
+    plt.plot([3,1,4,1,floatName], 'ks-', mec='w', mew=5, ms=20)
     htmlString = mpld3.fig_to_html(plt.gcf()) 
-    return '<p>' + inputs['textName'] + '</p>' + htmlString
-register_report('foo', figure_a, [('textName', TextWidget("yo")), ('floatName', FloatWidget(20))])
-
-def figure_b():
-    plt.figure()
-    plt.plot([1, 2, 3, 4], 'ks-', mec='w', mew=5, ms=20)
-    htmlString = mpld3.fig_to_html(plt.gcf())
-    return htmlString
+    return '<p>{}</p>{}'.format(textName, htmlString)
+register_report('foo', figure_a, [TextWidget("yo"), FloatWidget(20)])
 
 def figure_c():
     df = pd.DataFrame(np.random.randn(20, 20))
@@ -105,18 +110,16 @@ def figure_c():
     # return '<pre>' + tableString + '</pre>'
     # TODO: set some basic formatting on the html table
     return df.to_html()
-
-def figure_d(inputs):
-    print(inputs)
-    return '<p>' + inputs['textA'] + ', ' + inputs['textB'] + '</p>'
-register_report('yoo', figure_d, [('textA', TextWidget("aaaaaaaa")), ('textB', TextWidget('bbbbbbb'))])
-
-register_report('bar', figure_b)
 register_report('pan', figure_c)
 
-for i in range(100):
-    name = 'foo{}'.format(i)
-    register_report(name, figure_a)
+def figure_d(textA, textB):
+    print(inputs)
+    return '<p>{} {}</p>'.format(textA, textB)
+register_report('yoo', figure_d, [TextWidget("aaaaaaaa"), TextWidget('bbbbbbb')])
+
+# for i in range(100):
+    # name = 'foo{}'.format(i)
+#     register_report(name, figure_a)
 
 reports = []
 for key, value in report_generators.items():
