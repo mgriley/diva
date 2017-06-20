@@ -128,21 +128,23 @@ def index(reportname=None):
     if reportname is None:
         return render_template(
                 'index.html', reports=reports)
-    else:
-        # TODO: ensure that generator exists
-        figure_report = report_generators[reportname]
-        figure_html = figure_report['figure_generator']()
-        widgets_html = figure_report['widgets_generator']()
-        return render_template(
-                'figure_report.html',
-                reports=reports,
-                figureHTML=figure_html,
-                widgetsHTML=widgets_html)
+    figure_report = report_generators.get(reportname, None)
+    if figure_report is None:
+        abort(404)
+    figure_html = figure_report['figure_generator']()
+    widgets_html = figure_report['widgets_generator']()
+    return render_template(
+            'figure_report.html',
+            reports=reports,
+            figureHTML=figure_html,
+            widgetsHTML=widgets_html)
 
 @app.route('/<reportname>', methods=['POST'])
 def updateFigure(reportname):
     print(request.get_json())
-    figure_report = report_generators[reportname]
+    figure_report = report_generators.get(reportname, None)
+    if figure_report is None:
+        abort(404)
     figure_generator = figure_report['figure_generator']
     reportHTML = figure_generator(request.get_json())
     return reportHTML

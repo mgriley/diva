@@ -14,5 +14,13 @@ var FigureWidgets = {};
         }
         return values;
     };
+
+    // helper for defining widgets from HTML input forms
+    obj.inputTagWidget = {
+        getCurrentValue: function(myName) {
+            var input = document.getElementById(myName);
+            return input.value;
+        }
+    };
 })(FigureWidgets);
 
