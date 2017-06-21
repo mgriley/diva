@@ -18,4 +18,9 @@ $('#widgetform').ready(function() {
             success: callback
         });
     });
+    $('#widgetform').on("reset", function(formEvent) {
+        console.log('resetting');
+        formEvent.preventDefault();
+        FigureWidgets.resetToDefaults();
+    });
 });
