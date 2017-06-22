@@ -1,0 +1,2 @@
+{{description}} <input id="{{name}}" name="test" value="hey" {{ attributes | xmlattr }} {% if checked %} checked {% endif %}><br>
+<script data-widgetname="{{name}}" src="{{ url_for('static', filename='checkbox_widget.js') }}"></script>

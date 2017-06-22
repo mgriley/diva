@@ -63,10 +63,10 @@ reporter = Reporter()
     # return '<p>dksjalf</p>'
 # register_report('too_few', figure_too_few, [TextWidget('meh')])
 
-@reporter.display('widget test', [TextWidget('hello'),
-        FloatWidget(1.5),
-        IntWidget(2),
-        CheckBox()])
+@reporter.display('widget test', [TextWidget('text', 'hello'),
+        FloatWidget('float', 1.5),
+        IntWidget('integer', 2),
+        CheckBox('checkbox')])
 def widgets_test(a, b, c, d):
     return '<p>{} {} {} {}</p>'.format(a, b, c, d)
 
@@ -74,11 +74,11 @@ def widgets_test(a, b, c, d):
 def simple_figure():
     return '<p>simple foo</p>'
 
-@reporter.display('too_many', [FloatWidget(6.5)])
+@reporter.display('too_many', [FloatWidget('floating', 6.5)])
 def figure_extra(a, b=6):
     return '<p>{} {}</p>'.format(a, b)
 
-@reporter.display('foo', [TextWidget('yo'), FloatWidget(20)])
+@reporter.display('foo', [TextWidget('textbox', 'yo'), FloatWidget('floatzilla', 20)])
 def figure_a(textName, floatName):
     print('inputs: {} {}'.format(textName, floatName))
     plt.figure()

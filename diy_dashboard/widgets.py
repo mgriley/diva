@@ -4,13 +4,14 @@ class Widget:
     pass
 
 class InputTagWidget:
-    def generateHTML(self, widgetId, script_name='input_tag_widget.js'):
+    def generateHTML(self, widgetId):
         return render_template('input_tag_widget.html',
-                name=widgetId, attributes=self.attributes,
-                script_name=script_name)
+                description=self.description,
+                name=widgetId, attributes=self.attributes)
 
 class TextWidget(InputTagWidget):
-    def __init__(self, default="", placeholder=None):
+    def __init__(self, description, default="", placeholder=None):
+        self.description = description
         self.default = default
         self.attributes = {'type': 'text', 'value': default,
                 'placeholder': placeholder}
@@ -19,8 +20,9 @@ class TextWidget(InputTagWidget):
         return formData
 
 class FloatWidget(InputTagWidget):
-    def __init__(self, default=0, minVal=None, maxVal=None,
+    def __init__(self, description, default=0, minVal=None, maxVal=None,
             step=0.001):
+        self.description = description
         self.default = default
         self.attributes = {'type': 'number', 'value': default,
                 'min': minVal, 'max': maxVal, 'step': step}
@@ -32,8 +34,8 @@ class FloatWidget(InputTagWidget):
             return self.default
 
 class IntWidget(FloatWidget):
-    def __init__(self, default=0, minVal=None, maxVal=None):
-        super(IntWidget, self).__init__(default, minVal, maxVal, step=1)
+    def __init__(self, description, default=0, minVal=None, maxVal=None):
+        super(IntWidget, self).__init__(description, default, minVal, maxVal, step=1)
 
     def parseForm(self, formData):
         try:
@@ -42,19 +44,22 @@ class IntWidget(FloatWidget):
             return self.default
 
 class CheckBox(InputTagWidget):
-    def __init__(self, default=False):
+    def __init__(self, description, default=False):
+        self.description = description
         self.default = default
-        # TODO: figure out how to do specify checked or
-        # unchecked as default (may need a checkbox.html),
-        # which right now isn't used
         self.attributes = {'type': 'checkbox'}
         
-    def generateHTML(self, widgetId, script_name=None):
-        return super(CheckBox, self).generateHTML(widgetId,
-            script_name='checkbox_widget.js')
+    def generateHTML(self, widgetId):
+        return render_template('checkbox_widget.html',
+                description=self.description,
+                name=widgetId, attributes=self.attributes,
+                checked=self.default)
 
     def parseForm(self, formData):
-        return formData == 'True'
+        try:
+            return bool(formData)
+        except ValueError:
+            return self.default
 
 # given map of form data, return a map of inputs 
 def parse_widget_form_data(widgets, widgetFormData):
