@@ -120,6 +120,13 @@ class Week(Date):
         self.default = default if default is not None else time.strftime('%Y-W%W')
         self.attributes = {'type': 'week', 'value': self.default}
 
+# NB: times are in 24hr format
+class Time(Date):
+    def __init__(self, description, default=None):
+        self.description = description
+        self.default = default if default is not None else time.strftime('%H:%M')
+        self.attributes = {'type': 'time', 'value': self.default}
+
 # given map of form data, return a map of inputs 
 def parse_widget_form_data(widgets, widgetFormData):
     inputs = {}
