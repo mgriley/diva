@@ -71,9 +71,10 @@ reporter = Reporter()
         SelectAny(['foo', 'bar', 'baz'], ['foo', 'baz']),
         Color('my color', '#ff0000'),
         Date('my date', minDate='2017-01-01', maxDate='2017-02-01'),
-        Month('my month', '2017-08')])
-def widgets_test(a, b, c, d, e, f, g, h, i):
-    return '<p>{} {} {} {} {} {} {} {} {}</p>'.format(a, b, c, d, e, f, g, h, i)
+        Month('my month', '2017-08'),
+        Week('my week')])
+def widgets_test(a, b, c, d, e, f, g, h, i, j):
+    return '<p>{} {} {} {} {} {} {} {} {} {}</p>'.format(a, b, c, d, e, f, g, h, i, j)
 
 @reporter.display('simple')
 def simple_figure():
