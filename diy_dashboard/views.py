@@ -69,9 +69,10 @@ reporter = Reporter()
         CheckBox('checkbox', True),
         SelectOne(['foo', 'bar', 'baz'], 'bar'),
         SelectAny(['foo', 'bar', 'baz'], ['foo', 'baz']),
-        Color('my color', '#ff0000')])
-def widgets_test(a, b, c, d, e, f, g):
-    return '<p>{} {} {} {} {} {} {}</p>'.format(a, b, c, d, e, f, g)
+        Color('my color', '#ff0000'),
+        Date('my date', minDate='2017-01-01', maxDate='2017-02-01')])
+def widgets_test(a, b, c, d, e, f, g, h):
+    return '<p>{} {} {} {} {} {} {} {}</p>'.format(a, b, c, d, e, f, g, h)
 
 @reporter.display('simple')
 def simple_figure():

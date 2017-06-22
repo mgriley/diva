@@ -1,4 +1,5 @@
 from flask import render_template
+import time
 
 class Widget:
     def parseForm(self, formData):
@@ -90,6 +91,24 @@ class Color(InputTagWidget):
         self.description=description
         self.default = default
         self.attributes = {'type': 'color', 'value': default}
+
+class Date(InputTagWidget):
+    # defaults to current date
+    def __init__(self, description, default=None, minDate=None, maxDate=None):
+        self.description = description
+        if default is not None:
+            self.default = default
+        else:
+            self.default = time.strftime('%Y-%m-%d')
+        
+        self.attributes = {'type': 'date', 'value': default,
+                'min': minDate, 'max': maxDate}
+
+    def parseForm(self, formData):
+        if (formData is None) or (formData == ""):
+            return self.default
+        else:
+            return formData
 
 # given map of form data, return a map of inputs 
 def parse_widget_form_data(widgets, widgetFormData):
