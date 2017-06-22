@@ -13,7 +13,7 @@
             <p>reports</p>
             <ul>
                 {% for report in reports %}
-                    <li><a href="{{report.href}}">{{report.name}}</a></li>
+                    <li {% if selectedReport == report.name %} id="current-link" {% endif %}><a href="{{report.href}}">{{report.name}}</a></li>
                 {% endfor %}
             </ul>
         </div>

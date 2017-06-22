@@ -8,6 +8,7 @@
         {% for widgetHTML in widgetsHTML %}
             {{ widgetHTML | safe }}
         {% endfor %}
+        <input type="reset" value="restore defaults">
         <input type="submit" value="reload">
     </form>
 {% endblock %}

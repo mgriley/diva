@@ -4,3 +4,7 @@ To setup flask:
 export FLASK_APP=diy_dashboard (package name, that is)
 export FLASK_DEBUG=true
 run flask
+
+SASS:
+On mac, run 'sudo gem install sass'
+then: sass --watch stylesheet_dir

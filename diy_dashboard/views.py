@@ -106,9 +106,13 @@ def figure_a(textName, floatName):
 @app.route('/')
 @app.route('/<reportname>')
 def index(reportname=None):
+
+    # TODO: if no reportname specified, select the first report
+    # (provided there are actually reports)
     if reportname is None:
         return render_template(
-                'index.html', reports=reporter.get_reports())
+                'index.html',
+                reports=reporter.get_reports())
     figure_report = reporter.report_generators.get(reportname, None)
     if figure_report is None:
         abort(404)
@@ -116,6 +120,7 @@ def index(reportname=None):
     widgets_html = figure_report['widgets_generator']()
     return render_template(
             'figure_report.html',
+            selectedReport=reportname,
             reports=reporter.get_reports(),
             figureHTML=figure_html,
             widgetsHTML=widgets_html)
