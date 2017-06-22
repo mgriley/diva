@@ -104,11 +104,15 @@ class Date(InputTagWidget):
         self.attributes = {'type': 'date', 'value': default,
                 'min': minDate, 'max': maxDate}
 
-    def parseForm(self, formData):
-        if (formData is None) or (formData == ""):
-            return self.default
+class Month(Date):
+    def __init__(self, description, default=None):
+        self.description = description
+        if default is not None:
+            self.default = default
         else:
-            return formData
+            self.default = time.strftime('%Y-%m')
+
+        self.attributes = {'type': 'month', 'value': default}
 
 # given map of form data, return a map of inputs 
 def parse_widget_form_data(widgets, widgetFormData):
