@@ -83,6 +83,14 @@ class SelectAny(Widget):
                 name=widgetId, choices=self.choices,
                 default=self.default)
 
+# TODO: input and output are both in hexidecimal. user should be 
+# responsible for the conversion
+class Color(InputTagWidget):
+    def __init__(self, description, default='#000000'):
+        self.description=description
+        self.default = default
+        self.attributes = {'type': 'color', 'value': default}
+
 # given map of form data, return a map of inputs 
 def parse_widget_form_data(widgets, widgetFormData):
     inputs = {}
