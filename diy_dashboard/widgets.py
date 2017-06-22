@@ -127,6 +127,26 @@ class Time(Date):
         self.default = default if default is not None else time.strftime('%H:%M')
         self.attributes = {'type': 'time', 'value': self.default}
 
+class Slider(Widget):
+    def __init__(self, description, default=1, valRange=(0, 1), numDecimals=4):
+        self.description = description
+        self.valRange = valRange
+        self.default = default
+        self.numDecimals = numDecimals
+        step = 1 / (10 ** numDecimals);
+        self.attributes = {'type': 'range', 'min': self.valRange[0],
+                'max': self.valRange[1], 'step': step, 'value': self.default}
+
+    def generateHTML(self, widgetId):
+        return render_template('slider_widget.html',
+                name=widgetId,
+                description=self.description,
+                default=('{:.{}f}').format(self.default, self.numDecimals),
+                attributes=self.attributes)
+
+    def parseForm(self, formData):
+        return FloatWidget.parseForm(self, formData)
+
 # given map of form data, return a map of inputs 
 def parse_widget_form_data(widgets, widgetFormData):
     inputs = {}

@@ -70,12 +70,14 @@ reporter = Reporter()
         SelectOne(['foo', 'bar', 'baz'], 'bar'),
         SelectAny(['foo', 'bar', 'baz'], ['foo', 'baz']),
         Color('my color', '#ff0000'),
-        Date('my date', minDate='2017-01-01', maxDate='2017-02-01'),
+        Date('my date', minDate='2016-01-01', maxDate='2018-02-01'),
         Month('my month', '2017-08'),
         Week('my week'),
-        Time('my time')])
-def widgets_test(a, b, c, d, e, f, g, h, i, j, k):
-    return '<p>{} {} {} {} {} {} {} {} {} {} {}</p>'.format(a, b, c, d, e, f, g, h, i, j, k)
+        Time('my time'),
+        Slider('my default slider'),
+        Slider('my param slider', 0, (-10, 10), 0)])
+def widgets_test(a, b, c, d, e, f, g, h, i, j, k, l, m):
+    return '<p>{} {} {} {} {} {} {} {} {} {} {} {:f} {:f}</p>'.format(a, b, c, d, e, f, g, h, i, j, k, l, m)
 
 @reporter.display('simple')
 def simple_figure():

@@ -22,7 +22,6 @@ var FigureWidgets = {};
     },
 
     // helper for defining widgets from HTML input forms
-    // TODO: see if can get this code to work for all HTML forms
     obj.inputTagWidget = {
         resetToDefault: function(myName) {
             var input = document.getElementById(myName);
