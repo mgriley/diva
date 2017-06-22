@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt, mpld3
 import numpy as np
 import pandas as pd
 import inspect
-from flask import render_template, request
+from flask import render_template, request, abort
 from diy_dashboard import app
 from diy_dashboard.widgets import *
 
@@ -66,9 +66,10 @@ reporter = Reporter()
 @reporter.display('widget test', [TextWidget('text', 'hello'),
         FloatWidget('float', 1.5),
         IntWidget('integer', 2),
-        CheckBox('checkbox')])
-def widgets_test(a, b, c, d):
-    return '<p>{} {} {} {}</p>'.format(a, b, c, d)
+        CheckBox('checkbox', True),
+        SelectOne(['foo', 'bar', 'baz'], 'bar')])
+def widgets_test(a, b, c, d, e):
+    return '<p>{} {} {} {} {}</p>'.format(a, b, c, d, e)
 
 @reporter.display('simple')
 def simple_figure():

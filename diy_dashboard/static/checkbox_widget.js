@@ -4,7 +4,6 @@ FigureWidgets.add(widgetname, {
         return $('#' + name).is(':checked');
     },
     resetToDefault: function(name) {
-        console.log('resetting checkbox ', name);
         var input = document.getElementById(name);
         input.checked = input.defaultChecked;
     }

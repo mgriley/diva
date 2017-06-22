@@ -1,9 +1,10 @@
 from flask import render_template
 
 class Widget:
-    pass
+    def parseForm(self, formData):
+        return formData
 
-class InputTagWidget:
+class InputTagWidget(Widget):
     def generateHTML(self, widgetId):
         return render_template('input_tag_widget.html',
                 description=self.description,
@@ -15,9 +16,6 @@ class TextWidget(InputTagWidget):
         self.default = default
         self.attributes = {'type': 'text', 'value': default,
                 'placeholder': placeholder}
-
-    def parseForm(self, formData):
-        return formData
 
 class FloatWidget(InputTagWidget):
     def __init__(self, description, default=0, minVal=None, maxVal=None,
@@ -43,7 +41,7 @@ class IntWidget(FloatWidget):
         except ValueError:
             return self.default
 
-class CheckBox(InputTagWidget):
+class CheckBox(Widget):
     def __init__(self, description, default=False):
         self.description = description
         self.default = default
@@ -60,6 +58,20 @@ class CheckBox(InputTagWidget):
             return bool(formData)
         except ValueError:
             return self.default
+
+class SelectOne(Widget):
+    # default is index into the choices array
+    def __init__(self, choices, default=None):
+        self.choices = choices
+        if default is None:
+            self.default = choices[0]
+        else:
+            self.default = default
+
+    def generateHTML(self, widgetId):
+        return render_template('radio_widget.html',
+                name=widgetId, choices=self.choices,
+                defaultChoice=self.default)
 
 # given map of form data, return a map of inputs 
 def parse_widget_form_data(widgets, widgetFormData):
