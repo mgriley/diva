@@ -67,9 +67,10 @@ reporter = Reporter()
         FloatWidget('float', 1.5),
         IntWidget('integer', 2),
         CheckBox('checkbox', True),
-        SelectOne(['foo', 'bar', 'baz'], 'bar')])
-def widgets_test(a, b, c, d, e):
-    return '<p>{} {} {} {} {}</p>'.format(a, b, c, d, e)
+        SelectOne(['foo', 'bar', 'baz'], 'bar'),
+        SelectAny(['foo', 'bar', 'baz'], ['foo', 'baz'])])
+def widgets_test(a, b, c, d, e, f):
+    return '<p>{} {} {} {} {} {}</p>'.format(a, b, c, d, e, f)
 
 @reporter.display('simple')
 def simple_figure():

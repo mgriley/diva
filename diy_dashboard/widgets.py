@@ -73,6 +73,16 @@ class SelectOne(Widget):
                 name=widgetId, choices=self.choices,
                 defaultChoice=self.default)
 
+class SelectAny(Widget):
+    def __init__(self, choices, default=[]):
+        self.choices = choices
+        self.default = default
+
+    def generateHTML(self, widgetId):
+        return render_template('checklist_widget.html',
+                name=widgetId, choices=self.choices,
+                default=self.default)
+
 # given map of form data, return a map of inputs 
 def parse_widget_form_data(widgets, widgetFormData):
     inputs = {}
