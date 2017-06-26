@@ -49,6 +49,7 @@
             "firstDay": 1
         },
         "linkedCalendars": false,
+        "alwaysShowCalendars": true,
         "startDate": inputTag.dataset.startdate,
         "endDate": inputTag.dataset.enddate,
         "drops": "down"

@@ -2,6 +2,7 @@ from flask import render_template
 import time
 from datetime import date, datetime, timedelta
 from dateutil.relativedelta import *
+from functools import singledispatch
 
 class Widget:
     def parseForm(self, formData):
@@ -97,41 +98,6 @@ class Color(InputTagWidget):
         self.default = default
         self.attributes = {'type': 'color', 'value': default}
 
-class Date(InputTagWidget):
-    # defaults to current date
-    def __init__(self, description, default=None, minDate=None, maxDate=None):
-        self.description = description
-        if default is not None:
-            self.default = default
-        else:
-            self.default = time.strftime('%Y-%m-%d')
-        
-        self.attributes = {'type': 'date', 'value': self.default,
-                'min': minDate, 'max': maxDate}
-
-class Month(Date):
-    def __init__(self, description, default=None):
-        self.description = description
-        if default is not None:
-            self.default = default
-        else:
-            self.default = time.strftime('%Y-%m')
-
-        self.attributes = {'type': 'month', 'value': self.default}
-
-class Week(Date):
-    def __init__(self, description, default=None):
-        self.description = description
-        self.default = default if default is not None else time.strftime('%Y-W%W')
-        self.attributes = {'type': 'week', 'value': self.default}
-
-# NB: times are in 24hr format
-class Time(Date):
-    def __init__(self, description, default=None):
-        self.description = description
-        self.default = default if default is not None else time.strftime('%H:%M')
-        self.attributes = {'type': 'time', 'value': self.default}
-
 class Slider(Widget):
     def __init__(self, description, default=1, valRange=(0, 1), numDecimals=4):
         self.description = description
@@ -158,77 +124,58 @@ def iso_to_date(isoStr):
     dt = datetime.strptime(isoStr, '%Y-%m-%d')
     return dt.date()
 
-class DateRangeModel():
-    # start and end are date objects
-    def start_date(self):
+class DateModel():
+    def value(self):
         pass
-    
-    def end_date(self):
-        pass
+    def iso(self):
+        return self.value().isoformat()
 
-    def iso_start(self):
-        return self.start_date().isoformat()
+class AbsoluteDate(DateModel):
+    def __init__(self, date):
+        self.date = date
 
-    def iso_end(self):
-        return self.end_date().isoformat()
-        
-class AbsoluteDateRange(DateRangeModel):
-    def __init__(self, start, end):
-        self.start = start
-        self.end = end 
-    def start_date(self):
-        return self.start
-    def end_date(self):
-        return self.end
+    def value(self):
+        return self.date
 
-class HalfAbsoluteDataRange(AbsoluteDateRange):
-    def __init__(self, start):
-        self.start = start
-    def end_date(self):
-        return date.today()
+class RelativeDate(DateModel):
+    def __init__(self, duration):
+        self.duration = duration
 
-class RelativeDateRange(DateRangeModel):
-    # offsets are time-deltas wrt present
-    def __init__(self, start_offset, end_offset):
-        self.start_offset = start_offset
-        self.end_offset = end_offset
-    def start_date(self):
-        return date.today() - self.start_offset
-    def end_date(self):
-        return date.today() - self.end_offset
+    def value(self):
+        return date.today() - self.duration
 
-# helpers for specifying date ranges
+# convert the specified date to a date model
+@singledispatch
+def to_date_model(date):
+    raise ValueError("given date must be: a) ISO format string, b) datetime.date object, c) datetime.timedelta object, or d) dateutil.relativedelta object")
 
-def abs_range(startStr, endStr):
-    start = iso_to_date(startStr)
-    end = iso_to_date(endStr)
-    return AbsoluteDateRange(start, end)
+@to_date_model.register(date)
+def date_to_model(date):
+    return AbsoluteDate(date)
 
-def last(days=0, weeks=0, months=0, years=0):
-    start_offset = relativedelta(days=days, weeks=weeks, months=months, years=years)
-    end_offset = timedelta()
-    return RelativeDateRange(start_offset, end_offset)
+@to_date_model.register(str)
+def iso_to_model(date_str):
+    return AbsoluteDate(iso_to_date(date_str))
 
-def rel_range(durA, durB=timedelta()):
-    return RelativeDateRange(durA, durB)
-
-def date_to_present(start_str):
-    start_date = iso_to_date(start_str)
-    return HalfAbsoluteDataRange(start_date)    
+@to_date_model.register(timedelta)
+@to_date_model.register(relativedelta)
+def delta_to_model(date_delta):
+    return RelativeDate(date_delta)
 
 class DateRange(Widget):
 
-    def __init__(self, description, default=last(weeks=1)):
+    def __init__(self, description, start=relativedelta(), end=relativedelta()):
         self.description = description
-        self.default = default
-        date = '{} to {}'.format(self.default.iso_start(),
-                self.default.iso_end())
+        self.start_date = to_date_model(start)
+        self.end_date = to_date_model(end)
+        date = '{} to {}'.format(self.start_date.iso(),
+                self.end_date.iso())
         print(date)
         self.attributes = {'type': 'text',
                 'value': date,
                 'size': len(date),
-                'data-startdate': self.default.iso_start(),
-                'data-enddate': self.default.iso_end()}
+                'data-startdate': self.start_date.iso(),
+                'data-enddate': self.end_date.iso()}
 
     def generateHTML(self, widgetId):
         return render_template('daterange_widget.html',
@@ -237,7 +184,7 @@ class DateRange(Widget):
                 attributes=self.attributes)
     
     def default_value(self):
-        return (self.default.start_date(), self.default.end_date())
+        return (self.start_date.value(), self.end_date.value())
     
     # TODO: use schema to verify that formData is 2-elem array
     def parseForm(self, formData):
@@ -245,6 +192,25 @@ class DateRange(Widget):
         start = iso_to_date(formData[0])
         end = iso_to_date(formData[1])
         return (start, end)
+
+class Date(InputTagWidget):
+    def __init__(self, description, default=relativedelta()):
+        self.description = description
+        self.default = to_date_model(default)
+        self.attributes = {'type': 'date', 'value': self.default.iso()}
+
+    def default_value(self):
+        return self.default.value()
+
+    def parseForm(self, formData):
+        return iso_to_date(formData)
+
+# NB: times are in 24hr format
+class Time(Date):
+    def __init__(self, description, default=None):
+        self.description = description
+        self.default = default if default is not None else time.strftime('%H:%M')
+        self.attributes = {'type': 'time', 'value': self.default}
 
 # given map of form data, return a map of inputs 
 def parse_widget_form_data(widgets, widgetFormData):

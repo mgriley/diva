@@ -68,23 +68,25 @@ reporter = Reporter()
         SelectOne(['foo', 'bar', 'baz'], 'bar'),
         SelectAny(['foo', 'bar', 'baz'], ['foo', 'baz']),
         Color('my color', '#ff0000'),
-        Date('my date', minDate='2016-01-01', maxDate='2018-02-01'),
-        Month('my month', '2017-08'),
-        Week('my week'),
         Time('my time'),
         Slider('my default slider'),
         Slider('my param slider', 0, (-10, 10), 0)])
-def widgets_test(a, b, c, d, e, f, g, h, i, j, k, l, m):
-    return '<p>{} {} {} {} {} {} {} {} {} {} {} {:f} {:f}</p>'.format(a, b, c, d, e, f, g, h, i, j, k, l, m)
+def widgets_test(a, b, c, d, e, f, g, h, i, j, k, l):
+    return '<p>{} {} {} {} {} {} {} {} {} {} {} {:f} {:f}</p>'.format(a, b, c, d, e, f, g, h, i, j, k, l)
 
-@reporter.display('date range test',
-        [DateRange('default date range'),
-            DateRange('abs date range', abs_range('2017-01-02', '2018-02-03')),
-            DateRange('last __ range', last(weeks=3)),
-            DateRange('rel range', rel_range(timedelta(days=7), timedelta(days=1))),
-            DateRange('date to present', date_to_present('2017-01-02'))])
-def date_range_test(a, b, c, d, e):
-    return '<p>{} | {} | {} | {} | {}</p>'.format(a, b, c, d, e)
+@reporter.display('datetime widgets',
+        [
+            DateRange('default date range'),
+            DateRange('abs date range', '2017-01-02', '2018-02-03'),
+            DateRange('last __ range', relativedelta(weeks=3)),
+            DateRange('rel range', relativedelta(days=7), relativedelta(days=1)),
+            DateRange('date to present', '2017-01-02', timedelta()),
+            Date('default date'),
+            Date('date relative', relativedelta(days=7)),
+            Date('date absolute', '2017-01-11')
+        ])
+def date_range_test(a, b, c, d, e, f, g, h):
+    return '<p>{} | {} | {} | {} | {} | {} | {} | {}</p>'.format(a, b, c, d, e, f, g, h)
 
 @reporter.display('simple')
 def simple_figure():
