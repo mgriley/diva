@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt, mpld3
 import numpy as np
 import pandas as pd
 import inspect
+from datetime import *
 from flask import render_template, request, abort
 from diy_dashboard import app
 from diy_dashboard.widgets import *
@@ -15,9 +16,6 @@ def get_report_generators(figure_generator, widgets=[]):
     # transform widgets to tuple array, of (argName, widget)
     # this gives each widget a unique key b/c arg names must be unique
     argNames = inspect.getargspec(figure_generator)[0]
-    assert len(argNames) >= len(widgets), \
-            ("there are more widgets than function "
-            "arguments for function \"{}\"").format(figure_generator.__name__)
     for index, widget in enumerate(widgets):
         widgets[index] = (argNames[index], widget)
     print(widgets)
@@ -63,7 +61,7 @@ reporter = Reporter()
     # return '<p>dksjalf</p>'
 # register_report('too_few', figure_too_few, [TextWidget('meh')])
 
-@reporter.display('widget test', [TextWidget('text', 'hello'),
+@reporter.display('basic widget test', [TextWidget('text', 'hello'),
         FloatWidget('float', 1.5),
         IntWidget('integer', 2),
         CheckBox('checkbox', True),
@@ -78,6 +76,15 @@ reporter = Reporter()
         Slider('my param slider', 0, (-10, 10), 0)])
 def widgets_test(a, b, c, d, e, f, g, h, i, j, k, l, m):
     return '<p>{} {} {} {} {} {} {} {} {} {} {} {:f} {:f}</p>'.format(a, b, c, d, e, f, g, h, i, j, k, l, m)
+
+@reporter.display('date range test',
+        [DateRange('default date range'),
+            DateRange('abs date range', abs_range('2017-01-02', '2018-02-03')),
+            DateRange('last __ range', last(weeks=3)),
+            DateRange('rel range', rel_range(timedelta(days=7), timedelta(days=1))),
+            DateRange('date to present', date_to_present('2017-01-02'))])
+def date_range_test(a, b, c, d, e):
+    return '<p>{} | {} | {} | {} | {}</p>'.format(a, b, c, d, e)
 
 @reporter.display('simple')
 def simple_figure():

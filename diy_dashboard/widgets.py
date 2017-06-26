@@ -1,9 +1,14 @@
 from flask import render_template
 import time
+from datetime import date, datetime, timedelta
+from dateutil.relativedelta import *
 
 class Widget:
     def parseForm(self, formData):
         return formData
+
+    def default_value(self):
+        return self.default
 
 class InputTagWidget(Widget):
     def generateHTML(self, widgetId):
@@ -147,6 +152,97 @@ class Slider(Widget):
     def parseForm(self, formData):
         return FloatWidget.parseForm(self, formData)
 
+# classes and helpers for internally working with date ranges
+
+def iso_to_date(isoStr):
+    dt = datetime.strptime(isoStr, '%Y-%m-%d')
+    return dt.date()
+
+class DateRangeModel():
+    # start and end are date objects
+    def start_date(self):
+        pass
+    
+    def end_date(self):
+        pass
+
+    def iso_start(self):
+        return self.start_date().isoformat()
+
+    def iso_end(self):
+        return self.end_date().isoformat()
+        
+class AbsoluteDateRange(DateRangeModel):
+    def __init__(self, start, end):
+        self.start = start
+        self.end = end 
+    def start_date(self):
+        return self.start
+    def end_date(self):
+        return self.end
+
+class HalfAbsoluteDataRange(AbsoluteDateRange):
+    def __init__(self, start):
+        self.start = start
+    def end_date(self):
+        return date.today()
+
+class RelativeDateRange(DateRangeModel):
+    # offsets are time-deltas wrt present
+    def __init__(self, start_offset, end_offset):
+        self.start_offset = start_offset
+        self.end_offset = end_offset
+    def start_date(self):
+        return date.today() - self.start_offset
+    def end_date(self):
+        return date.today() - self.end_offset
+
+# helpers for specifying date ranges
+
+def abs_range(startStr, endStr):
+    start = iso_to_date(startStr)
+    end = iso_to_date(endStr)
+    return AbsoluteDateRange(start, end)
+
+def last(days=0, weeks=0, months=0, years=0):
+    start_offset = relativedelta(days=days, weeks=weeks, months=months, years=years)
+    end_offset = timedelta()
+    return RelativeDateRange(start_offset, end_offset)
+
+def rel_range(durA, durB=timedelta()):
+    return RelativeDateRange(durA, durB)
+
+def date_to_present(start_str):
+    start_date = iso_to_date(start_str)
+    return HalfAbsoluteDataRange(start_date)    
+
+class DateRange(Widget):
+
+    def __init__(self, description, default=last(weeks=1)):
+        self.description = description
+        self.default = default
+        date = '{} - {}'.format(self.default.iso_start(),
+                self.default.iso_end())
+        print(date)
+        self.attributes = {'type': 'text',
+                'value': date}
+
+    def generateHTML(self, widgetId):
+        return render_template('daterange_widget.html',
+                name=widgetId,
+                description=self.description,
+                attributes=self.attributes)
+    
+    def default_value(self):
+        return (self.default.start_date(), self.default.end_date())
+    
+    # TODO: use schema to verify that formData is 2-elem array
+    def parseForm(self, formData):
+        print(formData)
+        start = iso_to_date(formData[0])
+        end = iso_to_date(formData[1])
+        return (start, end)
+
 # given map of form data, return a map of inputs 
 def parse_widget_form_data(widgets, widgetFormData):
     inputs = {}
@@ -155,7 +251,7 @@ def parse_widget_form_data(widgets, widgetFormData):
         widget = keyVal[1]
         formData = widgetFormData.get(name, None)
         if formData == None:
-            inputs[name] = widget.default;
+            inputs[name] = widget.default_value();
         else:
             inputs[name] = widget.parseForm(formData)
     return inputs
