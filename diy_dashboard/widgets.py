@@ -221,11 +221,14 @@ class DateRange(Widget):
     def __init__(self, description, default=last(weeks=1)):
         self.description = description
         self.default = default
-        date = '{} - {}'.format(self.default.iso_start(),
+        date = '{} to {}'.format(self.default.iso_start(),
                 self.default.iso_end())
         print(date)
         self.attributes = {'type': 'text',
-                'value': date}
+                'value': date,
+                'size': len(date),
+                'data-startdate': self.default.iso_start(),
+                'data-enddate': self.default.iso_end()}
 
     def generateHTML(self, widgetId):
         return render_template('daterange_widget.html',
@@ -238,7 +241,7 @@ class DateRange(Widget):
     
     # TODO: use schema to verify that formData is 2-elem array
     def parseForm(self, formData):
-        print(formData)
+        formData = formData.split(' to ')
         start = iso_to_date(formData[0])
         end = iso_to_date(formData[1])
         return (start, end)
