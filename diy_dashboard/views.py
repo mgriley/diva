@@ -68,11 +68,10 @@ reporter = Reporter()
         SelectOne(['foo', 'bar', 'baz'], 'bar'),
         SelectAny(['foo', 'bar', 'baz'], ['foo', 'baz']),
         Color('my color', '#ff0000'),
-        Time('my time'),
         Slider('my default slider'),
         Slider('my param slider', 0, (-10, 10), 0)])
-def widgets_test(a, b, c, d, e, f, g, h, i, j, k, l):
-    return '<p>{} {} {} {} {} {} {} {} {} {} {} {:f} {:f}</p>'.format(a, b, c, d, e, f, g, h, i, j, k, l)
+def widgets_test(a, b, c, d, e, f, g, h, i):
+    return '<p>{} {} {} {} {} {} {} {:f} {:f}</p>'.format(a, b, c, d, e, f, g, h, i)
 
 @reporter.display('datetime widgets',
         [
@@ -83,10 +82,12 @@ def widgets_test(a, b, c, d, e, f, g, h, i, j, k, l):
             DateRange('date to present', '2017-01-02', timedelta()),
             Date('default date'),
             Date('date relative', relativedelta(days=7)),
-            Date('date absolute', '2017-01-11')
+            Date('date absolute', '2017-01-11'),
+            Time('default'),
+            Time('param', time(5, 10, 15))
         ])
-def date_range_test(a, b, c, d, e, f, g, h):
-    return '<p>{} | {} | {} | {} | {} | {} | {} | {}</p>'.format(a, b, c, d, e, f, g, h)
+def date_range_test(a, b, c, d, e, f, g, h, i, j):
+    return '<p>{} | {} | {} | {} | {} | {} | {} | {} | {} | {}</p>'.format(a, b, c, d, e, f, g, h, i, j)
 
 @reporter.display('simple')
 def simple_figure():

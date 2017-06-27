@@ -1,15 +1,22 @@
 from flask import render_template
 import time
-from datetime import date, datetime, timedelta
+from datetime import date, time, datetime, timedelta
 from dateutil.relativedelta import *
 from functools import singledispatch
 
-class Widget:
+class Input():
+    def generateHTML(self, widgetId):
+        return ''
+
     def parseForm(self, formData):
-        return formData
+        pass
 
     def default_value(self):
         return self.default
+
+class Widget(Input):
+    def parseForm(self, formData):
+        return formData
 
 class InputTagWidget(Widget):
     def generateHTML(self, widgetId):
@@ -206,11 +213,19 @@ class Date(InputTagWidget):
         return iso_to_date(formData)
 
 # NB: times are in 24hr format
-class Time(Date):
-    def __init__(self, description, default=None):
+class Time(InputTagWidget):
+    def __init__(self, description, default=time()):
         self.description = description
-        self.default = default if default is not None else time.strftime('%H:%M')
-        self.attributes = {'type': 'time', 'value': self.default}
+        self.default = default
+        time_str = self.default.strftime('%H:%M')
+        self.attributes = {'type': 'time', 'value': time_str}
+
+    def parseForm(self, formData):
+        print(formData)
+        dt = datetime.strptime(formData, '%H:%M')
+        print(dt)
+        return dt.time()
+
 
 # given map of form data, return a map of inputs 
 def parse_widget_form_data(widgets, widgetFormData):
