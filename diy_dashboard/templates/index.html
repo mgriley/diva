@@ -19,15 +19,34 @@
         <div class="sidebar">
             <p>reports</p>
             <ul>
+                <li id="current-link"><a href="javascript:changeTab('intro_tab')"></a></li>
                 {% for report in reports %}
-                    <li {% if selectedReport == report.href %} id="current-link" {% endif %}><a href="{{report.href}}">{{report.name}}</a></li>
+                <li><a href="javascript:changeTab('{{report.name}}')">{{report.name}}</a></li>
                 {% endfor %}
             </ul>
         </div>
         <div class="main">
-            {% block main %}
-                Welcome to DIY Dashboard
-            {% endblock %}
+            <script "{{ url_for('static', filename='reports.js') }}"></script>
+            <div id="intro_page">
+                <p>welcome!</p>
+            </div>
+            {% for report in reports %}
+            <div id="report-{{loop.index}}">
+                <script src="{{ url_for('static', filename='add_report.js') }}"></script>
+                <div class="figure">
+                    <p>press reload for default figure</p>
+                </div>
+                <!-- TODO: need a javascript map for reports, now, too, single widget map won't do --!>
+                <script src="{{ url_for('static', filename='widgets.js') }}"></script>
+                <form class="widgetform">
+                    {% for widgetHTML in report.widgetsHTML %}
+                        {{ widgetHTML | safe }}
+                    {% endfor %}
+                    <input type="reset" value="restore defaults">
+                    <input type="submit" value="reload">
+                </form>   
+            </div>
+            {% endfor %}
         </div>
     </div>
 </body>

@@ -1,5 +1,6 @@
-var FigureWidgets = {};
-(function(obj) {
+function newFigureWidgets() {
+    var obj = {};
+
     // map from name to widget
     obj.widgetMap = {};
 
@@ -32,5 +33,15 @@ var FigureWidgets = {};
             return input.value;
         }
     };
-})(FigureWidgets);
+    return obj;
+}
 
+var Reports = {}
+(function(obj) {
+    obj.reportList = [];
+
+    obj.create() = function() {
+        var report = {widgets: newFigureWidgets()};
+        obj.reportList.append(report);
+    };
+})(Reports);
