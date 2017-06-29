@@ -23,14 +23,14 @@ class InputTagWidget(Widget):
                 description=self.description,
                 name=widgetId, attributes=self.attributes)
 
-class TextWidget(InputTagWidget):
+class String(InputTagWidget):
     def __init__(self, description, default="", placeholder=None):
         self.description = description
         self.default = default
         self.attributes = {'type': 'text', 'value': default,
                 'placeholder': placeholder}
 
-class FloatWidget(InputTagWidget):
+class Float(InputTagWidget):
     def __init__(self, description, default=0, minVal=None, maxVal=None,
             step=0.001):
         self.description = description
@@ -44,9 +44,9 @@ class FloatWidget(InputTagWidget):
         except ValueError:
             return self.default
 
-class IntWidget(FloatWidget):
+class Int(Float):
     def __init__(self, description, default=0, minVal=None, maxVal=None):
-        super(IntWidget, self).__init__(description, default, minVal, maxVal, step=1)
+        super(Int, self).__init__(description, default, minVal, maxVal, step=1)
 
     def parseForm(self, formData):
         try:
@@ -54,7 +54,7 @@ class IntWidget(FloatWidget):
         except ValueError:
             return self.default
 
-class CheckBox(Widget):
+class Bool(Widget):
     def __init__(self, description, default=False):
         self.description = description
         self.default = default
@@ -86,7 +86,7 @@ class SelectOne(Widget):
                 name=widgetId, choices=self.choices,
                 defaultChoice=self.default)
 
-class SelectAny(Widget):
+class SelectSubset(Widget):
     def __init__(self, choices, default=[]):
         self.choices = choices
         self.default = default
@@ -122,7 +122,7 @@ class Slider(Widget):
                 attributes=self.attributes)
 
     def parseForm(self, formData):
-        return FloatWidget.parseForm(self, formData)
+        return Float.parseForm(self, formData)
 
 # classes and helpers for internally working with date ranges
 
@@ -224,7 +224,6 @@ class Time(InputTagWidget):
         dt = datetime.strptime(formData, '%H:%M')
         print(dt)
         return dt.time()
-
 
 # given map of form data, return a map of inputs 
 def parse_widget_form_data(widgets, widgetFormData):
