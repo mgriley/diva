@@ -1,7 +1,14 @@
 import inspect
-from flask import render_template
-from diy_dashboard.converters import convert_to_html
-from diy_dashboard.widgets import parse_widget_form_data
+import urllib
+from collections import OrderedDict
+from .converters import convert_to_html
+from .widgets import parse_widget_form_data
+from flask import Flask, render_template, request, abort
+
+# make safe for URL path use
+def normalize_report_name(name):
+    name = name.replace(" ", "-")
+    return urllib.parse.quote(name)        
 
 def get_report_generators(figure_generator, widgets=[]):
     # transform widgets to tuple array, of (argName, widget)
@@ -31,19 +38,20 @@ def get_report_generators(figure_generator, widgets=[]):
 
 class Reporter:
     def __init__(self):
-        self.report_generators = {}
+        self.report_generators = OrderedDict()
     
     def display(self, name, widgets=[]):
+        url_name = normalize_report_name(name)
         def real_decorator(func):
             generators = get_report_generators(func, widgets)
-            self.report_generators[name] = generators
+            self.report_generators[url_name] = {'name': name, 'generators': generators}
             return func
         return real_decorator
     
     def get_reports(self):
         reports = []
         for key, value in self.report_generators.items():
-            reports.append({'name': key, 'href': key})
+            reports.append({'name': value['name'], 'href': key})
         return reports
     
     def html_for_report(self, reportname=None):
@@ -58,8 +66,8 @@ class Reporter:
             # TODO: either return index page or unknown report name page
             # probably unknown report name
             raise ValueError("invalid report name")
-        figure_html = figure_report['figure_generator']()
-        widgets_html = figure_report['widgets_generator']()
+        figure_html = figure_report['generators']['figure_generator']()
+        widgets_html = figure_report['generators']['widgets_generator']()
         return render_template(
                 'figure_report.html',
                 selectedReport=reportname,
@@ -72,6 +80,21 @@ class Reporter:
         if figure_report is None:
             # TODO: is this correct handling?
             raise ValueError("invalid report name")
-        figure_generator = figure_report['figure_generator']
+        figure_generator = figure_report['generators']['figure_generator']
         reportHTML = figure_generator(widget_values)
         return reportHTML
+
+    def run(self, host=None, port=None, debug=None, **options):
+        app = Flask(__name__)
+
+        @app.route('/')
+        @app.route('/<reportname>')
+        def index(reportname=None):
+            return self.html_for_report(reportname)
+
+        @app.route('/<reportname>', methods=['POST'])
+        def updateFigure(reportname):
+            print(request.get_json())
+            return self.html_for_figure(reportname, request.get_json())
+
+        app.run(host, port, debug, **options)

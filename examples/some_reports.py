@@ -3,14 +3,13 @@ import matplotlib
 # use the Agg backend, which is non-interactivate (just for PNGs)
 # this way, a separate script isn't started by matplotlib
 matplotlib.use('Agg')
-import matplotlib.pyplot as plt, mpld3
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from datetime import *
-from flask import render_template, request, abort
-from diy_dashboard import app
-from diy_dashboard.widgets import *
 from diy_dashboard.reporter import Reporter
+from diy_dashboard.widgets import *
+
 reporter = Reporter()
 
 # generates an assertion error (unit test this later)
@@ -84,13 +83,4 @@ def figure_d():
     # name = 'foo{}'.format(i)
 #     register_report(name, figure_a)
 
-@app.route('/')
-@app.route('/<reportname>')
-def index(reportname=None):
-    return reporter.html_for_report(reportname)
-
-@app.route('/<reportname>', methods=['POST'])
-def updateFigure(reportname):
-    print(request.get_json())
-    return reporter.html_for_figure(reportname, request.get_json())
-    
+reporter.run(debug=True)

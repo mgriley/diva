@@ -20,7 +20,7 @@
             <p>reports</p>
             <ul>
                 {% for report in reports %}
-                    <li {% if selectedReport == report.name %} id="current-link" {% endif %}><a href="{{report.href}}">{{report.name}}</a></li>
+                    <li {% if selectedReport == report.href %} id="current-link" {% endif %}><a href="{{report.href}}">{{report.name}}</a></li>
                 {% endfor %}
             </ul>
         </div>

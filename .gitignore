@@ -1,0 +1,4 @@
+# from the python packaging guide
+*.pyc
+/dist/
+/*.egg-info
