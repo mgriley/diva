@@ -54,11 +54,8 @@ class Reporter:
                 'index.html',
                 reports=self.get_reports())
         
-    def html_for_figure(self, reportname, widget_values):
-        figure_report = self.report_generators.get(reportname, None)
-        if figure_report is None:
-            # TODO: is this correct handling?
-            raise ValueError("invalid report name")
+    def html_for_figure(self, report_name, widget_values):
+        figure_report = self.report_generators.get(report_name, None)
         figure_generator = figure_report['figure_generator']
         reportHTML = figure_generator(widget_values)
         return reportHTML
@@ -70,9 +67,17 @@ class Reporter:
         def index():
             return self.get_index()
 
-        @app.route('/update/<reportname>', methods=['POST'])
-        def update_figure(reportname):
+        @app.route('/update', methods=['POST'])
+        def update_figure():
             print(request.get_json())
-            return self.html_for_figure(reportname, request.get_json())
+            body = request.get_json()
+            report_index = body.reportIndex;
+            reportname = ''
+            if 0 <= reportIndex and reportIndex < len(report_generators):
+                dict_items = list(self.report_generators.items())
+                reportname = dict_items[report_index][0]
+            else:
+                raise ValueError('invalid index into report_generators array: {}'.format(report_index))
+            return self.html_for_figure(report_name, body.widgetValues)
 
         app.run(host, port, debug, **options)

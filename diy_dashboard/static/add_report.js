@@ -1,1 +1,1 @@
-Reports.add({});
+Reports.create();

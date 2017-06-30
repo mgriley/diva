@@ -36,4 +36,7 @@ body {
   grid-column: 2;
   overflow: auto; }
 
+.report {
+  display: none; }
+
 /*# sourceMappingURL=style.css.map */
