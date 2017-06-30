@@ -5,6 +5,9 @@
     <title>DIY Dashboard</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css')}}" >
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <!-- my scripts !-->
+    <script src="{{ url_for('static', filename='reports.js') }}"></script>
+    <script src="{{ url_for('static', filename='widgets.js') }}"></script>
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 
     <!-- for date-range picker -->
@@ -25,17 +28,19 @@
             </ul>
         </div>
         <div class="main">
-            <script src="{{ url_for('static', filename='reports.js') }}"></script>
+            <!--<script src="{{ url_for('static', filename='reports.js') }}"></script>-->
             {% for report in reports %}
             <div id="report-{{ loop.index0 }}" class="report" data-reportindex="{{ loop.index0 }}">
-                <script src="{{ url_for('static', filename='add_report.js') }}"></script>
+                <!--<script src="{{ url_for('static', filename='add_report.js') }}"></script>-->
                 <div id="figure-{{ loop.index0 }}" class="figure">
                     <p>press reload for default figure</p>
                 </div>
                 <form id="widgetform-{{ loop.index0 }}" class="widgetform">
+                    <div class="user-widgets">
                     {% for widgetHTML in report.widgetsHTML %}
                         {{ widgetHTML | safe }}
                     {% endfor %}
+                    </div>
                     <input type="reset" value="restore defaults">
                     <input type="submit" value="reload">
                 </form>   

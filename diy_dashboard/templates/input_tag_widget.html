@@ -1,2 +1,3 @@
-{{description}} <input id="{{name}}" {{ attributes | xmlattr }} ><br>
-<script data-widgetname="{{name}}" src="{{ url_for('static', filename='input_tag_widget.js') }}"></script>
+<div class="widgetcontainer" data-widget-type="InputTag">
+    {{description}} <input id="{{name}}" {{ attributes | xmlattr }} ><br>
+</div>

@@ -1,4 +1,5 @@
-{% for choice in choices %}
-<input type="radio" id="{{name}}" name="{{name}}" value="{{choice}}" {% if choice == defaultChoice %} checked {% endif %}> {{choice}}<br>
-{% endfor %}
-<script data-widgetname="{{name}}" src="{{ url_for('static', filename='radio_widget.js') }}"></script>
+<div class="widget-container" data-widget-type="SelectOne">
+    {% for choice in choices %}
+    <input type="radio" id="{{name}}" name="{{name}}" value="{{choice}}" {% if choice == defaultChoice %} checked {% endif %}> {{choice}}<br>
+    {% endfor %}
+</div>

@@ -79,10 +79,16 @@ var Reports = {};
 (function(obj) {
     obj.reportList = [];
 
+    obj.Widgets = {
+        // map from widget type to setup function
+        setupMap: {}
+    };
+
     obj.create = function() {
         var reportIndex = obj.reportList.length;
         var report = newReport(reportIndex);
         obj.reportList.push(report);
+        return report;
     };
 
     // only for calling from widget-creator inline scripts

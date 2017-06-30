@@ -20,9 +20,23 @@ function changeTab(mouseEvent, reportId) {
     $(mouseEvent.target).addClass("active-button");
 }
 
-$('#body').ready(function() {
-    console.log('clicking first tab button');
+$(document).ready(function() {
+    
+    // init all reports
+    var reportElements = $('.report');
+    for (var i = 0; i < reportElements.length; ++i) {
+        var report = Reports.create();
+        
+        // setup the report's widgets
+        var widgetElements = reportElements[i].find('.user-widgets').children();
+        for (var j = 0; j < widgetElements.length; ++j) {
+            var widgetType = widgetElements[j].data('widget-type');
+            var setupFunc = Reports.Widgets.setupMap[widgetType];
+            var widget = setupFunc(widgetElements[0]);
+            report.widgets.add(widget);
+        }
+    }
+
     // open the first report tab
     $('#button-0').click();
 });
-

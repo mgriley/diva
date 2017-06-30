@@ -1,2 +1,3 @@
-{{description}} <input id="{{name}}" {{ attributes | xmlattr }} {% if checked %} checked {% endif %}><br>
-<script data-widgetname="{{name}}" src="{{ url_for('static', filename='checkbox_widget.js') }}"></script>
+<div class="widget-container" data-widget-type="Bool">
+    {{description}} <input id="{{name}}" {{ attributes | xmlattr }} {% if checked %} checked {% endif %}><br>
+</div>
