@@ -39,4 +39,7 @@ body {
 .report {
   display: none; }
 
+.active-button {
+  background-color: #ddd; }
+
 /*# sourceMappingURL=style.css.map */

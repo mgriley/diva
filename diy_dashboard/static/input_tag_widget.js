@@ -1,4 +1,4 @@
 (function() {
-    var currentReport = getCurrentReport();
+    var currentReport = Reports.getCurrentReport();
     currentReport.widgets.add(Reports.inputTagWidget);
 })();

@@ -5,9 +5,19 @@ function changeTab(mouseEvent, reportId) {
         reportTabs[i].style.display = 'none';
     }
 
+    // deselect all tab buttons
+    var tabButtons = document.getElementsByClassName("tab-button");
+    for (var i = 0; i < tabButtons.length; ++i) {
+        var button = tabButtons[i];
+        $(button).removeClass("active-button");
+    }
+
     // display the desired tab
     var desiredTab = document.getElementById(reportId);
     desiredTab.style.display = "block";
+
+    // add the active class to the button for the desired tab
+    $(mouseEvent.target).addClass("active-button");
 }
 
 $('#body').ready(function() {
@@ -16,36 +26,3 @@ $('#body').ready(function() {
     $('#button-0').click();
 });
 
-// TODO: move this into widgets.js so that it is all in one place
-/*$('#widgetform').ready(function() {*/
-
-    //var updateReport = function() {
-        //valueMap = FigureWidgets.getValues();
-        //console.log('form values: ' + JSON.stringify(valueMap));
-        //var currentPath = window.location.pathname;
-        //var callback = function(data) {
-            //console.log(data);
-            //$('#figure').html(data);
-        //}
-        //$.ajax({
-            //url: currentPath,
-            //type: "POST",
-            //data: JSON.stringify(valueMap),
-            //contentType: "application/json",
-            //success: callback
-        //});    
-    //}
-
-    //$('#widgetform').on("submit", function(formEvent) {
-        //// prevent default action of get request
-        //formEvent.preventDefault();
-        //updateReport();
-    //});
-
-    //$('#widgetform').on("reset", function(formEvent) {
-        //console.log('resetting');
-        //formEvent.preventDefault();
-        //FigureWidgets.resetToDefaults();
-        //updateReport();
-    //});
-/*});*/

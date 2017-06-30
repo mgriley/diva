@@ -16,4 +16,8 @@ def bar():
 def baz():
     return pd.Series([p for p in range(30)])
 
+@reporter.display('report 3', [Float('ye?')])
+def yee(isYe):
+    return '<p>{}</p>'.format(isYe)
+
 reporter.run(debug=True)

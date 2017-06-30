@@ -71,13 +71,13 @@ class Reporter:
         def update_figure():
             print(request.get_json())
             body = request.get_json()
-            report_index = body.reportIndex;
-            reportname = ''
-            if 0 <= reportIndex and reportIndex < len(report_generators):
+            report_index = body['reportIndex']
+            report_name = ''
+            if 0 <= report_index and report_index < len(self.report_generators):
                 dict_items = list(self.report_generators.items())
-                reportname = dict_items[report_index][0]
+                report_name = dict_items[report_index][0]
             else:
                 raise ValueError('invalid index into report_generators array: {}'.format(report_index))
-            return self.html_for_figure(report_name, body.widgetValues)
+            return self.html_for_figure(report_name, body['widgetValues'])
 
         app.run(host, port, debug, **options)
