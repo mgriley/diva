@@ -36,7 +36,7 @@ class Float(InputTagWidget):
         self.default = default
         self.attributes = {'type': 'number', 'value': default,
                 'min': minVal, 'max': maxVal, 'step': step}
-
+        
     def parseForm(self, formData):
         try:
             return float(formData)
@@ -235,9 +235,7 @@ class Time(InputTagWidget):
 # given map of form data, return a map of inputs 
 def parse_widget_form_data(widgets, widgetFormData):
     inputs = {}
-    for keyVal in widgets:
-        name = keyVal[0]
-        widget = keyVal[1]
+    for name, widget in widgets:
         formData = widgetFormData.get(name, None)
         if formData == None:
             inputs[name] = widget.default_value();
