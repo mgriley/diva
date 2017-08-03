@@ -1,3 +1,2 @@
-{{description}} <input id="{{name}}" type="range" {{ attributes | xmlattr }}><br>
-<p>current: </p><p id="current-{{name}}">{{default}}</p>
-<script data-widgetname="{{name}}" src="{{ url_for('static', filename='slider_widget.js') }}"></script>
+{{description}} <input class="slider-input" {{ attributes | xmlattr }}><br>
+<p>current: </p><p class="slider-value">{{default}}</p>

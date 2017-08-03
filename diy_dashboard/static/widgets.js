@@ -1,36 +1,183 @@
-var FigureWidgets = {};
-(function(obj) {
-    // map from name to widget
-    obj.widgetMap = {};
+/*
+Setup functions for all widget types
+*/
 
-    obj.add = function(name, widget) {
-        obj.widgetMap[name] = widget;
-    };
+// Helpers:
 
-    obj.getValues = function() {
-        var values = {};
-        for (var name in obj.widgetMap) {
-            values[name] = obj.widgetMap[name].getCurrentValue(name);
-        }
-        return values;
-    };
+var resetToDefaultChecked = function(element) {
+    var defaultVal = element.prop('defaultChecked');
+    element.prop('checked', defaultVal);
+};
 
-    obj.resetToDefaults = function() {
-        for (var name in obj.widgetMap) {
-            obj.widgetMap[name].resetToDefault(name);
-        }
-    },
+var resetAllToDefaultChecked = function(elements) {
+    elements.each(function() {
+        resetToDefaultChecked($(this));
+    });
+}
 
-    // helper for defining widgets from HTML input forms
-    obj.inputTagWidget = {
-        resetToDefault: function(myName) {
-            var input = document.getElementById(myName);
-            input.value = input.defaultValue;
+// index into the children of a jquery obj and return the result
+// as a jquery obj
+var getChild = function(parentObj, index) {
+    return $(parentObj.children().toArray(index));
+}
+
+var setupInputTagWidget = function(widget) {
+    // the input tag is the first and only child of the widget's
+    // div parent/container
+    var input = getChild(widget, 0);
+    return {
+         resetToDefault: function() {
+            input.val(input.prop('defaultValue'));
         },
-        getCurrentValue: function(myName) {
-            var input = document.getElementById(myName);
-            return input.value;
+        getCurrentValue: function() {
+            return input.val();
+        }   
+    };
+};
+
+// Setup functions for the built-in widgets:
+// Note: the key value in the setup map must match the name of the 
+// widget class exactly
+
+// setup all types that use input tags
+var inputTagTypes = ['String', 'Float', 'Int', 'Color', 'Date', 'Time']
+for (var i = 0; i < inputTagTypes.length; ++i) {
+    widgetType = inputTagTypes[i]
+    Reports.Widgets.setupMap[widgetType] = function(widget) {
+        return setupInputTagWidget(widget);
+    };
+}
+
+Reports.Widgets.setupMap['Bool'] = function(widget) {
+    return {
+        getCurrentValue: function() {
+            return getChild(widget, 0).is(':checked');
+        },
+        resetToDefault: function() {
+            var input = getChild(widget, 0);
+            resetToDefaultChecked(input);
         }
     };
-})(FigureWidgets);
+};
+
+Reports.Widgets.setupMap['SelectOne'] = function(widget) {
+    return {
+        getCurrentValue: function() {
+            return widget.children().filter('input:checked').val();
+        },
+        resetToDefault: function() {
+            var buttons = widget.children();
+            resetAllToDefaultChecked(buttons);
+        }
+    }
+};
+
+Reports.Widgets.setupMap['SelectSubset'] = function(widget) {
+    return {
+        getCurrentValue: function() {
+            // get a list of the values of each checked input tag
+            var checkedElems = widget.children().filter(':checked');
+            var selectedValues = checkedElems.map(function() {
+                return $(this).val();
+            }).get();
+            return selectedValues;
+        },
+        resetToDefault: function() {
+            var buttons = widget.children();
+            resetAllToDefaultChecked(buttons);
+        }
+    }
+};
+
+Reports.Widgets.setupMap['Slider'] = function(widget) {
+    var inputElement = widget.children().filter('.slider-input');
+    var textElement = widget.children().filter('.slider-value');
+    // the text element should always display the slider's 
+    // current value
+    inputElement.on('input', function(changeEvent) {
+        console.log('changing the slider value')
+        var currentVal = inputElement.val();
+        textElement.text(currentVal);
+    });
+    return {
+        resetToDefault: function() {
+            inputElement.val(inputElement.prop('defaultValue'));
+            // force the text to update
+            inputElement.trigger('input');
+        },
+        getCurrentValue: function() {
+            return inputElement.val();
+        }
+    };
+};
+
+Reports.Widgets.setupMap['DateRange'] = function(widget) {
+    // attach date-range picker to the input tag
+    var inputTag = getChild(widget, 0);
+    pickerOptions = {
+        "showDropdowns": true,
+        "ranges": {
+            'Today': [moment(), moment()],
+           'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+           'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+           'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+           'This Month': [moment().startOf('month'), moment().endOf('month')],
+           'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+        },
+        "locale": {
+            "format": "YYYY-MM-DD",
+            "separator": " to ",
+            "applyLabel": "Apply",
+            "cancelLabel": "Cancel",
+            "fromLabel": "From",
+            "toLabel": "To",
+            "customRangeLabel": "Custom",
+            "weekLabel": "W",
+            "daysOfWeek": [
+                "Su",
+                "Mo",
+                "Tu",
+                "We",
+                "Th",
+                "Fr",
+                "Sa"
+            ],
+            "monthNames": [
+                "January",
+                "February",
+                "March",
+                "April",
+                "May",
+                "June",
+                "July",
+                "August",
+                "September",
+                "October",
+                "November",
+                "December"
+            ],
+            "firstDay": 1
+        },
+        "linkedCalendars": false,
+        "alwaysShowCalendars": true,
+        "startDate": inputTag.data('startdate'),
+        "endDate": inputTag.data('enddate'),
+        "drops": "down"
+    };
+    // min and max date not implemented into the data-range widget yet
+    // It doesn't seem useful
+    /*
+    if (inputTag.dataset.mindate) {
+        pickerOptions.minDate = inputTag.dataset.mindate; 
+    }
+    if (inputTag.dataset.maxdate) {
+        pickerOptions.maxDate = inputTag.dataset.maxdate;
+    }
+    */
+    inputTag.daterangepicker(pickerOptions, function(start, end, label) {
+        return start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD');
+    });
+    return setupInputTagWidget(widget);
+};
+
 

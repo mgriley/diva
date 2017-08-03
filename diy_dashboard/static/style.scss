@@ -48,4 +48,12 @@ body {
     overflow: auto;
 }
 
+// tabs are hidden, then shown when selected from the sidebar
+.report {
+    display: none;
+}
 
+// highlight the tab button for the active tab
+.active-button {
+    background-color: #ddd;
+}

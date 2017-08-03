@@ -36,4 +36,10 @@ body {
   grid-column: 2;
   overflow: auto; }
 
+.report {
+  display: none; }
+
+.active-button {
+  background-color: #ddd; }
+
 /*# sourceMappingURL=style.css.map */

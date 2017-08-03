@@ -1,4 +1,3 @@
 {% for choice in choices %}
 <input type="checkbox" id="{{name}}" name="{{name}}" value="{{choice}}" {% if choice in default %} checked {% endif %}> {{choice}}<br>
 {% endfor %}
-<script data-widgetname="{{name}}" src="{{ url_for('static', filename='checklist_widget.js') }}"></script>
