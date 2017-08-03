@@ -44,7 +44,10 @@
                         </div>
                         {% endfor %}
                     </div>
+                    <!-- if there are user-defined widgets, provide a button to reset to their default values --!>
+                    {% if report.widgets %}
                     <input type="reset" value="restore defaults">
+                    {% endif %}
                     <input type="submit" value="reload">
                 </form>   
             </div>

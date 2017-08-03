@@ -63,6 +63,7 @@ function newReport(reportIndex) {
             obj.update();
         });
 
+        // NA if no user-defined widgets
         $(widgetFormId).on("reset", function(formEvent) {
             console.log('resetting');
             formEvent.preventDefault();
