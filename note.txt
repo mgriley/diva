@@ -12,3 +12,6 @@ then: sass --watch stylesheet_dir
 Requirements:
 pip freeze > requirements.txt
 pip install -r requirements.txt
+
+To run the examples:
+python3 tester.py

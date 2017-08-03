@@ -4,22 +4,21 @@ function newFigureWidgets() {
     // map from name to widget
     obj.widgetMap = {};
 
-    obj.add = function(widget) {
-        var name = document.currentScript.dataset.widgetname;
+    obj.add = function(name, widget) {
         obj.widgetMap[name] = widget;
     };
 
     obj.getValues = function() {
         var values = {};
         for (var name in obj.widgetMap) {
-            values[name] = obj.widgetMap[name].getCurrentValue(name);
+            values[name] = obj.widgetMap[name].getCurrentValue();
         }
         return values;
     };
 
     obj.resetToDefaults = function() {
         for (var name in obj.widgetMap) {
-            obj.widgetMap[name].resetToDefault(name);
+            obj.widgetMap[name].resetToDefault();
         }
     };
 
@@ -92,22 +91,11 @@ var Reports = {};
     };
 
     // only for calling from widget-creator inline scripts
+    // (be careful with use of document.currentScript)
     obj.getCurrentReport = function() {
         var currentScript = document.currentScript;
         var reportDiv = currentScript.closest('.report');
         var reportIndex = Number(reportDiv.dataset.reportindex);
         return obj.reportList[reportIndex];
-    };
-
-    // helper for defining widgets from HTML input forms
-    obj.inputTagWidget = {
-        resetToDefault: function(myName) {
-            var input = document.getElementById(myName);
-            input.value = input.defaultValue;
-        },
-        getCurrentValue: function(myName) {
-            var input = document.getElementById(myName);
-            return input.value;
-        }
     };
 })(Reports);

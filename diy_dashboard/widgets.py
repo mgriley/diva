@@ -24,11 +24,10 @@ class InputTagWidget(Widget):
                 name=widgetId, attributes=self.attributes)
 
 class String(InputTagWidget):
-    def __init__(self, description, default="", placeholder=None):
+    def __init__(self, description, default=""):
         self.description = description
         self.default = default
-        self.attributes = {'type': 'text', 'value': default,
-                'placeholder': placeholder}
+        self.attributes = {'type': 'text', 'value': default}
 
 class Float(InputTagWidget):
     def __init__(self, description, default=0, minVal=None, maxVal=None,
@@ -46,7 +45,7 @@ class Float(InputTagWidget):
 
 class Int(Float):
     def __init__(self, description, default=0, minVal=None, maxVal=None):
-        super(Int, self).__init__(description, default, minVal, maxVal, step=1)
+        super().__init__(description, default, minVal, maxVal, step=1)
 
     def parseForm(self, formData):
         try:
@@ -130,6 +129,9 @@ def iso_to_date(isoStr):
     dt = datetime.strptime(isoStr, '%Y-%m-%d')
     return dt.date()
 
+# the date can either by specified as absolute or relative 
+# to the current date
+
 class DateModel():
     def value(self):
         pass
@@ -155,14 +157,19 @@ class RelativeDate(DateModel):
 def to_date_model(date):
     raise ValueError("given date must be: a) ISO format string, b) datetime.date object, c) datetime.timedelta object, or d) dateutil.relativedelta object")
 
+# date obj converts to absolute date
 @to_date_model.register(date)
 def date_to_model(date):
     return AbsoluteDate(date)
 
+# string is assumed to be an absolute date in ISO format
 @to_date_model.register(str)
 def iso_to_model(date_str):
     return AbsoluteDate(iso_to_date(date_str))
 
+# delta objects convert to dates relative to the current date
+# A positive delta is an offset into the past, not the future
+# ex. a delta of 1 day means yesterday, not tomorrow
 @to_date_model.register(timedelta)
 @to_date_model.register(relativedelta)
 def delta_to_model(date_delta):

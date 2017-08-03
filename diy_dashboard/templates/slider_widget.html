@@ -1,4 +1,2 @@
-<div class="widget-container" data-widget-type="Slider">
-    {{description}} <input id="{{name}}" type="range" {{ attributes | xmlattr }}><br>
-    <p>current: </p><p id="current-{{name}}">{{default}}</p>
-</div>
+{{description}} <input class="slider-input" {{ attributes | xmlattr }}><br>
+<p>current: </p><p class="slider-value">{{default}}</p>

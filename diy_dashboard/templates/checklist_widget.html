@@ -1,5 +1,3 @@
-<div class="widget-container" data-widget-type="SelectSubset">
-    {% for choice in choices %}
-    <input type="checkbox" id="{{name}}" name="{{name}}" value="{{choice}}" {% if choice in default %} checked {% endif %}> {{choice}}<br>
-    {% endfor %}
-</div>
+{% for choice in choices %}
+<input type="checkbox" id="{{name}}" name="{{name}}" value="{{choice}}" {% if choice in default %} checked {% endif %}> {{choice}}<br>
+{% endfor %}

@@ -2,74 +2,118 @@
 Setup functions for all widget types
 */
 
-Reports.Widgets.setupMap['InputTag'] = function() {
-    return Reports.inputTagWidget;
+// Helpers:
+
+var resetToDefaultChecked = function(element) {
+    var defaultVal = element.prop('defaultChecked');
+    element.prop('checked', defaultVal);
 };
 
-Reports.Widgets.setupMap['Bool'] = function() {
+var resetAllToDefaultChecked = function(elements) {
+    elements.each(function() {
+        resetToDefaultChecked($(this));
+    });
+}
+
+// index into the children of a jquery obj and return the result
+// as a jquery obj
+var getChild = function(parentObj, index) {
+    return $(parentObj.children().toArray(index));
+}
+
+var setupInputTagWidget = function(widget) {
+    // the input tag is the first and only child of the widget's
+    // div parent/container
+    var input = getChild(widget, 0);
     return {
-        getCurrentValue: function(name) {
-            return $('#' + name).is(':checked');
+         resetToDefault: function() {
+            input.val(input.prop('defaultValue'));
         },
-        resetToDefault: function(name) {
-            var input = document.getElementById(name);
-            input.checked = input.defaultChecked;
+        getCurrentValue: function() {
+            return input.val();
+        }   
+    };
+};
+
+// Setup functions for the built-in widgets:
+// Note: the key value in the setup map must match the name of the 
+// widget class exactly
+
+// setup all types that use input tags
+var inputTagTypes = ['String', 'Float', 'Int', 'Color', 'Date', 'Time']
+for (var i = 0; i < inputTagTypes.length; ++i) {
+    widgetType = inputTagTypes[i]
+    Reports.Widgets.setupMap[widgetType] = function(widget) {
+        return setupInputTagWidget(widget);
+    };
+}
+
+Reports.Widgets.setupMap['Bool'] = function(widget) {
+    return {
+        getCurrentValue: function() {
+            return getChild(widget, 0).is(':checked');
+        },
+        resetToDefault: function() {
+            var input = getChild(widget, 0);
+            resetToDefaultChecked(input);
         }
     };
 };
 
-Reports.Widgets.setupMap['SelectOne'] = function() {
-    return 
-    {
-        getCurrentValue: function(name) {
-            return document.querySelector('input[name=' + name + ']:checked').value;
+Reports.Widgets.setupMap['SelectOne'] = function(widget) {
+    return {
+        getCurrentValue: function() {
+            return widget.children().filter('input:checked').val();
         },
-        resetToDefault: function(name) {
-            var buttons = document.getElementsByName(name);
-            for (var i = 0; i < buttons.length; ++i) {
-                var b = buttons[i]
-                b.checked = b.defaultChecked;
-            }
+        resetToDefault: function() {
+            var buttons = widget.children();
+            resetAllToDefaultChecked(buttons);
         }
     }
 };
 
-Reports.Widgets.setupMap['SelectSubset'] = function() {
-    return 
-    {
-        getCurrentValue: function(name) {
-            var elems = document.querySelectorAll('input[name=' + name + ']:checked');
-            var selectedValues = [];
-            for (var i = 0; i < elems.length; ++i) {
-                selectedValues.push(elems[i].value);
-            }
+Reports.Widgets.setupMap['SelectSubset'] = function(widget) {
+    return {
+        getCurrentValue: function() {
+            // get a list of the values of each checked input tag
+            var checkedElems = widget.children().filter(':checked');
+            var selectedValues = checkedElems.map(function() {
+                return $(this).val();
+            }).get();
             return selectedValues;
         },
-        resetToDefault: function(name) {
-            var buttons = document.getElementsByName(name);
-            for (var i = 0; i < buttons.length; ++i) {
-                var b = buttons[i]
-                b.checked = b.defaultChecked;
-            }
+        resetToDefault: function() {
+            var buttons = widget.children();
+            resetAllToDefaultChecked(buttons);
         }
     }
 };
 
-Reports.Widgets.setupMap['Slider'] = function(widgetElement) {
-    var children = widgetElement.children();
-    var inputElement = children[0];
-    var textElement = children[1];
+Reports.Widgets.setupMap['Slider'] = function(widget) {
+    var inputElement = widget.children().filter('.slider-input');
+    var textElement = widget.children().filter('.slider-value');
+    // the text element should always display the slider's 
+    // current value
     inputElement.on('input', function(changeEvent) {
         console.log('changing the slider value')
         var currentVal = inputElement.val();
         textElement.text(currentVal);
     });
-    return Reports.inputTagWidget;
+    return {
+        resetToDefault: function() {
+            inputElement.val(inputElement.prop('defaultValue'));
+            // force the text to update
+            inputElement.trigger('input');
+        },
+        getCurrentValue: function() {
+            return inputElement.val();
+        }
+    };
 };
 
-Reports.Widgets.setupMap['DateRange'] = function(widgetElement) {
+Reports.Widgets.setupMap['DateRange'] = function(widget) {
     // attach date-range picker to the input tag
-    var inputTag = widgetElement.children()[0]
+    var inputTag = getChild(widget, 0);
     pickerOptions = {
         "showDropdowns": true,
         "ranges": {
@@ -116,8 +160,8 @@ Reports.Widgets.setupMap['DateRange'] = function(widgetElement) {
         },
         "linkedCalendars": false,
         "alwaysShowCalendars": true,
-        "startDate": inputTag.data(startdate),
-        "endDate": inputTag.data(enddate),
+        "startDate": inputTag.data('startdate'),
+        "endDate": inputTag.data('enddate'),
         "drops": "down"
     };
     // min and max date not implemented into the data-range widget yet
@@ -133,7 +177,7 @@ Reports.Widgets.setupMap['DateRange'] = function(widgetElement) {
     inputTag.daterangepicker(pickerOptions, function(start, end, label) {
         return start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD');
     });
-    return Reports.inputTagWidget;
+    return setupInputTagWidget(widget);
 };
 
 

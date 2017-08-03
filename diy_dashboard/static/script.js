@@ -25,19 +25,23 @@ $(document).ready(function() {
     console.log('setting up reports');
     // init all reports
     var reportElements = $('.report');
-    for (var i = 0; i < reportElements.length; ++i) {
-        var reportElement = reportElements[i];
+    reportElements.each(function() {
+        var reportElement = $(this);
         var report = Reports.create();
         
-        // setup the report's widgets
+        // setup the report's user-defined widgets
         var widgetElements = $(reportElement).find('.user-widgets').children();
-        for (var j = 0; j < widgetElements.length; ++j) {
-            var widgetType = $(widgetElements[j]).data('widget-type');
+        widgetElements.each(function() {
+            // extract name and type from the widget's outer div
+            var element = $(this);
+            var widgetType = element.data('widget-type');
+            var widgetName = element.attr('name');
+            // setup a widget of the requested type, and add to report
             var setupFunc = Reports.Widgets.setupMap[widgetType];
-            var widget = setupFunc(widgetElements[0]);
-            report.widgets.add(widget);
-        }
-    }
+            var widget = setupFunc(element);
+            report.widgets.add(widgetName, widget);
+        });
+    });
 
     // open the first report tab
     $('#button-0').click();

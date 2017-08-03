@@ -36,10 +36,13 @@
                     <p>press reload for default figure</p>
                 </div>
                 <form id="widgetform-{{ loop.index0 }}" class="widgetform">
+                    <!-- all user-defined widgets --!>
                     <div class="user-widgets">
-                    {% for widgetHTML in report.widgetsHTML %}
-                        {{ widgetHTML | safe }}
-                    {% endfor %}
+                        {% for widget in report.widgets %}
+                        <div class="widgetcontainer" name="{{widget.name}}" data-widget-type="{{widget.type}}">
+                            {{ widget.html | safe }}
+                        </div>
+                        {% endfor %}
                     </div>
                     <input type="reset" value="restore defaults">
                     <input type="submit" value="reload">
