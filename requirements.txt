@@ -44,9 +44,10 @@ pyzmq==16.0.2
 qtconsole==4.3.0
 requests==2.18.1
 requests-toolbelt==0.8.0
--e git+https://github.com/mgriley/diy_dashboard@65a1816fbbf72631e75c4569802bfce3ecf1abef#egg=sample_name
+-e git+https://github.com/mgriley/diy_dashboard@5537f8a11870033d52258da15661e4981aa4bf32#egg=sample_name
 simplegeneric==0.8.1
 six==1.10.0
+strict-rfc3339==0.7
 terminado==0.6
 testpath==0.3
 tornado==4.5.1

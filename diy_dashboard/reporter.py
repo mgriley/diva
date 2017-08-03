@@ -6,26 +6,6 @@ from .converters import convert_to_html
 from .widgets import parse_widget_form_data
 from flask import Flask, render_template, request, abort
 
-# also TODO: there is no need for this crazy amount of closure,
-# why not just keep references to the figure and widgets, then
-# call these functions in the reporter class, thereby 
-# simplifying everything...
-# TODO: left off here. Figure out how to do validation.
-# Do the validation in parseForm, that is the easiest!
-# generate a json schema for the request object required to
-# update this report
-# def widgets_validator():
-        
-# widget_names = [w[0] for w in widgets]
-# properties = {}
-# for name, widget in widgets:
-    # properties[name] = {}
-# widgets_schema = {
-    # 'properties': properties
-    # 'required': widget_names,
-    # 'additionalProperties': False
-# }
-
 class Reporter:
     def __init__(self):
         self.reports = OrderedDict()
@@ -38,8 +18,13 @@ class Reporter:
             for index, widget in enumerate(widgets):
                 widgets[index] = (argNames[index], widget)
 
+            
+
             # save a ref to the user's func and widgets
-            self.reports[name] = {'user_func': user_func, 'widgets': widgets}
+            self.reports[name] = {
+                'user_func': user_func,
+                'widgets': widgets
+            }
 
             # the func is not modified
             return user_func
@@ -75,14 +60,7 @@ class Reporter:
                 'index.html',
                 reports=report_data)
             
-    def validate_request(self, json, base_schema):
-        validate(json, base_schema)
-        report_index = json['reportIndex']
-        # TODO
-        # widgets_schema = self.report_generators['widgets_schema']
-        # validate(json['widgetValues'], widgets_schema)
-
-    def create_schema(self):
+    def validate_request(self, json):
         base_schema = {
             'type': 'object',
             'properties': {
@@ -99,10 +77,26 @@ class Reporter:
             'required': ['reportIndex', 'widgetValues'],
             'additionalProperties': False
         }
-        return base_schema
+        validate(json, base_schema)
+        report_index = json['reportIndex']
+
+        # the widgetValues object must have a value for every widget
+        widget_names = [w[0] for w in widgets]
+        properties = {}
+        for name, widget in widgets:
+            properties[name] = {}
+        widgets_schema = {
+            'properties': properties
+            'required': widget_names,
+            'additionalProperties': False
+        }
+
+        # TODO: left off here. Don't any of the above code, just check
+        # for existence here
+        # verify the contents of the widgetValues object
+        # loop through all widgets, called validate_input
 
     def run(self, host=None, port=None, debug=None, **options):
-        # schema = self.create_schema()
 
         # setup the server
         app = Flask(__name__)
@@ -115,7 +109,7 @@ class Reporter:
         def update_figure():
             print(request.get_json())
             body = request.get_json()
-            # self.validate_request(body, schema)
+            self.validate_request(body)
             report_index = body['reportIndex']
             dict_items = list(self.reports.items())
             report_name = dict_items[report_index][0]

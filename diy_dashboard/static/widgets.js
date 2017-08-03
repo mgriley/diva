@@ -177,7 +177,14 @@ Reports.Widgets.setupMap['DateRange'] = function(widget) {
     inputTag.daterangepicker(pickerOptions, function(start, end, label) {
         return start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD');
     });
-    return setupInputTagWidget(widget);
+    return {
+         resetToDefault: function() {
+            inputTag.val(input.prop('defaultValue'));
+        },
+        getCurrentValue: function() {
+            return inputTag.val().split(' to ');
+        }   
+    };
 };
 
 

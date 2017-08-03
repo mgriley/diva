@@ -2,6 +2,7 @@ from flask import render_template
 from datetime import date, time, datetime, timedelta
 from dateutil.relativedelta import *
 from functools import singledispatch
+from jsonschema import validate
 
 class Input():
     def generateHTML(self, widgetId):
@@ -29,29 +30,46 @@ class String(InputTagWidget):
         self.default = default
         self.attributes = {'type': 'text', 'value': default}
 
+    def validate_input(self, formData):
+        schema = {'type': 'string'}
+        validate(formData, schema)
+
+# a helper for validation of numberical types
+def set_schema_bounds(schema, min_val, max_val):
+    if minVal is not None:
+        schema['minimum'] = min_val
+    if maxVal is not None:
+        schema['maximum'] = max_val
+
 class Float(InputTagWidget):
     def __init__(self, description, default=0, minVal=None, maxVal=None,
             step=0.001):
         self.description = description
         self.default = default
+        self.minVal = minVal
+        self.maxVal = maxVal
         self.attributes = {'type': 'number', 'value': default,
                 'min': minVal, 'max': maxVal, 'step': step}
+
+    def validate_input(self, formData):
+        schema = {'type': 'number'}
+        set_schema_bounds(schema, self.minVal, self.maxVal)
+        validate(formData, schema)
         
     def parseForm(self, formData):
-        try:
-            return float(formData)
-        except ValueError:
-            return self.default
+        return float(formData)
 
 class Int(Float):
     def __init__(self, description, default=0, minVal=None, maxVal=None):
         super().__init__(description, default, minVal, maxVal, step=1)
 
+    def validate_input(self, formData):
+        schema = {'type': 'integer'}
+        set_schema_bounds(schema, self.minVal, self.maxVal)
+        validate(formData, schema)
+
     def parseForm(self, formData):
-        try:
-            return int(formData)
-        except ValueError:
-            return self.default
+        return int(formData)
 
 class Bool(Widget):
     def __init__(self, description, default=False):
@@ -65,11 +83,12 @@ class Bool(Widget):
                 name=widgetId, attributes=self.attributes,
                 checked=self.default)
 
+    def validate_input(self, formData):
+        schema = {'type': 'boolean'}
+        set_schema_bounds(formData, schema)
+
     def parseForm(self, formData):
-        try:
-            return bool(formData)
-        except ValueError:
-            return self.default
+        return bool(formData)
 
 class SelectOne(Widget):
     # default is index into the choices array
@@ -85,6 +104,13 @@ class SelectOne(Widget):
                 name=widgetId, choices=self.choices,
                 defaultChoice=self.default)
 
+    def validate_input(self, formData):
+        schema = {
+            'type': 'string',
+            'enum': self.choices
+        }
+        validate(formData, schema)
+
 class SelectSubset(Widget):
     def __init__(self, choices, default=[]):
         self.choices = choices
@@ -95,13 +121,47 @@ class SelectSubset(Widget):
                 name=widgetId, choices=self.choices,
                 default=self.default)
 
-# TODO: input and output are both in hexidecimal. user should be 
-# responsible for the conversion
+    def validate_input(self, formData):
+        schema = {
+            'type': 'array',
+            'uniqueItems': True,
+            'additionalItems': False,
+            'items': {
+                'type': 'string',
+                'enum': self.choices
+            }
+        }
+        validate(formData, schema)
+
+# TODO: keep in hexadecimal for now
+# can later use the more effective:
+# return as RGB triple (r, g, b) with values in [0, 1]
 class Color(InputTagWidget):
     def __init__(self, description, default='#000000'):
         self.description=description
         self.default = default
         self.attributes = {'type': 'color', 'value': default}
+
+    def validate_input(self, formData):
+        schema = {
+            'type': 'string',
+            'pattern': '^#([A-Fa-f0-9]{6})$'
+        }
+        validate(formData, schema)
+
+    # TODO: this is for rgb triple
+    # def validate_input(self, formData):
+        # schema = {
+            # 'type': 'array',
+            # 'items': {
+                # 'type': 'number',
+                # 'minimum': 0,
+                # 'maximum': 1
+            # },
+            # 'minLength': 3,
+            # 'maxLength': 3
+        # }
+        # validate(formData, schema)
 
 class Slider(Widget):
     def __init__(self, description, default=1, valRange=(0, 1), numDecimals=4):
@@ -119,6 +179,12 @@ class Slider(Widget):
                 description=self.description,
                 default=('{:.{}f}').format(self.default, self.numDecimals),
                 attributes=self.attributes)
+
+    def validate_input(self, formData):
+        schema = {'type': 'number'}
+        min_val, max_val = self.valRange
+        set_schema_bounds(schema, min_val, max_val) 
+        validate(formData, schema)
 
     def parseForm(self, formData):
         return Float.parseForm(self, formData)
@@ -199,9 +265,21 @@ class DateRange(Widget):
     def default_value(self):
         return (self.start_date.value(), self.end_date.value())
     
-    # TODO: use schema to verify that formData is 2-elem array
+    def validate_input(self, formData):
+        schema = {
+            'type': 'array',
+            'minLength': 2,
+            'maxLength': 2,
+            'items': {
+                'type': 'string',
+            }
+        }
+        validate(formData, schema)
+        # strptime throws a value error if does not match the format
+        for dateStr in formData:
+            iso_to_date(dateStr)
+
     def parseForm(self, formData):
-        formData = formData.split(' to ')
         start = iso_to_date(formData[0])
         end = iso_to_date(formData[1])
         return (start, end)
@@ -214,6 +292,12 @@ class Date(InputTagWidget):
 
     def default_value(self):
         return self.default.value()
+    
+    def validate_input(self, formData):
+        schema = {'type': 'string'}
+        validate(formData, schema)
+        # throws ValueError if incorrect format
+        iso_to_date(formData)
 
     def parseForm(self, formData):
         return iso_to_date(formData)
@@ -226,10 +310,14 @@ class Time(InputTagWidget):
         time_str = self.default.strftime('%H:%M')
         self.attributes = {'type': 'time', 'value': time_str}
 
+    def validate_input(self, formData):
+        schema = {'type': 'string'}
+        validate(formData, schema)
+        # throws ValueError on invalid format
+        datetime.strptime(formData, '%H:%M')
+
     def parseForm(self, formData):
-        print(formData)
         dt = datetime.strptime(formData, '%H:%M')
-        print(dt)
         return dt.time()
 
 # given map of form data, return a map of inputs 

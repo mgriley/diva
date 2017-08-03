@@ -1,3 +1,0 @@
-Finish transition to tab-view
-Input validation
-
