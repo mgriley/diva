@@ -36,10 +36,16 @@ class String(InputTagWidget):
 
 # a helper for validation of numberical types
 def set_schema_bounds(schema, min_val, max_val):
-    if minVal is not None:
+    if min_val is not None:
         schema['minimum'] = min_val
-    if maxVal is not None:
+    if max_val is not None:
         schema['maximum'] = max_val
+
+def validate_bounds(num, min_val, max_val):
+    below_min = min_val is not None and num < min_val
+    above_max = max_val is not None and max_val < num
+    if below_min or above_max:
+        raise ValueError("num is outside bounds")
 
 class Float(InputTagWidget):
     def __init__(self, description, default=0, minVal=None, maxVal=None,
@@ -52,9 +58,8 @@ class Float(InputTagWidget):
                 'min': minVal, 'max': maxVal, 'step': step}
 
     def validate_input(self, formData):
-        schema = {'type': 'number'}
-        set_schema_bounds(schema, self.minVal, self.maxVal)
-        validate(formData, schema)
+        num = float(formData)
+        validate_bounds(num, self.minVal, self.maxVal)
         
     def parseForm(self, formData):
         return float(formData)
@@ -64,9 +69,8 @@ class Int(Float):
         super().__init__(description, default, minVal, maxVal, step=1)
 
     def validate_input(self, formData):
-        schema = {'type': 'integer'}
-        set_schema_bounds(schema, self.minVal, self.maxVal)
-        validate(formData, schema)
+        num = int(formData)
+        validate_bounds(num, self.minVal, self.maxVal)
 
     def parseForm(self, formData):
         return int(formData)
@@ -85,7 +89,7 @@ class Bool(Widget):
 
     def validate_input(self, formData):
         schema = {'type': 'boolean'}
-        set_schema_bounds(formData, schema)
+        validate(formData, schema)
 
     def parseForm(self, formData):
         return bool(formData)
@@ -181,10 +185,9 @@ class Slider(Widget):
                 attributes=self.attributes)
 
     def validate_input(self, formData):
-        schema = {'type': 'number'}
+        num = float(formData)
         min_val, max_val = self.valRange
-        set_schema_bounds(schema, min_val, max_val) 
-        validate(formData, schema)
+        validate_bounds(num, min_val, max_val)
 
     def parseForm(self, formData):
         return Float.parseForm(self, formData)

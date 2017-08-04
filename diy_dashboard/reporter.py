@@ -8,7 +8,7 @@ from flask import Flask, render_template, request, abort
 
 class Reporter:
     def __init__(self):
-        self.reports = OrderedDict()
+        self.reports = []
     
     def display(self, name, widgets=[]):
         def real_decorator(user_func):
@@ -18,13 +18,12 @@ class Reporter:
             for index, widget in enumerate(widgets):
                 widgets[index] = (argNames[index], widget)
 
-            
-
             # save a ref to the user's func and widgets
-            self.reports[name] = {
+            self.reports.append({
+                'name': name,
                 'user_func': user_func,
                 'widgets': widgets
-            }
+            })
 
             # the func is not modified
             return user_func
@@ -53,9 +52,9 @@ class Reporter:
             
     def get_index(self):
         report_data = []
-        for name, report in self.reports.items():
+        for report in self.reports:
             widgets = self.generate_widget_data(report)
-            report_data.append({'name': name, 'widgets': widgets})
+            report_data.append({'name': report['name'], 'widgets': widgets})
         return render_template(
                 'index.html',
                 reports=report_data)
@@ -67,7 +66,7 @@ class Reporter:
                 'reportIndex': {
                     'type': 'integer',
                     'minimum': 0,
-                    'maximum': len(self.report_generators) - 1
+                    'maximum': len(self.reports) - 1
                 },
                 # validated differently by report
                 'widgetValues': {
@@ -75,26 +74,19 @@ class Reporter:
                 }
             },
             'required': ['reportIndex', 'widgetValues'],
-            'additionalProperties': False
         }
         validate(json, base_schema)
         report_index = json['reportIndex']
 
-        # the widgetValues object must have a value for every widget
-        widget_names = [w[0] for w in widgets]
-        properties = {}
-        for name, widget in widgets:
-            properties[name] = {}
-        widgets_schema = {
-            'properties': properties
-            'required': widget_names,
-            'additionalProperties': False
-        }
-
-        # TODO: left off here. Don't any of the above code, just check
-        # for existence here
-        # verify the contents of the widgetValues object
-        # loop through all widgets, called validate_input
+        # validate all of the given widget values in 'widgetValues'
+        inputs = json['widgetValues']
+        report = self.reports[report_index]
+        for name, widget in report['widgets']:
+            value = inputs.get(name, None)
+            if value is None:
+                raise ValueError('widgetValues contains no value for the widget {}'.format(name))
+            else:
+                widget.validate_input(value)    
 
     def run(self, host=None, port=None, debug=None, **options):
 
@@ -111,9 +103,7 @@ class Reporter:
             body = request.get_json()
             self.validate_request(body)
             report_index = body['reportIndex']
-            dict_items = list(self.reports.items())
-            report_name = dict_items[report_index][0]
-            report = self.reports.get(report_name, None)
+            report = self.reports[report_index]
             return self.generate_figure_html(report, body['widgetValues'])
 
         app.run(host, port, debug, **options)
