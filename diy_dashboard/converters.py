@@ -1,16 +1,23 @@
 from functools import singledispatch
+# use matplotlib with the Agg backend to avoid opening an app
+# to view the matplotlib figures
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt, mpld3
 import numpy as np
 import pandas as pd
+from bokeh.plotting.figure import Figure
+from bokeh.resources import CDN
+from bokeh.embed import components
+
+# Keep in mind:
+# Inserting a script tag into the DOM using innerHTML does not
+# execute any script tags in the transplanted HTML.
 
 @singledispatch
 def convert_to_html(val):
-    # TODO: improve this error msg by listing valid types, and explaining how to register your
-    # own converter
-    print(type(val))
-    return '<p>Could not convert value of type < {} > to HTML</p><p>{}</p>'.format(type(val).__name__, val)
+    # default is to just display the value as a string
+    return '<p>{}</p>'.format(str(val))
 
 # assume a raw string is valid HTML
 @convert_to_html.register(str)
@@ -31,4 +38,11 @@ def dataframe_to_html(df):
 @convert_to_html.register(pd.Series)
 def series_to_html(series):
     return dataframe_to_html(series.to_frame())
+
+# see: http://bokeh.pydata.org/en/latest/docs/user_guide/embed.html
+@convert_to_html.register(Figure)
+def bokeh_figure_to_html(figure):
+    # NB: cannot just use file_html due to the issue mentioned above
+    script, div = components(figure)
+    return '{}{}'.format(div, script)
 

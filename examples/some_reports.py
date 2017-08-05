@@ -9,6 +9,7 @@ import pandas as pd
 from datetime import *
 from diy_dashboard.reporter import Reporter
 from diy_dashboard.widgets import *
+from bokeh.plotting import figure
 
 reporter = Reporter()
 
@@ -79,6 +80,14 @@ def figure_c():
 def figure_d():
     s = pd.Series([p for p in range(100)])
     return s
+
+@reporter.display('bokeh figure')
+def figure_e():
+    x = [1, 2, 3, 4, 5]
+    y = [6, 7, 2, 4, 5]
+    plot = figure(title="bokeh example", x_axis_label='x', y_axis_label='y')
+    plot.line(x, y, legend="Temp", line_width=2)
+    return plot
 
 # for i in range(100):
     # name = 'foo{}'.format(i)
