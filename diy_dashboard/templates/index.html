@@ -1,17 +1,29 @@
 <!DOCTYPE html>
-<html lang="en">
+<html class="no-js" lang="">
 <head>
-    <meta charset="UTF-8">
-    <title>DIY Dashboard</title>
+    <!-- from HTML5 Boilerplate !-->
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>dashlet</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='normalize.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+    <script src="{{ url_for('static', filename='vendor/modernizr-2.8.3.min.js') }}"></script>
+
+    <!-- project-specific setup !-->
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css')}}" >
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-    <!-- my scripts !-->
+    <!-- my scripts (NB: must occur in this order) !-->
     <script src="{{ url_for('static', filename='reports.js') }}"></script>
     <script src="{{ url_for('static', filename='widgets.js') }}"></script>
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 
     <!-- for date-range picker -->
-    <!--<script type="text/javascript" src="//cdn.jsdelivr.net/jquery/1/jquery.min.js"></script>-->
     <script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
     <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap/3/css/bootstrap.css" />
     <script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
@@ -34,7 +46,11 @@
             <p>reports</p>
             <ul>
                 {% for report in reports %}
-                <button id="button-{{ loop.index0 }}" class="tab-button" onclick="changeTab(event, 'report-{{ loop.index0 }}')">{{ report.name }}</button><br>
+                <button 
+                    id="button-{{ loop.index0 }}" 
+                    class="tab-button"
+                    onclick="changeTab(event, 'report-{{ loop.index0 }}')"
+                >{{ report.name }}</button><br>
                 {% endfor %}
             </ul>
         </div>
@@ -42,9 +58,8 @@
             <!--<script src="{{ url_for('static', filename='reports.js') }}"></script>-->
             {% for report in reports %}
             <div id="report-{{ loop.index0 }}" class="report" data-reportindex="{{ loop.index0 }}">
-                <!--<script src="{{ url_for('static', filename='add_report.js') }}"></script>-->
                 <div id="figure-{{ loop.index0 }}" class="figure">
-                    <p>press reload for default figure</p>
+                    <p>reload for default figure</p>
                 </div>
                 <form id="widgetform-{{ loop.index0 }}" class="widgetform">
                     <!-- all user-defined widgets --!>
@@ -65,5 +80,7 @@
             {% endfor %}
         </div>
     </div>
+    <!-- script from HTML5 boilerplate setup !-->
+    <script src="{{ url_for('static', filename='plugins.js') }}"></script>
 </body>
 </html>
