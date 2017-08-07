@@ -89,8 +89,13 @@ def figure_e():
     plot.line(x, y, legend="Temp", line_width=2)
     return plot
 
-# for i in range(100):
-    # name = 'foo{}'.format(i)
-#     register_report(name, figure_a)
+@reporter.display('report with a very longggggggggg name')
+def figure_long():
+    return 4
+
+for i in range(100):
+    @reporter.display('rand report {}'.format(i))
+    def foo():
+        return 'a'
 
 reporter.run(debug=True)

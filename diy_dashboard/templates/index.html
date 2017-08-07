@@ -43,14 +43,9 @@
 <body id="body">
     <div class="wrapper">
         <div class="sidebar">
-            <p>reports</p>
             <ul>
                 {% for report in reports %}
-                <button 
-                    id="button-{{ loop.index0 }}" 
-                    class="tab-button"
-                    onclick="changeTab(event, 'report-{{ loop.index0 }}')"
-                >{{ report.name }}</button><br>
+                <li><a class="tab-button" href='#'>{{ report.name }}</a></li>
                 {% endfor %}
             </ul>
         </div>

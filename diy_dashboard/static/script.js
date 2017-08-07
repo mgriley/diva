@@ -1,26 +1,29 @@
 function changeTab(mouseEvent, reportId) {
     // hide all report tabs
-    var reportTabs = document.getElementsByClassName("report");
-    for (var i = 0; i < reportTabs.length; ++i) {
-        reportTabs[i].style.display = 'none';
-    }
+    $('.report').css('display', 'none');
 
     // deselect all tab buttons
-    var tabButtons = document.getElementsByClassName("tab-button");
-    for (var i = 0; i < tabButtons.length; ++i) {
-        var button = tabButtons[i];
-        $(button).removeClass("active-button");
-    }
+    $('.tab-button').removeClass('active-button');
 
     // display the desired tab
-    var desiredTab = document.getElementById(reportId);
-    desiredTab.style.display = "block";
+    $('#' + reportId).css('display', 'block');
 
     // add the active class to the button for the desired tab
+    // (so that it can be emphasized with CSS)
     $(mouseEvent.target).addClass("active-button");
 }
 
 $(document).ready(function() {
+    // setup the tab buttons
+    var tabButtons = $('.tab-button');
+    tabButtons.each(function(index) {
+        var button = $(this);
+        button.click(function(mouseEvent) {
+            mouseEvent.preventDefault();
+            var desiredReportId = 'report-' + index;
+            changeTab(mouseEvent, desiredReportId);
+        });
+    });
     
     console.log('setting up reports');
     // init all reports
@@ -44,5 +47,6 @@ $(document).ready(function() {
     });
 
     // open the first report tab
-    $('#button-0').click();
+    var firstButton = $(tabButtons[0])
+    firstButton.click();
 });
