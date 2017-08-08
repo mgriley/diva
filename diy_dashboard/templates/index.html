@@ -54,9 +54,12 @@
             {% for report in reports %}
             <div id="report-{{ loop.index0 }}" class="report" data-reportindex="{{ loop.index0 }}">
                 <div id="figure-{{ loop.index0 }}" class="figure">
-                    <p>reload for default figure</p>
+                    <div class="figure-placeholder">
+                        press reload to generate the figure here
+                    </div>
                 </div>
                 <form id="widgetform-{{ loop.index0 }}" class="widgetform">
+                    <h4>{{ report.name }}</h4>
                     <!-- all user-defined widgets --!>
                     <div class="user-widgets">
                         {% for widget in report.widgets %}
@@ -66,10 +69,12 @@
                         {% endfor %}
                     </div>
                     <!-- if there are user-defined widgets, provide a button to reset to their default values --!>
-                    {% if report.widgets %}
-                    <input type="reset" value="restore defaults">
-                    {% endif %}
-                    <input type="submit" value="reload">
+                    <div class="update-buttons">
+                        <input class="submit-button"  type="submit" value="reload">
+                        {% if report.widgets %}
+                        <input class="reset-button" type="reset" value="restore defaults">
+                        {% endif %}
+                    </div>
                 </form>   
             </div>
             {% endfor %}

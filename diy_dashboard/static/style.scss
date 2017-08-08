@@ -51,6 +51,7 @@ body {
 .main {
     grid-column: 2;
     overflow: auto;
+    padding: 1em;
 }
 
 // tabs are hidden, then shown when selected from the sidebar
@@ -58,3 +59,29 @@ body {
     display: none;
 }
 
+.figure {
+    // margin b/w figure and widgets panel
+    margin-bottom: 1em;
+}
+
+.figure-placeholder {
+    background-color: $sidebar-color;
+    color: $sidebar-text-color;
+    padding: 2em;
+}
+
+.widgetform {
+    padding: 1em;
+    background-color: #ddd;
+    width: 300px;
+}
+
+.widgetcontainer {
+    // spacing b/w adjacent widgets
+    margin-bottom: 0.5em;
+}
+
+.update-buttons {
+}
+
+// Styling for built-in widgets

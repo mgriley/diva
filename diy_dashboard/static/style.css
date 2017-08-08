@@ -38,9 +38,26 @@ body {
 
 .main {
   grid-column: 2;
-  overflow: auto; }
+  overflow: auto;
+  padding: 1em; }
 
 .report {
   display: none; }
+
+.figure {
+  margin-bottom: 1em; }
+
+.figure-placeholder {
+  background-color: #333;
+  color: #ddd;
+  padding: 2em; }
+
+.widgetform {
+  padding: 1em;
+  background-color: #ddd;
+  width: 300px; }
+
+.widgetcontainer {
+  margin-bottom: 0.5em; }
 
 /*# sourceMappingURL=style.css.map */

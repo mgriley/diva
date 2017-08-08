@@ -22,9 +22,9 @@ reporter = Reporter()
         String('text', 'hello'),
         Float('float', 1.5),
         Int('integer', 2),
-        Bool('checkbox', True),
-        SelectOne(['foo', 'bar', 'baz'], 'bar'),
-        SelectSubset(['foo', 'bar', 'baz'], ['foo', 'baz']),
+        Bool('tis true', True),
+        SelectOne('pick a name', ['foo', 'bar', 'baz'], 'bar'),
+        SelectSubset('pick names', ['foo', 'bar', 'baz'], ['foo', 'baz']),
         Color('my color', '#ff0000'),
         Slider('my default slider'),
         Slider('my param slider', 0, (-10, 10), 0)])
