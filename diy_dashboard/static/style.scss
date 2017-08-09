@@ -2,13 +2,17 @@ $sidebar-color: #333;
 $sidebar-text-color: #ddd;
 $report-background-color: #fff;
 
+// bootstrap overloads:
+.btn {
+    border-radius: 0;
+}
+
 body {
     margin: 0;
     padding: 0;
     background: $report-background-color;
     color: $sidebar-color;
-    font-family: "Lato", sans-serif;
-    font-size: 1.25em;
+    //font-family: "Lato", sans-serif;
 }
 
 .wrapper {
@@ -24,7 +28,6 @@ body {
     overflow: auto;
     background-color: #eee;
     //padding: 1em;
-    word-wrap: break-word;
 }
 
 // reports dropdown menu
@@ -42,7 +45,6 @@ body {
     margin: 0;
     padding: 0;
     width: 100%;
-    white-space: normal;
 }
 
 .dropdown-menu li a {
@@ -53,6 +55,11 @@ body {
 
 .widgetform {
     padding: 1em;
+}
+
+.report-title {
+    margin-bottom: 1em;
+    font-size: 2em;
 }
 
 // hide all tabbed DOM by default
@@ -67,13 +74,12 @@ body {
 }
 
 .figure {
-    //margin: auto;
+    margin: auto;
 }
-
 .figure-placeholder {
-    background-color: $sidebar-color;
-    color: $sidebar-text-color;
-    padding: 2em;
+    margin: 0 auto;
+    text-align: center;
+    padding: 1em;
 }
 
 .widgetcontainer {

@@ -15,7 +15,7 @@ $(document).ready(function() {
     });
 
     // open the first tab
-    $('.report-option:first-child').trigger('click');
+    $('.report-option').first().trigger('click');
     
     console.log('setting up reports');
     // init all reports

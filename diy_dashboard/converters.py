@@ -30,10 +30,11 @@ def fig_to_html(fig):
 
 # TODO: any way to do this for a plot with multiple figures?
 
-# TODO: the default formatting is hideous
 @convert_to_html.register(pd.DataFrame)
 def dataframe_to_html(df):
-    return df.to_html()    
+    # Bootstrap table classes
+    css_classes = ['table', 'table-bordered', 'table-hover', 'table-sm']
+    return df.to_html(classes=css_classes)    
 
 @convert_to_html.register(pd.Series)
 def series_to_html(series):

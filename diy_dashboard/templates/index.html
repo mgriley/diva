@@ -45,7 +45,9 @@
     <div class="wrapper">
         <div class="sidebar">
             <div class="dropdown">
-                <button class="btn btn-primary dropdown-button dropdown-toggle" data-toggle="dropdown">reports</button>
+                <button 
+                    class="btn btn-primary dropdown-button dropdown-toggle" 
+                    data-toggle="dropdown">select report</button>
                 <ul class="dropdown-menu">
                     {% for report in reports %}
                     <li><a href="#" class="report-option" value="report-{{loop.index0}}">{{report.name}}</a></li>
@@ -54,7 +56,7 @@
             </div>
             {% for report in reports %}
             <form id="widgetform-{{ loop.index0 }}" class="widgetform report-tab report-{{loop.index0}}">
-                <h4>{{ report.name }}</h4>
+                <div class="report-title">{{ report.name }}</div>
                 <!-- all user-defined widgets --!>
                 <div class="user-widgets">
                     {% for widget in report.widgets %}
@@ -65,9 +67,9 @@
                 </div>
                 <!-- if there are user-defined widgets, provide a button to reset to their default values --!>
                 <div class="update-buttons">
-                    <input class="submit-button"  type="submit" value="reload">
+                    <input class="submit-button btn btn-primary"  type="submit" value="reload">
                     {% if report.widgets %}
-                    <input class="reset-button" type="reset" value="restore defaults">
+                    <input class="reset-button btn btn-secondary" type="reset" value="restore defaults">
                     {% endif %}
                 </div>
             </form>
@@ -76,9 +78,9 @@
         {% for report in reports %}
         <div id="report-{{ loop.index0 }}" class="report report-tab report-{{loop.index0}}" data-reportindex="{{ loop.index0 }}">
             <div id="figure-{{ loop.index0 }}" class="figure">
-                <div class="figure-placeholder">
-                    press reload to generate the figure here
-                </div>
+                <h2 class="figure-placeholder">
+                    "reload" to generate
+                </h2>
             </div>
         </div>
         {% endfor %}

@@ -1,10 +1,11 @@
+.btn {
+  border-radius: 0; }
+
 body {
   margin: 0;
   padding: 0;
   background: #fff;
-  color: #333;
-  font-family: "Lato", sans-serif;
-  font-size: 1.25em; }
+  color: #333; }
 
 .wrapper {
   margin: 0;
@@ -16,8 +17,7 @@ body {
 .sidebar {
   grid-column: 1;
   overflow: auto;
-  background-color: #eee;
-  word-wrap: break-word; }
+  background-color: #eee; }
 
 .dropdown-button {
   width: 100%;
@@ -30,14 +30,17 @@ body {
   border-radius: 0;
   margin: 0;
   padding: 0;
-  width: 100%;
-  white-space: normal; }
+  width: 100%; }
 
 .dropdown-menu li a {
   white-space: normal; }
 
 .widgetform {
   padding: 1em; }
+
+.report-title {
+  margin-bottom: 1em;
+  font-size: 2em; }
 
 .report-tab {
   display: none; }
@@ -47,10 +50,13 @@ body {
   overflow: auto;
   padding: 1em; }
 
+.figure {
+  margin: auto; }
+
 .figure-placeholder {
-  background-color: #333;
-  color: #ddd;
-  padding: 2em; }
+  margin: 0 auto;
+  text-align: center;
+  padding: 1em; }
 
 .widgetcontainer {
   margin-bottom: 0.5em; }
