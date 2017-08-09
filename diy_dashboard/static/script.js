@@ -1,39 +1,33 @@
-function changeTab(mouseEvent, reportId) {
+function changeTab(reportId) {
     // hide all report tabs
-    $('.report').css('display', 'none');
+    $('.report-tab').css('display', 'none');
 
-    // deselect all tab buttons
-    $('.tab-button').removeClass('active-button');
-
-    // display the desired tab
-    $('#' + reportId).css('display', 'block');
-
-    // add the active class to the button for the desired tab
-    // (so that it can be emphasized with CSS)
-    $(mouseEvent.target).addClass("active-button");
+    // display the components for the desired tab
+    $('.' + reportId).css('display', 'block');
 }
 
 $(document).ready(function() {
-    // setup the tab buttons
-    var tabButtons = $('.tab-button');
-    tabButtons.each(function(index) {
-        var button = $(this);
-        button.click(function(mouseEvent) {
-            mouseEvent.preventDefault();
-            var desiredReportId = 'report-' + index;
-            changeTab(mouseEvent, desiredReportId);
-        });
+    // setup the report selector
+    $('#report-selector').on('change', function() {
+        var reportId = $(this).find('option:selected').attr('value');
+        changeTab(reportId);
     });
+
+    // open the first tab
+    $('#report-selector').trigger('change');
+
+    // TODO: use a better report selector dropdown menu
+    
     
     console.log('setting up reports');
     // init all reports
     var reportElements = $('.report');
-    reportElements.each(function() {
+    reportElements.each(function(index) {
         var reportElement = $(this);
         var report = Reports.create();
         
         // setup the report's user-defined widgets
-        var widgetElements = $(reportElement).find('.user-widgets').children();
+        var widgetElements = $('#widgetform-' + index).find('.user-widgets').children();
         widgetElements.each(function() {
             // extract name and type from the widget's outer div
             var element = $(this);
@@ -45,8 +39,4 @@ $(document).ready(function() {
             report.widgets.add(widgetName, widget);
         });
     });
-
-    // open the first report tab
-    var firstButton = $(tabButtons[0])
-    firstButton.click();
 });

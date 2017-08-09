@@ -179,7 +179,7 @@ Reports.Widgets.setupMap['DateRange'] = function(widget) {
     });
     return {
          resetToDefault: function() {
-            inputTag.val(input.prop('defaultValue'));
+            inputTag.val(inputTag.prop('defaultValue'));
         },
         getCurrentValue: function() {
             return inputTag.val().split(' to ');

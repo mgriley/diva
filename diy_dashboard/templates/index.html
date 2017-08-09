@@ -26,6 +26,7 @@
     <!-- for date-range picker -->
     <script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
     <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap/3/css/bootstrap.css" />
+    <script src="//cdn.jsdelivr.net/bootstrap/3/js/bootstrap.js"></script>
     <script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
     <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
 
@@ -43,42 +44,56 @@
 <body id="body">
     <div class="wrapper">
         <div class="sidebar">
-            <ul>
+            <select id="report-selector">
                 {% for report in reports %}
-                <li><a class="tab-button" href='#'>{{ report.name }}</a></li>
+                <option class="report-option" value="report-{{loop.index0}}">{{report.name}}</option>
                 {% endfor %}
-            </ul>
-        </div>
-        <div class="main">
-            <!--<script src="{{ url_for('static', filename='reports.js') }}"></script>-->
-            {% for report in reports %}
-            <div id="report-{{ loop.index0 }}" class="report" data-reportindex="{{ loop.index0 }}">
-                <div id="figure-{{ loop.index0 }}" class="figure">
-                    <div class="figure-placeholder">
-                        press reload to generate the figure here
-                    </div>
+            </select>
+            <!-- TODO: use the Bootstrap div with a div/simple button --!>
+            <div class="dropdown">
+                <div id="change-reports" class="dropdown-toggle" data-toggle="dropdown">
+                    dropdown div
                 </div>
-                <form id="widgetform-{{ loop.index0 }}" class="widgetform">
-                    <h4>{{ report.name }}</h4>
-                    <!-- all user-defined widgets --!>
-                    <div class="user-widgets">
-                        {% for widget in report.widgets %}
-                        <div class="widgetcontainer" name="{{widget.name}}" data-widget-type="{{widget.type}}">
-                            {{ widget.html | safe }}
-                        </div>
-                        {% endfor %}
-                    </div>
-                    <!-- if there are user-defined widgets, provide a button to reset to their default values --!>
-                    <div class="update-buttons">
-                        <input class="submit-button"  type="submit" value="reload">
-                        {% if report.widgets %}
-                        <input class="reset-button" type="reset" value="restore defaults">
-                        {% endif %}
-                    </div>
-                </form>   
+              <!--<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">-->
+                  <!--change report-->
+                  <!--<span class="caret"></span>-->
+              <!--</button>-->
+              <ul class="dropdown-menu">
+                <li><a href="#">HTML</a></li>
+                <li><a href="#">CSS</a></li>
+                <li><a href="#">JavaScript</a></li>
+              </ul>
             </div>
+            {% for report in reports %}
+            <form id="widgetform-{{ loop.index0 }}" class="widgetform report-tab report-{{loop.index0}}">
+                <h4>{{ report.name }}</h4>
+                <!-- all user-defined widgets --!>
+                <div class="user-widgets">
+                    {% for widget in report.widgets %}
+                    <div class="widgetcontainer" name="{{widget.name}}" data-widget-type="{{widget.type}}">
+                        {{ widget.html | safe }}
+                    </div>
+                    {% endfor %}
+                </div>
+                <!-- if there are user-defined widgets, provide a button to reset to their default values --!>
+                <div class="update-buttons">
+                    <input class="submit-button"  type="submit" value="reload">
+                    {% if report.widgets %}
+                    <input class="reset-button" type="reset" value="restore defaults">
+                    {% endif %}
+                </div>
+            </form>
             {% endfor %}
         </div>
+        {% for report in reports %}
+        <div id="report-{{ loop.index0 }}" class="report report-tab report-{{loop.index0}}" data-reportindex="{{ loop.index0 }}">
+            <div id="figure-{{ loop.index0 }}" class="figure">
+                <div class="figure-placeholder">
+                    press reload to generate the figure here
+                </div>
+            </div>
+        </div>
+        {% endfor %}
     </div>
     <!-- script from HTML5 boilerplate setup !-->
     <script src="{{ url_for('static', filename='plugins.js') }}"></script>
