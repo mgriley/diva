@@ -96,7 +96,8 @@ class Bool(Widget):
 
 class SelectOne(Widget):
     # default is index into the choices array
-    def __init__(self, choices, default=None):
+    def __init__(self, description, choices, default=None):
+        self.description = description
         self.choices = choices
         if default is None:
             self.default = choices[0]
@@ -105,7 +106,9 @@ class SelectOne(Widget):
 
     def generateHTML(self, widgetId):
         return render_template('radio_widget.html',
-                name=widgetId, choices=self.choices,
+                name=widgetId,
+                description=self.description,
+                choices=self.choices,
                 defaultChoice=self.default)
 
     def validate_input(self, formData):
@@ -116,13 +119,16 @@ class SelectOne(Widget):
         validate(formData, schema)
 
 class SelectSubset(Widget):
-    def __init__(self, choices, default=[]):
+    def __init__(self, description, choices, default=[]):
+        self.description = description
         self.choices = choices
         self.default = default
 
     def generateHTML(self, widgetId):
         return render_template('checklist_widget.html',
-                name=widgetId, choices=self.choices,
+                name=widgetId,
+                description=self.description,
+                choices=self.choices,
                 default=self.default)
 
     def validate_input(self, formData):
@@ -244,7 +250,7 @@ def iso_to_model(date_str):
 def delta_to_model(date_delta):
     return RelativeDate(date_delta)
 
-class DateRange(Widget):
+class DateRange(InputTagWidget):
 
     def __init__(self, description, start=relativedelta(), end=relativedelta()):
         self.description = description
@@ -258,12 +264,6 @@ class DateRange(Widget):
                 'size': len(date),
                 'data-startdate': self.start_date.iso(),
                 'data-enddate': self.end_date.iso()}
-
-    def generateHTML(self, widgetId):
-        return render_template('daterange_widget.html',
-                name=widgetId,
-                description=self.description,
-                attributes=self.attributes)
     
     def default_value(self):
         return (self.start_date.value(), self.end_date.value())

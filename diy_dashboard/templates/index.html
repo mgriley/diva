@@ -1,19 +1,25 @@
 <!DOCTYPE html>
-<html lang="en">
+<html class="no-js" lang="">
 <head>
-    <meta charset="UTF-8">
-    <title>DIY Dashboard</title>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css')}}" >
+    <!-- from HTML5 Boilerplate !-->
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>dashlet</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='normalize.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+    <script src="{{ url_for('static', filename='vendor/modernizr-2.8.3.min.js') }}"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-    <!-- my scripts !-->
-    <script src="{{ url_for('static', filename='reports.js') }}"></script>
-    <script src="{{ url_for('static', filename='widgets.js') }}"></script>
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
 
     <!-- for date-range picker -->
-    <!--<script type="text/javascript" src="//cdn.jsdelivr.net/jquery/1/jquery.min.js"></script>-->
     <script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
     <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap/3/css/bootstrap.css" />
+    <script src="//cdn.jsdelivr.net/bootstrap/3/js/bootstrap.js"></script>
     <script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
     <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
 
@@ -27,43 +33,59 @@
 
     <script src="http://cdn.pydata.org/bokeh/release/bokeh-0.12.6.min.js"></script>
     <script src="http://cdn.pydata.org/bokeh/release/bokeh-widgets-0.12.6.min.js"></script>
-</head>
+
+    <!-- project-specific setup !-->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css')}}" >
+    <!-- my scripts (NB: must occur in this order) !-->
+    <script src="{{ url_for('static', filename='reports.js') }}"></script>
+    <script src="{{ url_for('static', filename='widgets.js') }}"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    </head>
 <body id="body">
     <div class="wrapper">
         <div class="sidebar">
-            <p>reports</p>
-            <ul>
-                {% for report in reports %}
-                <button id="button-{{ loop.index0 }}" class="tab-button" onclick="changeTab(event, 'report-{{ loop.index0 }}')">{{ report.name }}</button><br>
-                {% endfor %}
-            </ul>
-        </div>
-        <div class="main">
-            <!--<script src="{{ url_for('static', filename='reports.js') }}"></script>-->
-            {% for report in reports %}
-            <div id="report-{{ loop.index0 }}" class="report" data-reportindex="{{ loop.index0 }}">
-                <!--<script src="{{ url_for('static', filename='add_report.js') }}"></script>-->
-                <div id="figure-{{ loop.index0 }}" class="figure">
-                    <p>press reload for default figure</p>
-                </div>
-                <form id="widgetform-{{ loop.index0 }}" class="widgetform">
-                    <!-- all user-defined widgets --!>
-                    <div class="user-widgets">
-                        {% for widget in report.widgets %}
-                        <div class="widgetcontainer" name="{{widget.name}}" data-widget-type="{{widget.type}}">
-                            {{ widget.html | safe }}
-                        </div>
-                        {% endfor %}
-                    </div>
-                    <!-- if there are user-defined widgets, provide a button to reset to their default values --!>
-                    {% if report.widgets %}
-                    <input type="reset" value="restore defaults">
-                    {% endif %}
-                    <input type="submit" value="reload">
-                </form>   
+            <div class="dropdown">
+                <button 
+                    class="btn btn-primary dropdown-button dropdown-toggle" 
+                    data-toggle="dropdown">select report</button>
+                <ul class="dropdown-menu">
+                    {% for report in reports %}
+                    <li><a href="#" class="report-option" value="report-{{loop.index0}}">{{report.name}}</a></li>
+                    {% endfor %}
+                </ul>
             </div>
+            {% for report in reports %}
+            <form id="widgetform-{{ loop.index0 }}" class="widgetform report-tab report-{{loop.index0}}">
+                <div class="report-title">{{ report.name }}</div>
+                <!-- all user-defined widgets --!>
+                <div class="user-widgets">
+                    {% for widget in report.widgets %}
+                    <div class="widgetcontainer" name="{{widget.name}}" data-widget-type="{{widget.type}}">
+                        {{ widget.html | safe }}
+                    </div>
+                    {% endfor %}
+                </div>
+                <!-- if there are user-defined widgets, provide a button to reset to their default values --!>
+                <div class="update-buttons">
+                    <input class="submit-button btn btn-primary"  type="submit" value="reload">
+                    {% if report.widgets %}
+                    <input class="reset-button btn btn-secondary" type="reset" value="restore defaults">
+                    {% endif %}
+                </div>
+            </form>
             {% endfor %}
         </div>
+        {% for report in reports %}
+        <div id="report-{{ loop.index0 }}" class="report report-tab report-{{loop.index0}}" data-reportindex="{{ loop.index0 }}">
+            <div id="figure-{{ loop.index0 }}" class="figure">
+                <h2 class="figure-placeholder">
+                    "reload" to generate
+                </h2>
+            </div>
+        </div>
+        {% endfor %}
     </div>
+    <!-- script from HTML5 boilerplate setup !-->
+    <script src="{{ url_for('static', filename='plugins.js') }}"></script>
 </body>
 </html>

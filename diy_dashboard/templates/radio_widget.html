@@ -1,3 +1,4 @@
+{{ description }}<br>
 {% for choice in choices %}
 <input type="radio" id="{{name}}" name="{{name}}" value="{{choice}}" {% if choice == defaultChoice %} checked {% endif %}> {{choice}}<br>
 {% endfor %}

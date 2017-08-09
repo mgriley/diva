@@ -1,59 +1,94 @@
 $sidebar-color: #333;
-$sidebar-text-color: #ccc;
+$sidebar-text-color: #ddd;
 $report-background-color: #fff;
+
+// bootstrap overloads:
+.btn {
+    border-radius: 0;
+}
 
 body {
     margin: 0;
     padding: 0;
     background: $report-background-color;
     color: $sidebar-color;
-    font-family: "Lato", sans-serif;
-    font-size: 1em;
+    //font-family: "Lato", sans-serif;
 }
 
 .wrapper {
     margin: 0;
     padding: 0;
     display: grid;
-    grid-template-columns: 230px 1fr;
+    grid-template-columns: 250px 1fr;
     height: 100vh;
 }
 
 .sidebar {
     grid-column: 1;
-    background-color: $sidebar-color;
-    color: $sidebar-text-color;
     overflow: auto;
+    background-color: #eee;
+    //padding: 1em;
 }
 
-.sidebar ul {
-    list-style: none;
+// reports dropdown menu
+
+.dropdown-button {
+    width: 100%;
+    border: none;    
+    border-radius: 0;
+    background-color: #aaa;    
+    padding: 0.5em;
 }
 
-.sidebar ul li a, .sidebar ul li a:visited {
-    color:inherit;        
-    text-decoration: none;
+.dropdown-menu {
+    border-radius: 0;
+    margin: 0;
+    padding: 0;
+    width: 100%;
 }
 
-.sidebar ul li a:hover {
-    color: #ffffff;
+.dropdown-menu li a {
+    white-space: normal;
 }
 
-#current-link {
-    color: rgb(255, 0, 0);    
+// tab-specific content
+
+.widgetform {
+    padding: 1em;
 }
 
-.main {
-    grid-column: 2;
-    overflow: auto;
+.report-title {
+    margin-bottom: 1em;
+    font-size: 2em;
 }
 
-// tabs are hidden, then shown when selected from the sidebar
-.report {
+// hide all tabbed DOM by default
+.report-tab {
     display: none;
 }
 
-// highlight the tab button for the active tab
-.active-button {
-    background-color: #ddd;
+.report {
+    grid-column: 2;
+    overflow: auto;
+    padding: 1em;
 }
+
+.figure {
+    margin: auto;
+}
+.figure-placeholder {
+    margin: 0 auto;
+    text-align: center;
+    padding: 1em;
+}
+
+.widgetcontainer {
+    // spacing b/w adjacent widgets
+    margin-bottom: 0.5em;
+}
+
+.update-buttons {
+    margin-top: 1em;
+}
+
+// Styling for built-in widgets

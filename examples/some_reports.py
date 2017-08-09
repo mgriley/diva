@@ -22,9 +22,9 @@ reporter = Reporter()
         String('text', 'hello'),
         Float('float', 1.5),
         Int('integer', 2),
-        Bool('checkbox', True),
-        SelectOne(['foo', 'bar', 'baz'], 'bar'),
-        SelectSubset(['foo', 'bar', 'baz'], ['foo', 'baz']),
+        Bool('tis true', True),
+        SelectOne('pick a name', ['foo', 'bar', 'baz'], 'bar'),
+        SelectSubset('pick names', ['foo', 'bar', 'baz'], ['foo', 'baz']),
         Color('my color', '#ff0000'),
         Slider('my default slider'),
         Slider('my param slider', 0, (-10, 10), 0)])
@@ -89,8 +89,13 @@ def figure_e():
     plot.line(x, y, legend="Temp", line_width=2)
     return plot
 
-# for i in range(100):
-    # name = 'foo{}'.format(i)
-#     register_report(name, figure_a)
+@reporter.display('report with a very longggggggggg name')
+def figure_long():
+    return 4
+
+for i in range(100):
+    @reporter.display('rand report {}'.format(i))
+    def foo():
+        return 'a'
 
 reporter.run(debug=True)

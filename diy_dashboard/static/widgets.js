@@ -24,7 +24,7 @@ var getChild = function(parentObj, index) {
 var setupInputTagWidget = function(widget) {
     // the input tag is the first and only child of the widget's
     // div parent/container
-    var input = getChild(widget, 0);
+    var input = widget.find(".input-tag-widget");
     return {
          resetToDefault: function() {
             input.val(input.prop('defaultValue'));
@@ -66,7 +66,7 @@ Reports.Widgets.setupMap['SelectOne'] = function(widget) {
             return widget.children().filter('input:checked').val();
         },
         resetToDefault: function() {
-            var buttons = widget.children();
+            var buttons = widget.children().filter('input');
             resetAllToDefaultChecked(buttons);
         }
     }
@@ -113,7 +113,7 @@ Reports.Widgets.setupMap['Slider'] = function(widget) {
 
 Reports.Widgets.setupMap['DateRange'] = function(widget) {
     // attach date-range picker to the input tag
-    var inputTag = getChild(widget, 0);
+    var inputTag = widget.find(".input-tag-widget")
     pickerOptions = {
         "showDropdowns": true,
         "ranges": {
@@ -179,7 +179,7 @@ Reports.Widgets.setupMap['DateRange'] = function(widget) {
     });
     return {
          resetToDefault: function() {
-            inputTag.val(input.prop('defaultValue'));
+            inputTag.val(inputTag.prop('defaultValue'));
         },
         getCurrentValue: function() {
             return inputTag.val().split(' to ');
