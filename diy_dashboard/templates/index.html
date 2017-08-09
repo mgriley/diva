@@ -14,14 +14,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='normalize.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
     <script src="{{ url_for('static', filename='vendor/modernizr-2.8.3.min.js') }}"></script>
-
-    <!-- project-specific setup !-->
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css')}}" >
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-    <!-- my scripts (NB: must occur in this order) !-->
-    <script src="{{ url_for('static', filename='reports.js') }}"></script>
-    <script src="{{ url_for('static', filename='widgets.js') }}"></script>
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
 
     <!-- for date-range picker -->
     <script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
@@ -40,29 +33,24 @@
 
     <script src="http://cdn.pydata.org/bokeh/release/bokeh-0.12.6.min.js"></script>
     <script src="http://cdn.pydata.org/bokeh/release/bokeh-widgets-0.12.6.min.js"></script>
-</head>
+
+    <!-- project-specific setup !-->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css')}}" >
+    <!-- my scripts (NB: must occur in this order) !-->
+    <script src="{{ url_for('static', filename='reports.js') }}"></script>
+    <script src="{{ url_for('static', filename='widgets.js') }}"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    </head>
 <body id="body">
     <div class="wrapper">
         <div class="sidebar">
-            <select id="report-selector">
-                {% for report in reports %}
-                <option class="report-option" value="report-{{loop.index0}}">{{report.name}}</option>
-                {% endfor %}
-            </select>
-            <!-- TODO: use the Bootstrap div with a div/simple button --!>
             <div class="dropdown">
-                <div id="change-reports" class="dropdown-toggle" data-toggle="dropdown">
-                    dropdown div
-                </div>
-              <!--<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">-->
-                  <!--change report-->
-                  <!--<span class="caret"></span>-->
-              <!--</button>-->
-              <ul class="dropdown-menu">
-                <li><a href="#">HTML</a></li>
-                <li><a href="#">CSS</a></li>
-                <li><a href="#">JavaScript</a></li>
-              </ul>
+                <button class="btn btn-primary dropdown-button dropdown-toggle" data-toggle="dropdown">reports</button>
+                <ul class="dropdown-menu">
+                    {% for report in reports %}
+                    <li><a href="#" class="report-option" value="report-{{loop.index0}}">{{report.name}}</a></li>
+                    {% endfor %}
+                </ul>
             </div>
             {% for report in reports %}
             <form id="widgetform-{{ loop.index0 }}" class="widgetform report-tab report-{{loop.index0}}">

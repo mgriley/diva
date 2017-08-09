@@ -8,16 +8,14 @@ function changeTab(reportId) {
 
 $(document).ready(function() {
     // setup the report selector
-    $('#report-selector').on('change', function() {
-        var reportId = $(this).find('option:selected').attr('value');
+    $('.report-option').on('click', function() {
+        var reportId = $(this).attr('value');
         changeTab(reportId);
+        //$('.dropdown-content').css('display', 'none');
     });
 
     // open the first tab
-    $('#report-selector').trigger('change');
-
-    // TODO: use a better report selector dropdown menu
-    
+    $('.report-option:first-child').trigger('click');
     
     console.log('setting up reports');
     // init all reports

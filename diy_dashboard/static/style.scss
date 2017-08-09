@@ -8,7 +8,7 @@ body {
     background: $report-background-color;
     color: $sidebar-color;
     font-family: "Lato", sans-serif;
-    font-size: 1em;
+    font-size: 1.25em;
 }
 
 .wrapper {
@@ -24,16 +24,32 @@ body {
     overflow: auto;
     background-color: #eee;
     //padding: 1em;
+    word-wrap: break-word;
 }
 
-#change-reports {
+// reports dropdown menu
+
+.dropdown-button {
+    width: 100%;
+    border: none;    
+    border-radius: 0;
     background-color: #aaa;    
     padding: 0.5em;
 }
 
-#report-selector {
-    display: none;
+.dropdown-menu {
+    border-radius: 0;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    white-space: normal;
 }
+
+.dropdown-menu li a {
+    white-space: normal;
+}
+
+// tab-specific content
 
 .widgetform {
     padding: 1em;
