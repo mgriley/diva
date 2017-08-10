@@ -187,4 +187,8 @@ Reports.Widgets.setupMap['DateRange'] = function(widget) {
     };
 };
 
-
+Reports.Widgets.setupMap['Date'] = function(widget) {
+    // via Bootstrap's datepicker lib
+    $(widget).find('.input-tag-widget').datepicker();
+    return setupInputTagWidget(widget);
+};

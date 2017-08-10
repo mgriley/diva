@@ -291,7 +291,14 @@ class Date(InputTagWidget):
     def __init__(self, description, default=relativedelta()):
         self.description = description
         self.default = to_date_model(default)
-        self.attributes = {'type': 'date', 'value': self.default.iso()}
+        # see Bootstrap date picker docs
+        # https://bootstrap-datepicker.readthedocs.io/en/stable/#
+        self.attributes = {
+            'data-date-format': 'yyyy-mm-dd',
+            'data-date-orientation': 'left bottom',
+            'data-date-autoclose': 'true',
+            'value': self.default.iso(),
+        }
 
     def default_value(self):
         return self.default.value()

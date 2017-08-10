@@ -30,19 +30,16 @@ html, body {
     grid-column: 1;
     background-color: #eee;
     height: 100%;
-    //overflow: hidden;
-    //overflow: auto;
-    //padding: 1em;
+}
+
+// date pickers
+
+.datepicker {
 }
 
 // reports dropdown menu
 
-.dropdown {
-    //height: 100%;
-    //overflow: auto;
-}
-
-.dropdown-button {
+.reports-button {
     width: 100%;
     border: none;    
     border-radius: 0;
@@ -51,7 +48,7 @@ html, body {
     height: $upper-button-height;
 }
 
-.dropdown-menu {
+.reports-list {
     border-radius: 0;
     margin: 0;
     padding: 0;
@@ -60,7 +57,7 @@ html, body {
     overflow: auto;
 }
 
-.dropdown-menu li a {
+.reports-list li a {
     white-space: normal;
 }
 
@@ -72,19 +69,12 @@ html, body {
 }
 
 .widgetform {
-    //display: block;
     padding: 1em;
-    //height: 100%;
-    //overflow: auto;
-    //height: 300;
-    //overflow: auto;
-    //height: 20;
-    //height: 300;
 }
 
 .report-title {
     margin-bottom: 1em;
-    font-size: 2em;
+    font-size: 1.5em;
 }
 
 // hide all tabbed DOM by default
