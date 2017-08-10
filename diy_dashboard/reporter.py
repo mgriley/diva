@@ -10,11 +10,12 @@ class Reporter:
     def __init__(self):
         self.reports = []
     
-    def display(self, name, widgets=[]):
+    def display(self, name, *user_widgets):
         def real_decorator(user_func):
             # TODO: clean up this part, could encounter an error here
             # transform widgets to tuple array, of (argName, widget)
             # this gives each widget a unique key b/c arg names must be unique
+            widgets = list(user_widgets)
             argNames = inspect.getargspec(user_func)[0]
             for index, widget in enumerate(widgets):
                 widgets[index] = (argNames[index], widget)

@@ -54,26 +54,28 @@
                     {% endfor %}
                 </ul>
             </div>
-            {% for report in reports %}
-            <form id="widgetform-{{ loop.index0 }}" class="widgetform report-tab report-{{loop.index0}}">
-                <div class="report-title">{{ report.name }}</div>
-                <!-- all user-defined widgets --!>
-                <div class="user-widgets">
-                    {% for widget in report.widgets %}
-                    <div class="widgetcontainer" name="{{widget.name}}" data-widget-type="{{widget.type}}">
-                        {{ widget.html | safe }}
+            <div class="report-details">
+                {% for report in reports %}
+                <form id="widgetform-{{ loop.index0 }}" class="widgetform report-tab report-{{loop.index0}}">
+                    <div class="report-title">{{ report.name }}</div>
+                    <!-- all user-defined widgets --!>
+                    <div class="user-widgets">
+                        {% for widget in report.widgets %}
+                        <div class="widgetcontainer" name="{{widget.name}}" data-widget-type="{{widget.type}}">
+                            {{ widget.html | safe }}
+                        </div>
+                        {% endfor %}
                     </div>
-                    {% endfor %}
-                </div>
-                <!-- if there are user-defined widgets, provide a button to reset to their default values --!>
-                <div class="update-buttons">
-                    <input class="submit-button btn btn-primary"  type="submit" value="reload">
-                    {% if report.widgets %}
-                    <input class="reset-button btn btn-secondary" type="reset" value="restore defaults">
-                    {% endif %}
-                </div>
-            </form>
-            {% endfor %}
+                    <!-- if there are user-defined widgets, provide a button to reset to their default values --!>
+                    <div class="update-buttons">
+                        <input class="submit-button btn btn-primary"  type="submit" value="reload">
+                        {% if report.widgets %}
+                        <input class="reset-button btn btn-secondary" type="reset" value="restore defaults">
+                        {% endif %}
+                    </div>
+                </form>
+                {% endfor %}
+            </div>
         </div>
         {% for report in reports %}
         <div id="report-{{ loop.index0 }}" class="report report-tab report-{{loop.index0}}" data-reportindex="{{ loop.index0 }}">

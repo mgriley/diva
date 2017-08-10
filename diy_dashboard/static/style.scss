@@ -1,18 +1,20 @@
 $sidebar-color: #333;
 $sidebar-text-color: #ddd;
 $report-background-color: #fff;
+$upper-button-height: 40px;
 
 // bootstrap overloads:
 .btn {
     border-radius: 0;
 }
 
-body {
+html, body {
     margin: 0;
     padding: 0;
     background: $report-background-color;
     color: $sidebar-color;
     //font-family: "Lato", sans-serif;
+    height: 100vh;
 }
 
 .wrapper {
@@ -20,17 +22,25 @@ body {
     padding: 0;
     display: grid;
     grid-template-columns: 250px 1fr;
-    height: 100vh;
+    height: 100%;
+    overflow: hidden;
 }
 
 .sidebar {
     grid-column: 1;
-    overflow: auto;
     background-color: #eee;
+    height: 100%;
+    //overflow: hidden;
+    //overflow: auto;
     //padding: 1em;
 }
 
 // reports dropdown menu
+
+.dropdown {
+    //height: 100%;
+    //overflow: auto;
+}
 
 .dropdown-button {
     width: 100%;
@@ -38,6 +48,7 @@ body {
     border-radius: 0;
     background-color: #aaa;    
     padding: 0.5em;
+    height: $upper-button-height;
 }
 
 .dropdown-menu {
@@ -45,6 +56,8 @@ body {
     margin: 0;
     padding: 0;
     width: 100%;
+    height: calc(100vh - #{$upper-button-height});
+    overflow: auto;
 }
 
 .dropdown-menu li a {
@@ -53,8 +66,20 @@ body {
 
 // tab-specific content
 
+.report-details {
+    height: calc(100vh - #{$upper-button-height});
+    overflow: auto;
+}
+
 .widgetform {
+    //display: block;
     padding: 1em;
+    //height: 100%;
+    //overflow: auto;
+    //height: 300;
+    //overflow: auto;
+    //height: 20;
+    //height: 300;
 }
 
 .report-title {

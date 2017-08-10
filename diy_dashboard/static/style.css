@@ -1,39 +1,48 @@
 .btn {
   border-radius: 0; }
 
-body {
+html, body {
   margin: 0;
   padding: 0;
   background: #fff;
-  color: #333; }
+  color: #333;
+  height: 100vh; }
 
 .wrapper {
   margin: 0;
   padding: 0;
   display: grid;
   grid-template-columns: 250px 1fr;
-  height: 100vh; }
+  height: 100%;
+  overflow: hidden; }
 
 .sidebar {
   grid-column: 1;
-  overflow: auto;
-  background-color: #eee; }
+  background-color: #eee;
+  height: 100%; }
 
 .dropdown-button {
   width: 100%;
   border: none;
   border-radius: 0;
   background-color: #aaa;
-  padding: 0.5em; }
+  padding: 0.5em;
+  height: 40px; }
 
 .dropdown-menu {
   border-radius: 0;
   margin: 0;
   padding: 0;
-  width: 100%; }
+  width: 100%;
+  height: calc(100vh - 40px);
+  overflow: auto; }
 
 .dropdown-menu li a {
   white-space: normal; }
+
+.report-details {
+  height: calc(100vh - 40px);
+  overflow: auto; }
 
 .widgetform {
   padding: 1em; }
