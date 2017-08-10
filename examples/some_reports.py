@@ -7,8 +7,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from datetime import *
-from diy_dashboard.reporter import Reporter
-from diy_dashboard.widgets import *
+from diva.reporter import Reporter
+from diva.widgets import *
 from bokeh.plotting import figure
 
 reporter = Reporter()

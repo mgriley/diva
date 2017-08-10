@@ -1,0 +1,2 @@
+This dir was generated with: sphinx-quickstart
+To build the docs: make html
