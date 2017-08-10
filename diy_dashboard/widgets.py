@@ -291,7 +291,7 @@ class Date(InputTagWidget):
     def __init__(self, description, default=relativedelta()):
         self.description = description
         self.default = to_date_model(default)
-        # see Bootstrap date picker docs
+        # see Bootstrap date picker docs for options
         # https://bootstrap-datepicker.readthedocs.io/en/stable/#
         self.attributes = {
             'data-date-format': 'yyyy-mm-dd',
@@ -318,7 +318,9 @@ class Time(InputTagWidget):
         self.description = description
         self.default = default
         time_str = self.default.strftime('%H:%M')
-        self.attributes = {'type': 'time', 'value': time_str}
+        self.attributes = {
+            'value': time_str
+        }
 
     def validate_input(self, formData):
         schema = {'type': 'string'}

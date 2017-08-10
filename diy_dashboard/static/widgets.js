@@ -188,7 +188,18 @@ Reports.Widgets.setupMap['DateRange'] = function(widget) {
 };
 
 Reports.Widgets.setupMap['Date'] = function(widget) {
-    // via Bootstrap's datepicker lib
+    // via Bootstrap's datepicker
     $(widget).find('.input-tag-widget').datepicker();
+    return setupInputTagWidget(widget);
+};
+
+Reports.Widgets.setupMap['Time'] = function(widget) {
+    // via Bootstrap timepicker. For options
+    // see: https://jdewit.github.io/bootstrap-timepicker/
+    $(widget).find('.input-tag-widget').timepicker({
+        'defaultTime': false,
+        // 12 vs 24hr mode
+        'showMeridian': false
+    });
     return setupInputTagWidget(widget);
 };
