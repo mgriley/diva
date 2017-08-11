@@ -6,11 +6,14 @@
 Welcome to diva's documentation!
 ================================
 
+Sample sample intro wazzzaa
+
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+    :maxdepth: 2
+    :caption: Contents:
 
-
+    users_guide
+    developers_guide
 
 Indices and tables
 ==================

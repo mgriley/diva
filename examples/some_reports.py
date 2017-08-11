@@ -7,18 +7,18 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from datetime import *
-from diva.reporter import Reporter
+from diva import Diva
 from diva.widgets import *
 from bokeh.plotting import figure
 
-reporter = Reporter()
+reporter = Diva()
 
 # generates an assertion error (unit test this later)
 # def figure_too_few():
     # return '<p>dksjalf</p>'
 # register_report('too_few', figure_too_few, [TextWidget('meh')])
 
-@reporter.display('basic widget test',
+@reporter.view('basic widget test',
         String('text', 'hello'),
         Float('float', 1.5),
         Int('integer', 2),
@@ -31,7 +31,7 @@ reporter = Reporter()
 def widgets_test(a, b, c, d, e, f, g, h, i):
     return '<p>{} {} {} {} {} {} {} {:f} {:f}</p>'.format(a, b, c, d, e, f, g, h, i)
 
-@reporter.display('datetime widgets',
+@reporter.view('datetime widgets',
             DateRange('default date range'),
             DateRange('abs date range', '2017-01-02', '2018-02-03'),
             DateRange('last __ range', relativedelta(weeks=3)),
@@ -46,41 +46,41 @@ def widgets_test(a, b, c, d, e, f, g, h, i):
 def date_range_test(a, b, c, d, e, f, g, h, i, j):
     return '<p>{} | {} | {} | {} | {} | {} | {} | {} | {} | {}</p>'.format(a, b, c, d, e, f, g, h, i, j)
 
-@reporter.display('unknown type')
+@reporter.view('unknown type')
 def unknown_figure():
     dict = {'foo': 10, 'bar': 47}
     return dict
 
-@reporter.display('invalid HTML string')
+@reporter.view('invalid HTML string')
 def invalid_string():
     return 'this is not valid html'
 
-@reporter.display('valid HTML string')
+@reporter.view('valid HTML string')
 def valid_string():
     return '<p>foo</p><br><br><p>bar</p>'
 
-@reporter.display('too_many', Float('floating', 6.5))
+@reporter.view('too_many', Float('floating', 6.5))
 def figure_extra(a, b=6):
     return '<p>{} {}</p>'.format(a, b)
 
-@reporter.display('matplotlib figure', String('textbox', 'yo'), Float('floatzilla', 20))
+@reporter.view('matplotlib figure', String('textbox', 'yo'), Float('floatzilla', 20))
 def figure_a(textName, floatName):
     print('inputs: {} {}'.format(textName, floatName))
     plt.figure()
     plt.plot([3,1,4,1,floatName], 'ks-', mec='w', mew=5, ms=20)
     return plt.gcf()
 
-@reporter.display('pd.DataFrame test')
+@reporter.view('pd.DataFrame test')
 def figure_c():
     df = pd.DataFrame(np.random.randn(20, 20))
     return df;
 
-@reporter.display('pd.Series test')
+@reporter.view('pd.Series test')
 def figure_d():
     s = pd.Series([p for p in range(100)])
     return s
 
-@reporter.display('bokeh figure')
+@reporter.view('bokeh figure')
 def figure_e():
     x = [1, 2, 3, 4, 5]
     y = [6, 7, 2, 4, 5]
@@ -88,12 +88,12 @@ def figure_e():
     plot.line(x, y, legend="Temp", line_width=2)
     return plot
 
-@reporter.display('report with a very longggggggggg name')
+@reporter.view('report with a very longggggggggg name')
 def figure_long():
     return 4
 
 for i in range(100):
-    @reporter.display('rand report {}'.format(i))
+    @reporter.view('rand report {}'.format(i))
     def foo():
         return 'a'
 

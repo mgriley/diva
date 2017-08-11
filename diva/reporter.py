@@ -6,11 +6,17 @@ from .converters import convert_to_html
 from .widgets import parse_widget_form_data
 from flask import Flask, render_template, request, abort
 
-class Reporter:
+class Diva:
     def __init__(self):
+        """
+        Sample doc string for testing autodocs
+        """
         self.reports = []
     
-    def display(self, name, *user_widgets):
+    def view(self, name, *user_widgets):
+        """
+        testing
+        """
         def real_decorator(user_func):
             # TODO: clean up this part, could encounter an error here
             # transform widgets to tuple array, of (argName, widget)

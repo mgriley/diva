@@ -1,0 +1,224 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Users Guide &#8212; diva 0.1.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Developer’s Guide" href="developers_guide.html" />
+    <link rel="prev" title="Welcome to diva’s documentation!" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="users-guide">
+<h1>Users Guide<a class="headerlink" href="#users-guide" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>Diva is a python library for creating interactive web analytics dashboards. Let’s start with an example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">diva</span> <span class="k">import</span> <span class="n">Diva</span>
+<span class="kn">from</span> <span class="nn">diva.widgets</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">Diva</span><span class="p">()</span>
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="s1">&#39;my sample view&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">foo</span><span class="p">():</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span> <span class="o">*</span> <span class="mf">1.5</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">20</span><span class="p">)]</span>
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="s1">&#39;my sample view with widgets&#39;</span><span class="p">,</span>
+        <span class="n">Int</span><span class="p">(</span><span class="s1">&#39;choose a size&#39;</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span>
+        <span class="n">Float</span><span class="p">(</span><span class="s1">&#39;choose a factor&#39;</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">))</span>
+<span class="k">def</span> <span class="nf">bar</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">factor</span><span class="p">):</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span> <span class="o">*</span> <span class="n">factor</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">size</span><span class="p">)]</span>
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+<span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><a class="reference external" href="https://fizznow.com">See the result of our example here.</a></p>
+<p>First, we create a <code class="docutils literal"><span class="pre">Diva</span></code> object. Next, we use python’s <a class="reference external" href="https://realpython.com/blog/python/primer-on-python-decorators/">decorator syntax</a> to register our analytics functions <code class="docutils literal"><span class="pre">foo</span></code> and <code class="docutils literal"><span class="pre">bar</span></code> with our <code class="docutils literal"><span class="pre">Diva</span></code> object. The <code class="docutils literal"><span class="pre">view</span></code> decorator <em>does not modify the underlying function</em> (<code class="docutils literal"><span class="pre">view</span></code> just stores a reference to it in the <code class="docutils literal"><span class="pre">Diva</span></code> object). You can call <code class="docutils literal"><span class="pre">foo</span></code> or <code class="docutils literal"><span class="pre">bar</span></code> elsewhere in your code as if you weren’t using <code class="docutils literal"><span class="pre">diva</span></code> at all. Finally, we call <code class="docutils literal"><span class="pre">app.run()</span></code>, which serves the website linked above. The site contains a report for every function we register with our <code class="docutils literal"><span class="pre">Diva</span></code> object.</p>
+<p>You can pass a list of widgets to <code class="docutils literal"><span class="pre">view</span></code>. The <code class="docutils literal"><span class="pre">bar</span></code> function takes an integer and a float, so we pass the <code class="docutils literal"><span class="pre">Int</span></code> and <code class="docutils literal"><span class="pre">Float</span></code> objects to <code class="docutils literal"><span class="pre">view</span></code>. As you can see, the webserver generates HTML widgets corresponding to these python objects. When we reload the <code class="docutils literal"><span class="pre">bar</span></code> report, the values of these widgets are sent to the server. Their values are passed to <code class="docutils literal"><span class="pre">bar</span></code>, and the result of <code class="docutils literal"><span class="pre">bar</span></code> is sent back to the browser (converted to HTML).</p>
+</div>
+<div class="section" id="api">
+<h2>API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="Diva">
+<code class="descname">Diva</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Diva" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>The constructor for Diva takes no arguments.</p>
+<dl class="function">
+<dt id="Diva.view">
+<code class="descclassname">Diva.</code><code class="descname">view</code><span class="sig-paren">(</span><em>name</em>, <em>*widgets</em><span class="sig-paren">)</span><a class="headerlink" href="#Diva.view" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p><code class="docutils literal"><span class="pre">name</span></code> is what the view will be called in the web interface. <code class="docutils literal"><span class="pre">widgets</span></code> is a (possibly empty) list of diva.widgets.Widget objects. Please see the Widgets section for a list of available widgets and what values they pass to the underlying function. Intuitively, the value of the value of the nth widget in <code class="docutils literal"><span class="pre">*widgets</span></code> is passed to the nth argument of the underlying function.</p>
+<p>Consider:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="nd">@app</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="s1">&#39;example report&#39;</span><span class="p">,</span> <span class="n">Int</span><span class="p">(</span><span class="s1">&#39;choose an int&#39;</span><span class="p">),</span> <span class="n">Float</span><span class="p">(</span><span class="s1">&#39;choose a float&#39;</span><span class="p">))</span>
+<span class="k">def</span> <span class="nf">bar</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="o">...</span>
+</pre></div>
+</div>
+<p>Suppose you choose values of 2 and 3.5 for the widgets then reload the report. Internally, <code class="docutils literal"><span class="pre">bar</span></code> will be called like <code class="docutils literal"><span class="pre">bar(a=2,</span> <span class="pre">b=3.5)</span></code>. To keep things simple, just make the number of widgets the same as the number of function arguments. If your function takes <code class="docutils literal"><span class="pre">*args</span></code>, <code class="docutils literal"><span class="pre">**kwargs</span></code>, specifies defaults, or is otherwise complex, you may need to suffer the following mild inconvenience:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">bar</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="o">...</span>
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="s1">&#39;example report&#39;</span><span class="p">,</span>
+    <span class="n">Int</span><span class="p">(</span><span class="s1">&#39;choose an int&#39;</span><span class="p">),</span>
+    <span class="n">Float</span><span class="p">(</span><span class="s1">&#39;choose a float&#39;</span><span class="p">),</span>
+    <span class="n">String</span><span class="p">(</span><span class="s1">&#39;choose a string&#39;</span><span class="p">),</span>
+    <span class="n">Bool</span><span class="p">(</span><span class="s1">&#39;choose a bool&#39;</span><span class="p">))</span>
+<span class="k">def</span> <span class="nf">bar_shim</span><span class="p">(</span><span class="n">my_int</span><span class="p">,</span> <span class="n">my_float</span><span class="p">,</span> <span class="n">my_str</span><span class="p">,</span> <span class="n">my_bool</span><span class="p">):</span>
+    <span class="c1"># in bar: a=my_int, b=my_float, args=(my_str), kwargs={&#39;baz&#39;: my_bool}</span>
+    <span class="k">return</span> <span class="n">bar</span><span class="p">(</span><span class="n">my_int</span><span class="p">,</span> <span class="n">my_float</span><span class="p">,</span> <span class="n">my_str</span><span class="p">,</span> <span class="n">baz</span><span class="o">=</span><span class="n">my_bool</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="function">
+<dt id="Diva.run">
+<code class="descclassname">Diva.</code><code class="descname">run</code><span class="sig-paren">(</span><em>host=None</em>, <em>port=None</em>, <em>debug=None</em>, <em>**options</em><span class="sig-paren">)</span><a class="headerlink" href="#Diva.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>TODO refer to the documentation for Flask.</p>
+</div>
+<div class="section" id="widgets">
+<h2>Widgets<a class="headerlink" href="#widgets" title="Permalink to this headline">¶</a></h2>
+<p>The built-in widgets (available from <code class="docutils literal"><span class="pre">from</span> <span class="pre">diva.widgets</span> <span class="pre">import</span> <span class="pre">*</span></code>) are:</p>
+<ul class="simple">
+<li>String</li>
+<li>Float</li>
+<li>Int</li>
+<li>Bool</li>
+<li>SelectOne</li>
+<li>SelectSubset</li>
+<li>Color</li>
+<li>Slider (for float or int)</li>
+<li>Date</li>
+<li>DateRange</li>
+<li>Time</li>
+</ul>
+<p>You can see each widget in action <a class="reference external" href="https://fizznow.com">here</a>. The first argument passed to every widget constructor is the description of the widget in the web interface (such as, “choose a scale”).</p>
+<p><strong>String</strong></p>
+<p><strong>Float</strong></p>
+<p><strong>Int</strong></p>
+<p><strong>Bool</strong></p>
+<p><strong>SelectOne</strong></p>
+<p><strong>SelectSubset</strong></p>
+<p><strong>Color</strong></p>
+<p><strong>Slider</strong></p>
+<p><strong>Date</strong></p>
+<p><strong>DateRange</strong></p>
+<p><strong>Time</strong></p>
+</div>
+<div class="section" id="security">
+<h2>Security<a class="headerlink" href="#security" title="Permalink to this headline">¶</a></h2>
+<p>TODO: reminder about Flask security. Also about input sanitation.</p>
+</div>
+<div class="section" id="add-your-own-converters">
+<h2>Add your own converters<a class="headerlink" href="#add-your-own-converters" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="add-your-own-widgets">
+<h2>Add your own widgets<a class="headerlink" href="#add-your-own-widgets" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">diva</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Users Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#api">API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#widgets">Widgets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#security">Security</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#add-your-own-converters">Add your own converters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#add-your-own-widgets">Add your own widgets</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="developers_guide.html">Developer’s Guide</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">Welcome to diva’s documentation!</a></li>
+      <li>Next: <a href="developers_guide.html" title="next chapter">Developer’s Guide</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Matthew Riley.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/users_guide.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
