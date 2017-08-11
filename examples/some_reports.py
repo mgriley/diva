@@ -19,7 +19,7 @@ reporter = Diva()
 # register_report('too_few', figure_too_few, [TextWidget('meh')])
 
 @reporter.view('basic widget test',
-        String('text', 'hello'),
+        [String('text', 'hello'),
         Float('float', 1.5),
         Int('integer', 2),
         Bool('tis true', True),
@@ -27,11 +27,11 @@ reporter = Diva()
         SelectSubset('pick names', ['foo', 'bar', 'baz'], ['foo', 'baz']),
         Color('my color', '#ff0000'),
         Slider('my default slider'),
-        Slider('my param slider', 0, (-10, 10), 0))
+        Slider('my param slider', 0, (-10, 10), 0)])
 def widgets_test(a, b, c, d, e, f, g, h, i):
     return '<p>{} {} {} {} {} {} {} {:f} {:f}</p>'.format(a, b, c, d, e, f, g, h, i)
 
-@reporter.view('datetime widgets',
+@reporter.view('datetime widgets',[
             DateRange('default date range'),
             DateRange('abs date range', '2017-01-02', '2018-02-03'),
             DateRange('last __ range', relativedelta(weeks=3)),
@@ -41,7 +41,7 @@ def widgets_test(a, b, c, d, e, f, g, h, i):
             Date('date relative', relativedelta(days=7)),
             Date('date absolute', '2017-01-11'),
             Time('default'),
-            Time('param', time(5, 10, 15))
+            Time('param', time(5, 10, 15)])
         )
 def date_range_test(a, b, c, d, e, f, g, h, i, j):
     return '<p>{} | {} | {} | {} | {} | {} | {} | {} | {} | {}</p>'.format(a, b, c, d, e, f, g, h, i, j)
@@ -63,11 +63,10 @@ def valid_string():
 def figure_extra(a, b=6):
     return '<p>{} {}</p>'.format(a, b)
 
-@reporter.view('matplotlib figure', String('textbox', 'yo'), Float('floatzilla', 20))
-def figure_a(textName, floatName):
-    print('inputs: {} {}'.format(textName, floatName))
+@reporter.view('matplotlib figure')
+def figure_a():
     plt.figure()
-    plt.plot([3,1,4,1,floatName], 'ks-', mec='w', mew=5, ms=20)
+    plt.plot([3,1,4,1,20], 'ks-', mec='w', mew=5, ms=20)
     return plt.gcf()
 
 @reporter.view('pd.DataFrame test')
