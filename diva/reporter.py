@@ -95,9 +95,7 @@ class Diva:
             else:
                 widget.validate_input(value)    
 
-    def run(self, host=None, port=None, debug=None, **options):
-
-        # setup the server
+    def setup_server(self):
         app = Flask(__name__)
 
         @app.route('/')
@@ -113,4 +111,8 @@ class Diva:
             report = self.reports[report_index]
             return self.generate_figure_html(report, body['widgetValues'])
 
+        return app
+
+    def run(self, host=None, port=None, debug=None, **options):
+        app = self.setup_server()
         app.run(host, port, debug, **options)

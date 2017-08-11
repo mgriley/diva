@@ -1,16 +1,33 @@
 Users Guide
 ***********
 
-Introduction
+Setup
 ============
+
+You need...
+Setup your virtual environment
+Install from pip like...
+
+Introduction
+=============
 
 Diva is a python library for creating interactive web analytics dashboards. Let's start with an example:
 
 .. literalinclude:: ../examples/minimal_example.py
 
-`See the result of our example here. <https://fizznow.com>`_
+You can run the example like the example like:
 
-First, we create a ``Diva`` object. Next, we use python's `decorator syntax <https://realpython.com/blog/python/primer-on-python-decorators/>`_ to register our analytics functions ``foo`` and ``bar`` with our ``Diva`` object. The ``view`` decorator *does not modify the underlying function* (``view`` just stores a reference to it in the ``Diva`` object). You can call ``foo`` or ``bar`` elsewhere in your code as if you weren't using ``diva`` at all. Finally, we call ``app.run()``, which serves the website linked above. The site contains a report for every function we register with our ``Diva`` object.
+.. image:: images/example_console.png
+
+Going to the given address in your browser should display:
+
+.. image:: images/example_screenshot_a.png
+
+You should be able to change the report, and play with the widget values.
+
+.. image:: images/example_screenshot_b.png
+
+First, we create a ``Diva`` object. Next, we use python's `decorator syntax <https://realpython.com/blog/python/primer-on-python-decorators/>`_ to register our analytics functions ``foo`` and ``bar`` with our ``Diva`` object. The ``view`` decorator *does not modify the underlying function* (``view`` just stores a reference to it in the ``Diva`` object). You can call ``foo`` or ``bar`` elsewhere in your code as if you weren't using diva at all. Finally, we call ``app.run()``, which serves the website linked above. The site contains a report for every function we register with our ``Diva`` object.
 
 You can pass a list of widgets to ``view``. The ``bar`` function takes an integer and a float, so we pass the ``Int`` and ``Float`` objects to ``view``. As you can see, the webserver generates HTML widgets corresponding to these python objects. When we reload the ``bar`` report, the values of these widgets are sent to the server. Their values are passed to ``bar``, and the result of ``bar`` is sent back to the browser (converted to HTML).
 
@@ -19,35 +36,44 @@ API
 
 .. function:: Diva()
     
-The constructor for Diva takes no arguments.
+    The constructor for Diva takes no arguments.
 
-.. function:: Diva.view(name, *widgets)
+.. function:: Diva.view(name, widgets=[])
     
-``name`` is what the view will be called in the web interface. ``widgets`` is a (possibly empty) list of diva.widgets.Widget objects. Please see the Widgets section for a list of available widgets and what values they pass to the underlying function. Intuitively, the value of the value of the nth widget in ``*widgets`` is passed to the nth argument of the underlying function.
+    ``name`` is what the view will be called in the web interface. ``widgets`` is a (possibly empty) list of diva.widgets.Widget objects. Please see the Widgets section for a list of available widgets and what values they pass to the underlying function. Intuitively, the widget values are passed to the function in the order that the widgets appear in the list.
 
-Consider::
-    
-    @app.view('example report', Int('choose an int'), Float('choose a float'))
-    def bar(a, b):
-        ...
+    Consider:
 
-Suppose you choose values of 2 and 3.5 for the widgets then reload the report. Internally, ``bar`` will be called like ``bar(a=2, b=3.5)``. To keep things simple, just make the number of widgets the same as the number of function arguments. If your function takes ``*args``, ``**kwargs``, specifies defaults, or is otherwise complex, you may need to suffer the following mild inconvenience::
+    .. literalinclude:: ../examples/minimal_example.py
+        :pyobject: bar
 
-    def bar(a, b, *args, **kwargs):
-        ...
+    Suppose you choose values of 2 and 3.5 for the widgets then reload the report. Internally, ``bar`` will be called like ``bar(a=2, b=3.5)``. To keep things simple, just make the number of widgets the same as the number of function arguments. If your function takes ``*args``, ``**kwargs``, specifies defaults, or is otherwise complex, you must suffer this mild inconvenience:
 
-    @app.view('example report',
-        Int('choose an int'),
-        Float('choose a float'),
-        String('choose a string'),
-        Bool('choose a bool'))
-    def bar_shim(my_int, my_float, my_str, my_bool):
-        # in bar: a=my_int, b=my_float, args=(my_str), kwargs={'baz': my_bool}
-        return bar(my_int, my_float, my_str, baz=my_bool) 
+    .. literalinclude:: ../examples/other_examples.py
+        :pyobject: baz
 
+    .. literalinclude:: ../examples/other_examples.py
+        :pyobject: baz_shim
+            
 .. function:: Diva.run(host=None, port=None, debug=None, **options)
 
-TODO refer to the documentation for Flask.
+    ``run`` internally looks like this::
+        
+        flask_app = Flask(__name__)
+
+        # setup some endpoints ...
+
+        flask_app.run(host, port, debug, **options)
+
+    Please see the `Flask documentation <http://flask.pocoo.org/docs/0.12/api/>`_ for an explanation of ``run``'s arguments. Briefly, setting ``debug=True`` will open an interactive debugger when an exception occurs, and also attempt to reload the server when the code changes.
+
+    .. warning::
+        
+        The interactive debugger allows one to run arbitrary python code on your server, so don't use ``debug=True`` on a publically accessable site.
+
+    .. warning::
+
+        If you want to make your diva app production ready, follow `these steps <http://flask.pocoo.org/docs/0.12/deploying/#deployment>`_ to make the underlying Flask server production ready. Also see the Security section below.
 
 Widgets
 ========
@@ -68,40 +94,55 @@ The built-in widgets (available via ``from diva.widgets import *``) are:
 
 You can see each widget in action `here <https://fizznow.com>`_. The first argument passed to every widget constructor is the description of the widget in the web interface (such as, "choose a scale"). 
 
-**String**
+.. automodule:: diva.widgets
+    :members:
 
-**Float**
+Converters
+===========
 
-**Int**
+When you decorate a reload a view in the web interface, it is run on the server, and it's result is converted to HTML. The following conversions are supported:
 
-**Bool**
+* string: the string is assumed to be HTML.
+* matplotlib.figure.Figure (using the mpld3 library)
+* pandas.DataFrame & pandas.Series
+* bokeh.plotting.figure.Figure
+* *other*: the value is converted to a string and wrapped in HTML
 
-**SelectOne**
+More converters are coming soon. In the meantime, you can add your own:
 
-**SelectSubset**
-
-**Color**
-
-**Slider**
-
-**Date**
-
-**DateRange**
-
-**Time**
+.. literalinclude:: ../examples/custom_converter.py
 
 Security
 =========
 
-TODO: reminder about Flask security. Also about input sanitation. Also write about password protection here, and technique for forwarding.
+**Input Sanitation**
+
+If you are allowing public access to your site, you are responsible for sanitizing user input. diva performs some trivial sanitation, like ensuring the value of a string widget is actually passed to your function as a string and not an int. However, if your underlying functions are accessing sensitive information, be careful.
+
+**Password Protection**
+
+diva currently doesn't support password management. It may support simple password protection in the future, but likely not a full user access system. 
+
+Alternatively, you can use the  returns a flask.Flask object, which you can modify with your authentication code before calling ``app.run()``::
+
+    app = Diva()
+    # add your views
+
+    flask_server = app.setup_server()
+    # modify flask_server to add your auth code
+    # you could even add other endpoints, etc.
+    flask_server.run()
+
+Note that the ``diva.Diva.run`` function is simply:
+
+.. function:: diva.Diva.run
+
+You can modify the Flask object's view functions (`docs here <http://flask.pocoo.org/docs/0.12/api/>`_) to add your auth code. See the diva source file diva/diva/reporter.py to see what endpoints diva uses.
+
+If that doesn't work, things get more complex. Suppose you already have a publically accessible server with a user management system. Perhaps it isn't even written in python. You could run diva as a local server (not publically exposed, that is), and setup a password-protected endpoint in your public server that acts as a reverse proxy between your public server and the diva server.
 
 Alternatives
 =============
 
-Talk about interact_manual is IPython. Also hosting IPython, etc. IPython dashboards
+Jupyter has its own widget library, and `you can interact with functions like this <http://ipywidgets.readthedocs.io/en/latest/examples/Using%20Interact.html>`_. To share a Jupyter notebook, you can archive the .ipynb file in your GitHub, then use the tools nbviewer or mybinder to give others access to your notebook. You can also take a look at `IPython Dashboards <https://github.com/litaotao/IPython-Dashboard>`_. 
 
-Add your own converters
-========================
-
-Add your own widgets
-=====================

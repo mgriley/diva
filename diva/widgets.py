@@ -4,19 +4,15 @@ from dateutil.relativedelta import *
 from functools import singledispatch
 from jsonschema import validate
 
-class Input():
+class Widget():
     def generateHTML(self, widgetId):
         return ''
 
     def parseForm(self, formData):
-        pass
+        return formData
 
     def default_value(self):
         return self.default
-
-class Widget(Input):
-    def parseForm(self, formData):
-        return formData
 
 class InputTagWidget(Widget):
     def generateHTML(self, widgetId):
@@ -25,7 +21,13 @@ class InputTagWidget(Widget):
                 name=widgetId, attributes=self.attributes)
 
 class String(InputTagWidget):
+    """
+    Output: str
+    """
     def __init__(self, description, default=""):
+        """
+        description(str): the text for this widget's label.
+        """
         self.description = description
         self.default = default
         self.attributes = {'type': 'text', 'value': default}
@@ -48,8 +50,14 @@ def validate_bounds(num, min_val, max_val):
         raise ValueError("num is outside bounds")
 
 class Float(InputTagWidget):
+    """
+    Output: float
+    """
     def __init__(self, description, default=0, minVal=None, maxVal=None,
             step=0.001):
+        """
+        step: the interval between allowable values
+        """
         self.description = description
         self.default = default
         self.minVal = minVal
@@ -65,6 +73,9 @@ class Float(InputTagWidget):
         return float(formData)
 
 class Int(Float):
+    """
+    Output: int
+    """
     def __init__(self, description, default=0, minVal=None, maxVal=None):
         super().__init__(description, default, minVal, maxVal, step=1)
 
@@ -76,6 +87,9 @@ class Int(Float):
         return int(formData)
 
 class Bool(Widget):
+    """
+    Output: bool
+    """
     def __init__(self, description, default=False):
         self.description = description
         self.default = default
@@ -95,8 +109,17 @@ class Bool(Widget):
         return bool(formData)
 
 class SelectOne(Widget):
+    """
+    Output: the str that the user selected
+    """
+
     # default is index into the choices array
     def __init__(self, description, choices, default=None):
+        """
+        * choices: a list of strings.
+        * default: a string in ``choices``. If not specified, 
+            the default will be the first string in ``choices``.
+        """
         self.description = description
         self.choices = choices
         if default is None:
@@ -119,7 +142,16 @@ class SelectOne(Widget):
         validate(formData, schema)
 
 class SelectSubset(Widget):
+    """
+    Output: A list of all the strings that the user selection. 
+    It may be empty.
+    """
     def __init__(self, description, choices, default=[]):
+        """
+        * choices: a list of strings
+        * default: a list of strings in ``choices`` that will be 
+            selected by default.
+        """
         self.description = description
         self.choices = choices
         self.default = default
@@ -147,6 +179,9 @@ class SelectSubset(Widget):
 # can later use the more effective:
 # return as RGB triple (r, g, b) with values in [0, 1]
 class Color(InputTagWidget):
+    """
+    Output: a hexadecimal string in the format #RRGGBB
+    """
     def __init__(self, description, default='#000000'):
         self.description=description
         self.default = default
@@ -174,7 +209,15 @@ class Color(InputTagWidget):
         # validate(formData, schema)
 
 class Slider(Widget):
+    """
+    Slider has the same function as Float, the only difference is the UI
+    Output: float
+    """
     def __init__(self, description, default=1, valRange=(0, 1), numDecimals=4):
+        """
+        * valRange: (min, max) where min and max are floats
+        * numDecimals: the number of decimal places to display in the UI
+        """
         self.description = description
         self.valRange = valRange
         self.default = default
@@ -250,15 +293,60 @@ def iso_to_model(date_str):
 def delta_to_model(date_delta):
     return RelativeDate(date_delta)
 
+class Date(InputTagWidget):
+    """
+    Output: datetime.date    
+    """
+    def __init__(self, description, default=relativedelta()):
+        """
+        default: may either be provided as a:
+
+        * datetime.date object
+        * string of a date in ISO format (YYYY-mm-dd)
+        * datetime.timedelta object. The date will be current - delta
+        * dateutil.relativedelta object. The date will be current - delta
+
+        If not specified, it will be the current date.
+        Note that dateutil is not in the Python standard library. It provides a simpler
+        API to specify a duration in days, weeks, months, etc. You can install it with pip.
+        """
+        self.description = description
+        self.default = to_date_model(default)
+        # see Bootstrap date picker docs for options
+        # https://bootstrap-datepicker.readthedocs.io/en/stable/#
+        self.attributes = {
+            'data-date-format': 'yyyy-mm-dd',
+            'data-date-orientation': 'left bottom',
+            'data-date-autoclose': 'true',
+            'value': self.default.iso(),
+        }
+
+    def default_value(self):
+        return self.default.value()
+    
+    def validate_input(self, formData):
+        schema = {'type': 'string'}
+        validate(formData, schema)
+        # throws ValueError if incorrect format
+        iso_to_date(formData)
+
+    def parseForm(self, formData):
+        return iso_to_date(formData)
+
 class DateRange(InputTagWidget):
+    """
+    Output: (start_date, end_date) of type (datetime.date, datetime.date)
+    """
 
     def __init__(self, description, start=relativedelta(), end=relativedelta()):
+        """
+        ``start`` and ``end`` follow the same rules as ``default`` for ``Date``
+        """
         self.description = description
         self.start_date = to_date_model(start)
         self.end_date = to_date_model(end)
         date = '{} to {}'.format(self.start_date.iso(),
                 self.end_date.iso())
-        print(date)
         self.attributes = {'type': 'text',
                 'value': date,
                 'size': len(date),
@@ -287,34 +375,16 @@ class DateRange(InputTagWidget):
         end = iso_to_date(formData[1])
         return (start, end)
 
-class Date(InputTagWidget):
-    def __init__(self, description, default=relativedelta()):
-        self.description = description
-        self.default = to_date_model(default)
-        # see Bootstrap date picker docs for options
-        # https://bootstrap-datepicker.readthedocs.io/en/stable/#
-        self.attributes = {
-            'data-date-format': 'yyyy-mm-dd',
-            'data-date-orientation': 'left bottom',
-            'data-date-autoclose': 'true',
-            'value': self.default.iso(),
-        }
-
-    def default_value(self):
-        return self.default.value()
-    
-    def validate_input(self, formData):
-        schema = {'type': 'string'}
-        validate(formData, schema)
-        # throws ValueError if incorrect format
-        iso_to_date(formData)
-
-    def parseForm(self, formData):
-        return iso_to_date(formData)
-
+# TODO: use the same lazy eval as done with datetime.date objects
 # NB: times are in 24hr format
 class Time(InputTagWidget):
+    """
+    Output: datetime.time object   
+    """
     def __init__(self, description, default=time()):
+        """
+        default: datetime.time object
+        """
         self.description = description
         self.default = default
         time_str = self.default.strftime('%H:%M')

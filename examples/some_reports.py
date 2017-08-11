@@ -41,7 +41,7 @@ def widgets_test(a, b, c, d, e, f, g, h, i):
             Date('date relative', relativedelta(days=7)),
             Date('date absolute', '2017-01-11'),
             Time('default'),
-            Time('param', time(5, 10, 15)])
+            Time('param', time(5, 10, 15))]
         )
 def date_range_test(a, b, c, d, e, f, g, h, i, j):
     return '<p>{} | {} | {} | {} | {} | {} | {} | {} | {} | {}</p>'.format(a, b, c, d, e, f, g, h, i, j)
@@ -59,7 +59,7 @@ def invalid_string():
 def valid_string():
     return '<p>foo</p><br><br><p>bar</p>'
 
-@reporter.view('too_many', Float('floating', 6.5))
+@reporter.view('too_many', [Float('floating', 6.5)])
 def figure_extra(a, b=6):
     return '<p>{} {}</p>'.format(a, b)
 

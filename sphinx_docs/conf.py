@@ -33,6 +33,10 @@ sys.path.insert(0, os.path.abspath('../diva'))
 # ones.
 extensions = ['sphinx.ext.autodoc']
 
+# autodoc configuration
+autoclass_content = 'both' # both class doc and init doc
+autodoc_member_order = 'bysource'
+
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 
@@ -167,6 +171,3 @@ texinfo_documents = [
      author, 'diva', 'One line description of project.',
      'Miscellaneous'),
 ]
-
-
-
