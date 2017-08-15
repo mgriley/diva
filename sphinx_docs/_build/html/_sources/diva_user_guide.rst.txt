@@ -1,5 +1,0 @@
-# Users Guide
-
-Diva is a python library for creating interactive web analytics dashboards. First, you write some regular python functions that return familiar analytics objects, like matplotlib figures, pandas DataFrames, or numpy arrays. Next, you register these functions with diva using python's decorator syntax. Lastly, calling the run function serves a website (using Flask) where you can see run your functions and view the results (converted to HTML).
-
-

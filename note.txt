@@ -26,3 +26,5 @@ See an article on how WSGI python servers work.
 Essentially you must point the WSGI server to a callable that takes a dictionary
 of the relevant request info and returns a response. In flask the Flask object is
 itself the callable.
+
+The docs dir must be called "docs" so that readthedocs can build it properly
