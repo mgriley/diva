@@ -9,7 +9,7 @@ chardet==3.0.4
 click==6.7
 cycler==0.10.0
 decorator==4.0.11
--e git+https://github.com/mgriley/diy_dashboard@775898a1a842e96860887e0ab77b23d57cd76f02#egg=diva
+-e git+https://github.com/mgriley/diva@505ec733405c55c0b6f8858412c00d8587f672d8#egg=diva
 docutils==0.14
 entrypoints==0.2.2
 Flask==0.12.2
@@ -52,7 +52,7 @@ pyzmq==16.0.2
 qtconsole==4.3.0
 requests==2.18.1
 requests-toolbelt==0.8.0
--e git+https://github.com/mgriley/diy_dashboard@775898a1a842e96860887e0ab77b23d57cd76f02#egg=sample_name
+sample-name==1.0.0
 simplegeneric==0.8.1
 six==1.10.0
 snowballstemmer==1.2.1

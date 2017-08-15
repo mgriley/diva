@@ -13,8 +13,16 @@ Requirements:
 pip freeze > requirements.txt
 pip install -r requirements.txt
 
+To create virtual env:
+python3 -m venv myenv
+
 To run the examples:
 python3 tester.py
 
 To install the lib and also work on it, run from root:
 pip install -e .
+
+See an article on how WSGI python servers work.
+Essentially you must point the WSGI server to a callable that takes a dictionary
+of the relevant request info and returns a response. In flask the Flask object is
+itself the callable.

@@ -92,4 +92,5 @@ def bokeh_fig():
 def na():
     return datetime.now()
 
-reporter.run()
+if __name__ == "__main__":
+    reporter.run()

@@ -6,13 +6,40 @@ from .converters import convert_to_html
 from .widgets import parse_widget_form_data
 from flask import Flask, render_template, request, abort
 
-class Diva:
+class Diva():
     def __init__(self):
         """
         Sample doc string for testing autodocs
         """
         self.reports = []
-    
+        self.setup_server()
+
+    def setup_server(self):
+        """
+        Sets up an internal Flask server
+        """
+        self.server = Flask(__name__)
+
+        @self.server.route('/')
+        def index():
+            return self.get_index()
+
+        @self.server.route('/update', methods=['POST'])
+        def update_figure():
+            print(request.get_json())
+            body = request.get_json()
+            self.validate_request(body)
+            report_index = body['reportIndex']
+            report = self.reports[report_index]
+            return self.generate_figure_html(report, body['widgetValues'])
+
+    def __call__(self, environ, start_response):
+        """
+        This allows a Diva object to act as a wsgi entry point.
+        Just delegates the wsgi callable to the underlying flask server
+        """
+        return self.server.wsgi_app(environ, start_response)
+
     def view(self, name, user_widgets=[]):
         """
         testing
@@ -94,24 +121,5 @@ class Diva:
             else:
                 widget.validate_input(value)    
 
-    def setup_server(self):
-        app = Flask(__name__)
-
-        @app.route('/')
-        def index():
-            return self.get_index()
-
-        @app.route('/update', methods=['POST'])
-        def update_figure():
-            print(request.get_json())
-            body = request.get_json()
-            self.validate_request(body)
-            report_index = body['reportIndex']
-            report = self.reports[report_index]
-            return self.generate_figure_html(report, body['widgetValues'])
-
-        return app
-
     def run(self, host=None, port=None, debug=None, **options):
-        app = self.setup_server()
-        app.run(host, port, debug, **options)
+        self.server.run(host, port, debug, **options)
