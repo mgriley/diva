@@ -1,12 +1,20 @@
-Users Guide
-***********
+User's Guide
+*************
 
 Setup
 ============
 
-You need...
-Setup your virtual environment
-Install from pip like...
+This library requires Python 3. Assuming you already have Python 3 and pip installed, you can setup your project like this::
+
+    $ mkdir myproj
+    $ cd myproj
+    $ python3 -m venv myvenv
+    $ source myvenv/bin/activate
+    $ pip install diva
+
+The command ``python3 -m venv myvenv`` creates a directory called ``myvenv`` to handle your project's virtual environment. A virtual environment is a mechanism that gives the illusion (hence "virtual") that your project's version of the Python interpreter and any required libraries are installed locally. This isolates your project from other projects that may use different versions of Python (and thus different library versions). Virtual environments prevent conflicts of the form: Project A uses Python 2 and Project B uses Python3, and both depend on ``somelibrary``, which is installed globally. Project A is broken because it thinks it should use the latest installed version of ``somelibrary``, which only works for Python 3.
+
+When you start working on your project, you must activate the environment with ``$ source myenv/bin/activate`` (which should prepend the environment name to your prompt like ``(myvenv) ... $``), and you should deactivate it when you're done using ``$ deactivate``.
 
 Introduction
 =============
@@ -108,7 +116,7 @@ When you decorate a reload a view in the web interface, it is run on the server,
 * bokeh.plotting.figure.Figure
 * *other*: the value is converted to a string and wrapped in HTML
 
-More converters are coming soon. In the meantime, you can add your own:
+Conversion internally uses the `single dispatch decorator from functools <https://docs.python.org/3/library/functools.html>`_, so you can add your own converter like this:
 
 .. literalinclude:: ../examples/custom_converter.py
 
@@ -126,11 +134,14 @@ diva currently doesn't support password management. It may support simple passwo
 Alternatively, you can use the  returns a flask.Flask object, which you can modify with your authentication code before calling ``app.run()``::
 
     app = Diva()
+
     # add your views
 
     flask_server = app.setup_server()
+
     # modify flask_server to add your auth code
     # you could even add other endpoints, etc.
+
     flask_server.run()
 
 Note that the ``diva.Diva.run`` function is simply:

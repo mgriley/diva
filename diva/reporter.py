@@ -13,7 +13,7 @@ class Diva:
         """
         self.reports = []
     
-    def view(self, name, widgets=[]):
+    def view(self, name, user_widgets=[]):
         """
         testing
         """
@@ -21,9 +21,8 @@ class Diva:
             # TODO: clean up this part, could encounter an error here
             # transform widgets to tuple array, of (argName, widget)
             # this gives each widget a unique key b/c arg names must be unique
-            argNames = inspect.getargspec(user_func)[0]
-            for index, widget in enumerate(widgets):
-                widgets[index] = (argNames[index], widget)
+            arg_names = inspect.getargspec(user_func)[0]
+            widgets = list(zip(arg_names, user_widgets))
 
             # save a ref to the user's func and widgets
             self.reports.append({
