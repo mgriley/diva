@@ -1,4 +1,6 @@
+alabaster==0.7.10
 appnope==0.1.0
+Babel==2.4.0
 bkcharts==0.2
 bleach==2.0.0
 bokeh==0.12.6
@@ -7,10 +9,13 @@ chardet==3.0.4
 click==6.7
 cycler==0.10.0
 decorator==4.0.11
+-e git+https://github.com/mgriley/diy_dashboard@775898a1a842e96860887e0ab77b23d57cd76f02#egg=diva
+docutils==0.14
 entrypoints==0.2.2
 Flask==0.12.2
 html5lib==0.999999999
 idna==2.5
+imagesize==0.7.1
 ipykernel==4.6.1
 ipython==6.0.0
 ipython-genutils==0.2.0
@@ -47,9 +52,12 @@ pyzmq==16.0.2
 qtconsole==4.3.0
 requests==2.18.1
 requests-toolbelt==0.8.0
--e git+https://github.com/mgriley/diy_dashboard@5998e0e0d4c876447f355cc68a19c218790e3320#egg=sample_name
+-e git+https://github.com/mgriley/diy_dashboard@775898a1a842e96860887e0ab77b23d57cd76f02#egg=sample_name
 simplegeneric==0.8.1
 six==1.10.0
+snowballstemmer==1.2.1
+Sphinx==1.6.3
+sphinxcontrib-websupport==1.0.1
 strict-rfc3339==0.7
 terminado==0.6
 testpath==0.3
