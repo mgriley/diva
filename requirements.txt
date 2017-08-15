@@ -13,6 +13,7 @@ decorator==4.0.11
 docutils==0.14
 entrypoints==0.2.2
 Flask==0.12.2
+gunicorn==19.7.1
 html5lib==0.999999999
 idna==2.5
 imagesize==0.7.1
@@ -52,7 +53,6 @@ pyzmq==16.0.2
 qtconsole==4.3.0
 requests==2.18.1
 requests-toolbelt==0.8.0
-sample-name==1.0.0
 simplegeneric==0.8.1
 six==1.10.0
 snowballstemmer==1.2.1
