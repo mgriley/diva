@@ -16,6 +16,8 @@
     <script src="{{ url_for('static', filename='vendor/modernizr-2.8.3.min.js') }}"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 
+    <!-- NB: ensure all resources use HTTPS !-->
+
     <!-- bootstrap !-->
     <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap/3/css/bootstrap.css" />
     <script src="//cdn.jsdelivr.net/bootstrap/3/js/bootstrap.js"></script>
@@ -35,14 +37,14 @@
 
     <!-- for embedding bokeh --!>
     <link
-    href="http://cdn.pydata.org/bokeh/release/bokeh-0.12.6.min.css"
+    href="https://cdn.pydata.org/bokeh/release/bokeh-0.12.6.min.css"
     rel="stylesheet" type="text/css">
     <link
-        href="http://cdn.pydata.org/bokeh/release/bokeh-widgets-0.12.6.min.css"
+        href="https://cdn.pydata.org/bokeh/release/bokeh-widgets-0.12.6.min.css"
         rel="stylesheet" type="text/css">
 
-    <script src="http://cdn.pydata.org/bokeh/release/bokeh-0.12.6.min.js"></script>
-    <script src="http://cdn.pydata.org/bokeh/release/bokeh-widgets-0.12.6.min.js"></script>
+    <script src="https://cdn.pydata.org/bokeh/release/bokeh-0.12.6.min.js"></script>
+    <script src="https://cdn.pydata.org/bokeh/release/bokeh-widgets-0.12.6.min.js"></script>
 
     <!-- project-specific setup !-->
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css')}}" >
