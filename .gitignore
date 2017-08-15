@@ -104,3 +104,7 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+# for Sass
+.sass-cache/
+*.css.map
