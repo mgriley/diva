@@ -5,7 +5,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Users Guide &#8212; diva 0.1.0 documentation</title>
+    <title>User’s Guide &#8212; diva 0.1.0 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
@@ -40,13 +40,20 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="users-guide">
-<h1>Users Guide<a class="headerlink" href="#users-guide" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="user-s-guide">
+<h1>User’s Guide<a class="headerlink" href="#user-s-guide" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="setup">
 <h2>Setup<a class="headerlink" href="#setup" title="Permalink to this headline">¶</a></h2>
-<p>You need…
-Setup your virtual environment
-Install from pip like…</p>
+<p>This library requires Python 3. Assuming you already have Python 3 and pip installed, you can setup your project like this:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ mkdir myproj
+$ cd myproj
+$ python3 -m venv myvenv
+$ source myvenv/bin/activate
+$ pip install diva
+</pre></div>
+</div>
+<p>The command <code class="docutils literal"><span class="pre">python3</span> <span class="pre">-m</span> <span class="pre">venv</span> <span class="pre">myvenv</span></code> creates a directory called <code class="docutils literal"><span class="pre">myvenv</span></code> to handle your project’s virtual environment. A virtual environment is a mechanism that gives the illusion (hence “virtual”) that your project’s version of the Python interpreter and any required libraries are installed locally. This isolates your project from other projects that may use different versions of Python (and thus different library versions). Virtual environments prevent conflicts of the form: Project A uses Python 2 and Project B uses Python3, and both depend on <code class="docutils literal"><span class="pre">somelibrary</span></code>, which is installed globally. Project A is broken because it thinks it should use the latest installed version of <code class="docutils literal"><span class="pre">somelibrary</span></code>, which only works for Python 3.</p>
+<p>When you start working on your project, you must activate the environment with <code class="docutils literal"><span class="pre">$</span> <span class="pre">source</span> <span class="pre">myenv/bin/activate</span></code> (which should prepend the environment name to your prompt like <code class="docutils literal"><span class="pre">(myvenv)</span> <span class="pre">...</span> <span class="pre">$</span></code>), and you should deactivate it when you’re done using <code class="docutils literal"><span class="pre">$</span> <span class="pre">deactivate</span></code>.</p>
 </div>
 <div class="section" id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
@@ -274,14 +281,14 @@ API to specify a duration in days, weeks, months, etc. You can install it with p
 <li>bokeh.plotting.figure.Figure</li>
 <li><em>other</em>: the value is converted to a string and wrapped in HTML</li>
 </ul>
-<p>More converters are coming soon. In the meantime, you can add your own:</p>
+<p>Conversion internally uses the <a class="reference external" href="https://docs.python.org/3/library/functools.html">single dispatch decorator from functools</a>, so you can add your own converter like this:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">diva</span> <span class="k">import</span> <span class="n">Diva</span>
 <span class="kn">from</span> <span class="nn">diva.converters</span> <span class="k">import</span> <span class="n">convert_to_html</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">date</span>
 
 <span class="nd">@convert_to_html</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">date</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">my_converter</span><span class="p">(</span><span class="n">d</span><span class="p">):</span>
-    <span class="k">return</span> <span class="s1">&#39;&lt;p&gt;year: </span><span class="si">{}</span><span class="s1">, month: </span><span class="si">{}</span><span class="s1">, day: </span><span class="si">{}</span><span class="s1">&lt;p&gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">year</span><span class="p">,</span> <span class="n">d</span><span class="o">.</span><span class="n">month</span><span class="p">,</span> <span class="n">d</span><span class="o">.</span><span class="n">day</span><span class="p">)</span> 
+    <span class="k">return</span> <span class="s1">&#39;&lt;p&gt;year: </span><span class="si">{}</span><span class="s1">, month: </span><span class="si">{}</span><span class="s1">, day: </span><span class="si">{}</span><span class="s1">&lt;/p&gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">year</span><span class="p">,</span> <span class="n">d</span><span class="o">.</span><span class="n">month</span><span class="p">,</span> <span class="n">d</span><span class="o">.</span><span class="n">day</span><span class="p">)</span> 
 
 <span class="n">app</span> <span class="o">=</span> <span class="n">Diva</span><span class="p">()</span>
 
@@ -342,7 +349,7 @@ API to specify a duration in days, weeks, months, etc. You can install it with p
 <h3>Navigation</h3>
 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Users Guide</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">User’s Guide</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#setup">Setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#introduction">Introduction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#api">API</a></li>
