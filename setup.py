@@ -4,7 +4,7 @@ from setuptools import setup
 
 setup(
     name='diva',
-    version='0.1.1',
+    version='0.1.2',
     description='Analytics dashboards made simple',
     long_description='create a simple web analytics dashboard',
     url='https://github.com/mgriley/diva',
@@ -54,10 +54,12 @@ setup(
             'pytest',
             'tox',
             'sphinx',
-            'gunicorn'
+            'gunicorn',
+            'wheel',
+            'twine'
         ]
     },
-    python_requires='>=3',
+    # python_requires='>=3',
 
     # can create an automatic script, for use on the console,
     # use this! (flask run probably uses this)
