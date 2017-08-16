@@ -42,10 +42,13 @@ pandocfilters==1.4.1
 pexpect==4.2.1
 pickleshare==0.7.4
 pkginfo==1.4.1
+pluggy==0.4.0
 prompt-toolkit==1.0.14
 ptyprocess==0.5.1
+py==1.4.34
 Pygments==2.2.0
 pyparsing==2.2.0
+pytest==3.2.1
 python-dateutil==2.6.0
 pytz==2017.2
 PyYAML==3.12
@@ -62,6 +65,7 @@ strict-rfc3339==0.7
 terminado==0.6
 testpath==0.3
 tornado==4.5.1
+tox==2.7.0
 tqdm==4.14.0
 traitlets==4.3.2
 twine==1.9.1

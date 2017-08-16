@@ -27,11 +27,12 @@ setup(
 
         # Specify the Python versions you support here. In particular, ensure
         # that you indicate whether you support Python 2, Python 3 or both.
-        # TODO: double-check this
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.2',
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
     ],
     keywords='dashboard analytics plotting',
     packages=['diva'],
@@ -58,8 +59,7 @@ setup(
             'gunicorn'
         ]
     },
-    # TODO: double-check this
-    # python_requires='>=3',
+    python_requires='>=3',
 
     # can create an automatic script, for use on the console,
     # use this! (flask run probably uses this)

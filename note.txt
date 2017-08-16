@@ -43,4 +43,6 @@ test must be named test_*.py or *_test.py
 just run "pytest", it will find all test files
 
 Tox:
+To make all the interpreters available, I installed them like this: https://gist.github.com/Bouke/11261620, then
+followed the instructions here: https://www.holger-peters.de/using-pyenv-and-tox.html
 Running "tox" will create a sdist, install it in each venv specified in tox.ini, and run the command (pytest) in each one.

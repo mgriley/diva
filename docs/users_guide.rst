@@ -23,9 +23,10 @@ Let's start with an example:
 
 .. literalinclude:: ../examples/minimal_example.py
 
-You can run the example like:
+You can run the example like::
 
-.. image:: images/example_console.png
+    $ python3 minimal_example.py
+    * Running on http://127.0.0.1:5000/ (Press Ctrl+C to quit)
 
 Going to the given address in your browser should display:
 
