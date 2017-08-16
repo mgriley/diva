@@ -203,8 +203,8 @@ class Color(InputTagWidget):
                 # 'minimum': 0,
                 # 'maximum': 1
             # },
-            # 'minLength': 3,
-            # 'maxLength': 3
+            # 'minItems': 3,
+            # 'maxItems': 3
         # }
         # validate(formData, schema)
 
@@ -359,8 +359,8 @@ class DateRange(InputTagWidget):
     def validate_input(self, formData):
         schema = {
             'type': 'array',
-            'minLength': 2,
-            'maxLength': 2,
+            'minItems': 2,
+            'maxItems': 2,
             'items': {
                 'type': 'string',
             }

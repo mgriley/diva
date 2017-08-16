@@ -37,3 +37,6 @@ To pip install from test pypi:
 pip install --index-url https://test.pypi.org/simple/ diva
 Actually (installs reqs from actual pypi):
 pip install -i https://testpypi.python.org/pypi --extra-index-url https://pypi.python.org/pypi diva
+
+For testing:
+test must be named test_*.py or *_test.py
