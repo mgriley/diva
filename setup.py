@@ -4,7 +4,7 @@ from setuptools import setup
 
 setup(
     name='diva',
-    version='0.1.0',
+    version='0.1.1',
     description='Analytics dashboards made simple',
     long_description='create a simple web analytics dashboard',
     url='https://github.com/mgriley/diva',
@@ -42,21 +42,16 @@ setup(
     install_requires=[
         'flask',
         'jsonschema',
-        'dateutil',
+        'python-dateutil',
         'matplotlib',
+        'mpld3',
         'numpy',
         'pandas',
         'bokeh'
     ],
-    # copy these files into the build
-    # package_data= {
-        # 'diva': [
-            # 'static/*',
-            # 'templates/*'
-        # ]
-    # },
     # TODO: double-check this
-    python_requires='>=3',
+    # python_requires='>=3',
+
     # can create an automatic script, for use on the console,
     # use this! (flask run probably uses this)
     # entry_points={}

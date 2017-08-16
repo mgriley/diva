@@ -32,3 +32,8 @@ https://packaging.python.org/tutorials/distributing-packages/
 python3 setup.py sdist
 python3 setup.py bdist_wheel
 twine upload dist/*
+
+To pip install from test pypi:
+pip install --index-url https://test.pypi.org/simple/ diva
+Actually (installs reqs from actual pypi):
+pip install -i https://testpypi.python.org/pypi --extra-index-url https://pypi.python.org/pypi diva
