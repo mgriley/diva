@@ -1,0 +1,3 @@
+include README.rst LICENSE.txt
+recursive-include diva/static *
+recursive-include diva/templates *

@@ -1,5 +1,4 @@
 import inspect
-import urllib
 from jsonschema import validate
 from collections import OrderedDict
 from .converters import convert_to_html

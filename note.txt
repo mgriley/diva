@@ -1,5 +1,3 @@
-To setup python 3 virtualenv: virtualenv -p python3 env_name
-
 To setup flask: 
 export FLASK_APP=diy_dashboard (package name, that is)
 export FLASK_DEBUG=true
@@ -13,7 +11,7 @@ Requirements:
 pip freeze > requirements.txt
 pip install -r requirements.txt
 
-To create virtual env:
+To create Python 3 virtual env:
 python3 -m venv myenv
 
 To run the examples:
