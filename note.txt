@@ -40,3 +40,7 @@ pip install -i https://testpypi.python.org/pypi --extra-index-url https://pypi.p
 
 For testing:
 test must be named test_*.py or *_test.py
+just run "pytest", it will find all test files
+
+Tox:
+Running "tox" will create a sdist, install it in each venv specified in tox.ini, and run the command (pytest) in each one.

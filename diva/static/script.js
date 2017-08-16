@@ -1,3 +1,4 @@
+// reportId is a string like "report-0", "report-1", ...
 function changeTab(reportId) {
     // hide all report tabs
     $('.report-tab').css('display', 'none');
@@ -7,17 +8,15 @@ function changeTab(reportId) {
 }
 
 $(document).ready(function() {
-    // setup the report selector
+    // setup the buttons in report dropdown menu
     $('.report-option').on('click', function() {
         var reportId = $(this).attr('value');
         changeTab(reportId);
-        //$('.dropdown-content').css('display', 'none');
     });
 
     // open the first tab
     $('.report-option').first().trigger('click');
     
-    console.log('setting up reports');
     // init all reports
     var reportElements = $('.report');
     reportElements.each(function(index) {
@@ -28,6 +27,7 @@ $(document).ready(function() {
         var widgetElements = $('#widgetform-' + index).find('.user-widgets').children();
         widgetElements.each(function() {
             // extract name and type from the widget's outer div
+            // , which is of class widgetcontainer (see index.html)
             var element = $(this);
             var widgetType = element.data('widget-type');
             var widgetName = element.attr('name');

@@ -49,6 +49,15 @@ setup(
         'pandas',
         'bokeh'
     ],
+    # to install: pip install diva[dev]
+    extras_require={
+        'dev': [
+            'pytest',
+            'tox',
+            'sphinx',
+            'gunicorn'
+        ]
+    },
     # TODO: double-check this
     # python_requires='>=3',
 

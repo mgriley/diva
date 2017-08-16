@@ -1,5 +1,7 @@
 /*
-Setup functions for all widget types
+Setup functions for all widget types:
+See the Reports object in reports.js for an explanation of 
+setupMap
 */
 
 // Helpers:
@@ -21,6 +23,7 @@ var getChild = function(parentObj, index) {
     return $(parentObj.children().toArray(index));
 }
 
+// The setup function for a widget that simply wraps an input tag
 var setupInputTagWidget = function(widget) {
     // the input tag is the first and only child of the widget's
     // div parent/container
@@ -37,7 +40,7 @@ var setupInputTagWidget = function(widget) {
 
 // Setup functions for the built-in widgets:
 // Note: the key value in the setup map must match the name of the 
-// widget class exactly
+// widget class (as defined in widgets.py) exactly
 
 // setup all types that use input tags
 var inputTagTypes = ['String', 'Float', 'Int', 'Color', 'Date', 'Time']
@@ -95,7 +98,6 @@ Reports.Widgets.setupMap['Slider'] = function(widget) {
     // the text element should always display the slider's 
     // current value
     inputElement.on('input', function(changeEvent) {
-        console.log('changing the slider value')
         var currentVal = inputElement.val();
         textElement.text(currentVal);
     });
@@ -165,7 +167,7 @@ Reports.Widgets.setupMap['DateRange'] = function(widget) {
         "drops": "down"
     };
     // min and max date not implemented into the data-range widget yet
-    // It doesn't seem useful
+    // It doesn't seem very useful
     /*
     if (inputTag.dataset.mindate) {
         pickerOptions.minDate = inputTag.dataset.mindate; 
