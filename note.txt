@@ -26,3 +26,9 @@ of the relevant request info and returns a response. In flask the Flask object i
 itself the callable.
 
 The docs dir must be called "docs" so that readthedocs can build it properly
+
+Upload instructions:
+https://packaging.python.org/tutorials/distributing-packages/
+python3 setup.py sdist
+python3 setup.py bdist_wheel
+twine upload dist/*
