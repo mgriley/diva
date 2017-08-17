@@ -73,7 +73,7 @@
                     <!-- all user-defined widgets --!>
                     <div class="user-widgets">
                         {% for widget in report.widgets %}
-                        <div class="widgetcontainer" name="{{widget.name}}" data-widget-type="{{widget.type}}">
+                        <div class="widgetcontainer" data-widget-type="{{widget.type}}">
                             {{ widget.html | safe }}
                         </div>
                         {% endfor %}
@@ -82,7 +82,7 @@
                     <div class="update-buttons">
                         <input class="submit-button btn btn-primary"  type="submit" value="reload">
                         {% if report.widgets %}
-                        <input class="reset-button btn btn-secondary" type="reset" value="restore defaults">
+                        <input class="reset-button btn btn-primary" type="reset" value="restore defaults">
                         {% endif %}
                     </div>
                 </form>

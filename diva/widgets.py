@@ -5,7 +5,7 @@ from functools import singledispatch
 from jsonschema import validate
 
 class Widget():
-    def generateHTML(self, widgetId):
+    def generateHTML(self):
         return ''
 
     def parseForm(self, formData):
@@ -15,10 +15,10 @@ class Widget():
         return self.default
 
 class InputTagWidget(Widget):
-    def generateHTML(self, widgetId):
+    def generateHTML(self, formid):
         return render_template('input_tag_widget.html',
                 description=self.description,
-                name=widgetId, attributes=self.attributes)
+                attributes=self.attributes)
 
 class String(InputTagWidget):
     """
@@ -95,10 +95,10 @@ class Bool(Widget):
         self.default = default
         self.attributes = {'type': 'checkbox'}
         
-    def generateHTML(self, widgetId):
+    def generateHTML(self, formid):
         return render_template('checkbox_widget.html',
                 description=self.description,
-                name=widgetId, attributes=self.attributes,
+                attributes=self.attributes,
                 checked=self.default)
 
     def validate_input(self, formData):
@@ -127,9 +127,9 @@ class SelectOne(Widget):
         else:
             self.default = default
 
-    def generateHTML(self, widgetId):
+    def generateHTML(self, formid):
         return render_template('radio_widget.html',
-                name=widgetId,
+                formid=formid,
                 description=self.description,
                 choices=self.choices,
                 defaultChoice=self.default)
@@ -156,9 +156,8 @@ class SelectSubset(Widget):
         self.choices = choices
         self.default = default
 
-    def generateHTML(self, widgetId):
+    def generateHTML(self, formid):
         return render_template('checklist_widget.html',
-                name=widgetId,
                 description=self.description,
                 choices=self.choices,
                 default=self.default)
@@ -226,9 +225,8 @@ class Slider(Widget):
         self.attributes = {'type': 'range', 'min': self.valRange[0],
                 'max': self.valRange[1], 'step': step, 'value': self.default}
 
-    def generateHTML(self, widgetId):
+    def generateHTML(self, formid):
         return render_template('slider_widget.html',
-                name=widgetId,
                 description=self.description,
                 default=('{:.{}f}').format(self.default, self.numDecimals),
                 attributes=self.attributes)
@@ -403,12 +401,10 @@ class Time(InputTagWidget):
         return dt.time()
 
 # given map of form data, return a map of inputs 
-def parse_widget_form_data(widgets, widgetFormData):
-    inputs = {}
-    for name, widget in widgets:
-        formData = widgetFormData.get(name, None)
-        if formData == None:
-            inputs[name] = widget.default_value();
-        else:
-            inputs[name] = widget.parseForm(formData)
+def parse_widget_form_data(widgets, form_data):
+    """
+    Given list of widgets and a list of form data, with one item
+    for each widget, return a list of parsed form data
+    """
+    inputs = [wid.parseForm(data) for wid, data in zip(widgets, form_data)]
     return inputs

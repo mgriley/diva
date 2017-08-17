@@ -1,35 +1,33 @@
 function newFigureWidgets() {
     var obj = {};
 
-    // map from widget name to Widget object, which
-    // is the object returned by the function in setupMap
-    // for a widget of this type
-    obj.widgetMap = {};
+    // List of all Widget objects, which are
+    // the objects returned by the function in setupMap
+    // for a widget of its type
+    obj.widgetList = [];
 
     /*
-    Name is the unique name of the widget (which corresponds to the 
-    name of the target arg in the user's python function), and widget
-    is the Widget object returned from the function in the setupMap for
+    widget is the Widget object returned from the function in the setupMap for
     a widget of this type.
     */
-    obj.add = function(name, widget) {
-        obj.widgetMap[name] = widget;
+    obj.add = function(widget) {
+        obj.widgetList.push(widget);
     };
 
     /*
-    Get a json dict with entries {widgetName: widgetValue}
+    Get a list of widget values from list of widgets
     */
     obj.getValues = function() {
-        var values = {};
-        for (var name in obj.widgetMap) {
-            values[name] = obj.widgetMap[name].getCurrentValue();
+        var values = [];
+        for (var i = 0; i < obj.widgetList.length; ++i) {
+            values.push(obj.widgetList[i].getCurrentValue());
         }
         return values;
     };
 
     obj.resetToDefaults = function() {
-        for (var name in obj.widgetMap) {
-            obj.widgetMap[name].resetToDefault();
+        for (var i = 0; i < obj.widgetList.length; ++i) {
+            obj.widgetList[i].resetToDefault();
         }
     };
 
@@ -53,17 +51,16 @@ function newReport(reportIndex) {
     */
     obj.update =  function() {
         // get the current values of the widgets
-        valueMap = obj.widgets.getValues();
+        valueArray = obj.widgets.getValues();
         var updateRequest = {
             reportIndex: obj.reportIndex,
-            widgetValues: valueMap
+            widgetValues: valueArray
         };
         console.log('form values: ' + JSON.stringify(updateRequest));
         var currentPath = window.location.pathname;
 
         // on success, replace the report's HTML with the response
         var callback = function(data) {
-            console.log(data);
             var figureId = '#figure-' + obj.reportIndex;
             $(figureId).html(data);
         }

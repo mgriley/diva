@@ -44,39 +44,23 @@ class Diva():
         testing
         """
         def real_decorator(user_func):
-            # widgets is an array of (argName, widget)
-            # this gives each widget a unique key b/c arg names must be unique
-            # note that if the widget list is invalid for the given argspec, an
-            # exception will be raised and caught in generate_figure_html
-            arg_names = inspect.getargspec(user_func).args
-            if len(arg_names) < len(user_widgets):
-                error_message = """
-                Your function {} takes {} positional arguments, but you specified {} widgets.
-                If your function uses *varargs or **kwargs, please see the Diva docs for what to do.
-                """.format(user_func.__name__, len(arg_names), len(user_widgets))
-                raise WidgetsError(error_message) 
-            # note that this is truncated to the len of the arg_names list, since
-            # arg_names must be the shorter list
-            widgets = list(zip(arg_names, user_widgets))
-
             # save a ref to the user's func and widgets
             self.reports.append({
                 'name': name,
                 'user_func': user_func,
-                'widgets': widgets
+                'widgets': user_widgets
             })
-
             # the func is not modified
             return user_func
         return real_decorator
 
     # func that generates the figure by passing the user func the 
     # parsed form data, then converting the func's output to HTML
-    def generate_figure_html(self, report, widgetFormData={}):
-        inputs = parse_widget_form_data(report['widgets'], widgetFormData)
+    def generate_figure_html(self, report, form_data={}):
+        inputs = parse_widget_form_data(report['widgets'], form_data)
         user_func = report['user_func']
         try:
-            output = user_func(**inputs)
+            output = user_func(*inputs)
         except TypeError as err:
             error_message = """
             A TypeError was raised when Diva called your function like: {}(**kwargs), where kwargs = {}.
@@ -90,12 +74,12 @@ class Diva():
     # requires an app context to run
     def generate_widget_data(self, report):
         widget_data = []
-        for name, widget in report['widgets']:
+        for index, widget in enumerate(report['widgets']):
             # the widget type is the name of its python class
             # the JS setup func is Reports.Widgets.setupMap[widget_type]
             widget_type = type(widget).__name__
-            html = widget.generateHTML(name)
-            data = {'name': name, 'type': widget_type, 'html': html}
+            html = widget.generateHTML(index)
+            data = {'type': widget_type, 'html': html}
             widget_data.append(data)
         return widget_data
             
@@ -120,23 +104,23 @@ class Diva():
                     },
                     # validated differently by report
                     'widgetValues': {
-                        'type': 'object'
+                        'type': 'array'
                     }
                 },
                 'required': ['reportIndex', 'widgetValues'],
             }
             validate(json, base_schema)
             report_index = json['reportIndex']
+            report = self.reports[report_index]
+            widgets = report['widgets']
 
             # validate all of the given widget values in 'widgetValues'
             inputs = json['widgetValues']
-            report = self.reports[report_index]
-            for name, widget in report['widgets']:
-                value = inputs.get(name, None)
-                if value is None:
-                    raise ValueError('widgetValues contains no value for the widget {}'.format(name))
-                else:
-                    widget.validate_input(value)    
+            if len(inputs) != len(widgets):
+                raise ValueError("the widgetValues array has an incorrect number of items")
+            for wid, value in zip(widgets, inputs):
+                wid.validate_input(value)
+
         except Exception as e:
             raise ValidationError(e.message)
 

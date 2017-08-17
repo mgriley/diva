@@ -30,11 +30,10 @@ $(document).ready(function() {
             // , which is of class widgetcontainer (see index.html)
             var element = $(this);
             var widgetType = element.data('widget-type');
-            var widgetName = element.attr('name');
             // setup a widget of the requested type, and add to report
             var setupFunc = Reports.Widgets.setupMap[widgetType];
             var widget = setupFunc(element);
-            report.widgets.add(widgetName, widget);
+            report.widgets.add(widget);
         });
     });
 });

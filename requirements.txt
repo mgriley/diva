@@ -9,7 +9,8 @@ chardet==3.0.4
 click==6.7
 cycler==0.10.0
 decorator==4.0.11
--e git+https://github.com/mgriley/diva@505ec733405c55c0b6f8858412c00d8587f672d8#egg=diva
+-e git+https://github.com/mgriley/diva@7032b843dd5eccbad7287cfdc0664d3f46b70005#egg=diva
+diva-test==0.1.2
 docutils==0.14
 entrypoints==0.2.2
 Flask==0.12.2

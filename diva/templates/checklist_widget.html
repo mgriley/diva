@@ -1,4 +1,4 @@
 {{ description }}<br>
 {% for choice in choices %}
-<input type="checkbox" id="{{name}}" name="{{name}}" value="{{choice}}" {% if choice in default %} checked {% endif %}> {{choice}}<br>
+<input type="checkbox" value="{{choice}}" {% if choice in default %} checked {% endif %}> {{choice}}<br>
 {% endfor %}
