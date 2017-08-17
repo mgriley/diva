@@ -54,10 +54,11 @@ html, body {
 .report-tab {
   display: none; }
 
-.report {
+.main-pane {
   grid-column: 2;
   overflow: auto;
-  padding: 1em; }
+  padding: 1em;
+  height: 100vh; }
 
 .figure {
   margin: auto; }

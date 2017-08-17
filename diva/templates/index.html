@@ -89,15 +89,17 @@
                 {% endfor %}
             </div>
         </div>
-        {% for report in reports %}
-        <div id="report-{{ loop.index0 }}" class="report report-tab report-{{loop.index0}}" data-reportindex="{{ loop.index0 }}">
-            <div id="figure-{{ loop.index0 }}" class="figure">
-                <h2 class="figure-placeholder">
-                    please reload
-                </h2>
+        <div class="main-pane">
+            {% for report in reports %}
+            <div id="report-{{ loop.index0 }}" class="report report-tab report-{{loop.index0}}" data-reportindex="{{ loop.index0 }}">
+                <div id="figure-{{ loop.index0 }}" class="figure">
+                    <h2 class="figure-placeholder">
+                        please reload
+                    </h2>
+                </div>
             </div>
+            {% endfor %}
         </div>
-        {% endfor %}
     </div>
     <!-- script from HTML5 boilerplate setup !-->
     <script src="{{ url_for('static', filename='plugins.js') }}"></script>

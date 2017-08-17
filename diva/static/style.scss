@@ -82,10 +82,11 @@ html, body {
     display: none;
 }
 
-.report {
+.main-pane {
     grid-column: 2;
     overflow: auto;
     padding: 1em;
+    height: 100vh;
 }
 
 .figure {
@@ -105,5 +106,3 @@ html, body {
 .update-buttons {
     margin-top: 1em;
 }
-
-// Styling for built-in widgets
