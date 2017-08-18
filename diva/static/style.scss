@@ -106,3 +106,19 @@ html, body {
 .update-buttons {
     margin-top: 1em;
 }
+
+// For HTML converters
+
+.dashboard {
+    display: grid;
+    width: 100%;
+    grid-gap: 2px;
+}
+
+.dashboard-pane {
+    border-style: solid;
+    border-color: black;
+    border-width: 2px;
+    padding: 0.5em;
+    overflow: auto;
+}

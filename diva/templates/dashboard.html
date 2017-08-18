@@ -1,0 +1,13 @@
+<div
+    class="dashboard"
+    style="grid-template-rows: repeat({{grid.size[1]}}, auto); grid-template-columns: repeat({{grid.size[0]}}, auto);"
+>
+    {% for pane in grid.panes %}
+    <div
+        class="dashboard-pane"
+        style="grid-row:{{pane.y0}} / {{pane.y1}}; grid-column: {{pane.x0}} / {{pane.x1}};"
+    >
+        {{ pane.html | safe }}
+    </div>
+    {% endfor %}
+</div>

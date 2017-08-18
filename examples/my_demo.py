@@ -7,7 +7,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from datetime import datetime
-from diva import Diva
+from diva import Diva, Dashboard
+from diva.dashboard import row_layout
 from diva.widgets import *
 from bokeh.plotting import figure
 from functools import singledispatch
@@ -60,6 +61,48 @@ def widgets_test(wstr, wflo, wint, wbool, wso, wss, wcol, wsli, wdate, wtime, wd
         body += "widget class: {}<br />type: {}<br />value: {}<br /><br />".format(class_name, arg_type, f.format(arg))
     return '<p>{}</p>'.format(body)
 
+@reporter.view('convert: Dashboard')
+def dashboard_view():
+    a = pd.DataFrame(np.random.randn(20, 20))
+    b = pd.DataFrame(np.random.randn(10, 10))
+    return Dashboard([a, b], [[0, 0, 1, 1], [1, 0, 1, 1]])
+
+@reporter.view('dashboard e')
+def dashboard_b():
+    a = pd.DataFrame(np.random.randn(20, 20))
+    b = pd.DataFrame(np.random.randn(10, 10))
+    c = pd.DataFrame(np.random.randn(5, 5))
+    d = pd.DataFrame(np.random.randn(1, 1))
+    return Dashboard([a, b, c, d])
+
+@reporter.view('dashboard b')
+def dashboard_b():
+    a = pd.DataFrame(np.random.randn(20, 20))
+    b = pd.DataFrame(np.random.randn(10, 10))
+    c = pd.DataFrame(np.random.randn(5, 5))
+    d = pd.DataFrame(np.random.randn(1, 1))
+    return Dashboard([a, b, c, d], [[0, 0, 1, 1], [1, 0, 1, 1], [0, 1, 1, 1], [1, 1, 1, 1]])
+
+@reporter.view('dashboard c')
+def dashboard_c():
+    a = pd.DataFrame(np.random.randn(20, 20))
+    b = pd.DataFrame(np.random.randn(10, 10))
+    c = pd.DataFrame(np.random.randn(5, 5))
+    d = pd.DataFrame(np.random.randn(50, 50))
+    return Dashboard([a, b, c, d], [[0, 0, 3, 1], [0, 1, 1, 1], [1, 1, 1, 1], [2, 1, 1, 1]])
+
+@reporter.view('dashboard d')
+def dashboard_d():
+    x = [1, 2, 3, 4, 5]
+    y = [6, 7, 2, 4, 5]
+    plot = figure(title="bokeh example", x_axis_label='x', y_axis_label='y')
+    plot.line(x, y, legend="Temp", line_width=2)
+    a = pd.DataFrame(np.random.randn(20, 20))
+    b = pd.DataFrame(np.random.randn(10, 10))
+    c = pd.DataFrame(np.random.randn(5, 5))
+    d = pd.DataFrame(np.random.randn(50, 50))
+    return Dashboard([plot, b, c, d], row_layout(2, 2))
+
 @reporter.view('convert: str')
 def raw_html():
     return '<h1>Raw HTML</h1><p>If a string is returned, it is assumed to be raw HTML</p>'
@@ -98,4 +141,4 @@ for i in range(100):
         return '<p>hi</p>'
 
 if __name__ == "__main__":
-    reporter.run()
+    reporter.run(debug=True)
