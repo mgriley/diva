@@ -13,10 +13,7 @@ $(document).ready(function() {
         var reportId = $(this).attr('value');
         changeTab(reportId);
     });
-
-    // open the first tab
-    $('.report-option').first().trigger('click');
-    
+        
     // init all reports
     var reportElements = $('.report');
     reportElements.each(function(index) {
@@ -36,4 +33,7 @@ $(document).ready(function() {
             report.widgets.add(widget);
         });
     });
+
+    // open the first tab
+    $('.report-option').first().trigger('click');
 });

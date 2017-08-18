@@ -59,6 +59,7 @@ setup(
             'twine'
         ]
     },
+    # TODO: figure this out
     # python_requires='>=3',
 
     # can create an automatic script, for use on the console,

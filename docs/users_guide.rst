@@ -1,6 +1,8 @@
 User's Guide
 *************
 
+If you are restless, you can see the `demo server <https://fizznow.com>`_ and the Jumbo Example section. Otherwise, here are the instructions:
+
 Setup
 ============
 
@@ -19,7 +21,7 @@ When you start working on your project, you must activate the environment with `
 Introduction
 =============
 
-Let's start with an example:
+Let's start with a minimal example:
 
 .. literalinclude:: ../examples/minimal_example.py
 
@@ -40,16 +42,16 @@ First, we create a ``Diva`` object. Next, we use python's `decorator syntax <htt
 
 You can pass a list of widgets to ``view``. The ``bar`` function takes an integer and a float, so we pass the ``Int`` and ``Float`` objects to ``view``. As you can see, the webserver generates appropriate HTML widgets. When we reload the ``bar`` report, the values of these widgets are sent to the server, passed to ``bar``, and the result of ``bar`` is sent back to the browser (converted to HTML).
 
-API
-====
+Basic API
+==========
 
 .. function:: Diva()
     
     This internally creates ``self.server``, a Flask object, which is is started by ``run``. More complex uses of Diva may require directly modifying this Flask object.
 
-.. function:: Diva.view(name, widgets=[])
+.. function:: Diva.view(name, widgets=[], short=None)
     
-    ``name`` is what the view will be called in the web interface. ``widgets`` is an optionally empty list of ``diva.widgets.Widget`` objects. Please see the Widgets section for a list of available widgets and what values they pass to the underlying function. Intuitively, the widget values are passed to the function in the order that the widgets appear in the list.
+    Meant to be used with decorator syntax. ``name`` is what the view will be called in the web interface. ``widgets`` is an optionally empty list of ``diva.widgets.Widget`` objects. ``short`` allows you to give a short name (an ID if you will) to the report, which allows you to refer to the report later (see ``compose_view``). It will be set to ``name`` by default. Please see the Widgets section for a list of available widgets and what values they pass to the underlying function. Intuitively, the widget values are passed to the function in the order that the widgets appear in the list.
 
     Consider:
 
@@ -63,6 +65,9 @@ API
 
     .. literalinclude:: ../examples/other_examples.py
         :pyobject: baz_shim
+
+.. functino:: Diva.compose_view(name, view_names, layout=None, short=None)
+    Create a view by composed existing views. ``name`` is the name of the new view, ``view_names`` is a list of short names (see ``short`` in ``view``) of the desired reports, ``layout`` is a Dashboard layout (please see the Dashboard section), and ``short`` is a short name to give to the newly created report (this works the same as ``short`` from ``view``). Note that this function can only be called after you've registered all of the views named in ``view_names``.
             
 .. function:: Diva.run(host=None, port=None, debug=None, **options)
 
@@ -113,6 +118,7 @@ Converters
 Diva attempts to convert the return value of your functions to HTML. The following conversions are supported:
 
 * string: the string is assumed to be HTML.
+* Dashboard: a diva.Dashboard object, see the Dashboard section below
 * matplotlib.figure.Figure (using the mpld3 library)
 * pandas.DataFrame & pandas.Series
 * bokeh.plotting.figure.Figure
@@ -121,6 +127,25 @@ Diva attempts to convert the return value of your functions to HTML. The followi
 You can see an example of each conversion on the `demo server <https://fizznow.com>`_. Conversion internally uses the `single dispatch decorator from functools <https://docs.python.org/3/library/functools.html>`_, so you can add your own converter like this:
 
 .. literalinclude:: ../examples/custom_converter.py
+
+Dashboards
+===========
+
+It is often useful to be able to see some figures side by side for comparison. The ``diva.Dashboard`` class and the ``diva.compose_view`` function allow you to create views that arrange plots, tables, etc. in a grid layout. 
+
+.. diva.Dashboard(convertable_list, layout=None)::
+    ``convertable_list`` is a list of types that can be converted to HTML (see the Converters section), such as perhaps ``[my_figure, my_table, my_custom_html]`` (you can even include other Dashboard objects). ``layout`` specifies how the items are sized and positioned in the grid. For most people's needs, ``layout`` is specified by returned the result of a call to ``diva.row_layout``: 
+
+.. diva.row_layout(*num_columns)::
+    Takes as argument a variable number of integers, where the ith integer gives the number of items to place in row i. Returns a layout compatible with ``Dashboard`` and ``compose_view``. The sum of the numbers must equal the number of items to be arranged. Examples: ``row_layout(1, 1, 1)`` creates a 3-row layout where there is one item per row. ``row_layout(1, 2)`` creates a 2-row layout where there is one item in the first row and two items in the second row (placed side by side, with the row divided in half). 
+
+``row_layout`` should sate most mortals. However, you can also manually specify the ``layout`` argument. It is a list of panes, where a pane is of the form ``[top_left_x, top_left_y, width, height]``. For a 10 by 10 grid container, the top-left corner is (0, 0) and the bottom-right is (10, 10). For example, ``[0, 1, 2, 3]`` occupies the grid space from (0, 1) to (2, 4) on the grid. When giving your list of panes, you can imagine that your grid is any size you want. It doesn't matter because it is scaled to fit its parent div in HTML. For example, layouts ``[[0, 0, 1, 1], [1, 0, 1, 1]]`` and ``[[0, 0, 2, 2], [2, 0, 2, 2]]`` both give a vertically split layout. The first one is not smaller than the second. Note that ``row_layout(2)`` returns this same layout.  
+
+Here is an example that uses dashboards:
+
+.. literalinclude:: ../examples/dashboard_example.py
+
+Perhaps you want to create a dashboard from reports that you've already registered as views. This is what ``compose_view`` is for, see the Jumbo example.
 
 Security
 =========
@@ -137,7 +162,7 @@ However, you can modify the underlying Flask object to add your authentication c
 
     app = Diva()
 
-    # decorate some functions, like normal
+    # create some views like normal
 
     flask_server = app.server
 
@@ -146,9 +171,14 @@ However, you can modify the underlying Flask object to add your authentication c
     # this is the same as flask_server.run()
     app.run()
 
-You can modify the Flask object's view functions (`docs here <http://flask.pocoo.org/docs/0.12/api/>`_) to add your auth code. See the functin ``setup_server`` from the diva source file ``diva/diva/reporter.py`` to see what endpoints diva uses.
+You can modify the Flask object's view functions (`docs here <http://flask.pocoo.org/docs/0.12/api/>`_) to add your auth code. See the function ``setup_server`` from the diva source file ``diva/diva/reporter.py`` to see what endpoints diva uses.
 
 If that doesn't work, things get more complex. Suppose you already have a publically accessible server with a user management system. Perhaps it isn't written in python. You could run diva as a local server (not publically exposed, that is), and setup a password-protected endpoint in your public server that acts as a reverse proxy between your public server and the diva server.
+
+Jumbo Example
+================ 
+
+.. literalinclude:: ../examples/jumbo_example.py
 
 Alternatives
 =============
