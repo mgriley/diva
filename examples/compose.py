@@ -7,8 +7,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from datetime import datetime
-from diva import Diva, Dashboard
-from diva.dashboard import row_layout
+from diva import Diva, row_layout
 from diva.widgets import *
 from bokeh.plotting import figure
 from functools import singledispatch
@@ -61,52 +60,6 @@ def widgets_test(wstr, wflo, wint, wbool, wso, wss, wcol, wsli, wdate, wtime, wd
         body += "widget class: {}<br />type: {}<br />value: {}<br /><br />".format(class_name, arg_type, f.format(arg))
     return '<p>{}</p>'.format(body)
 
-@reporter.view('convert: Dashboard')
-def dashboard_view():
-    a = pd.DataFrame(np.random.randn(20, 20))
-    b = pd.DataFrame(np.random.randn(10, 10))
-    return Dashboard([a, b], [[0, 0, 1, 1], [1, 0, 1, 1]])
-
-@reporter.view('dashboard nice')
-def dashboard_b():
-    x = [1, 2, 3, 4, 5]
-    y = [6, 7, 2, 4, 5]
-    plot = figure(title="bokeh example", x_axis_label='x', y_axis_label='y')
-    plot.line(x, y, legend="Temp", line_width=2)
-    a = pd.DataFrame(np.random.randn(20, 20))
-    b = pd.DataFrame(np.random.randn(10, 10))
-    c = pd.DataFrame(np.random.randn(5, 5))
-    d = pd.DataFrame(np.random.randn(1, 1))
-    return Dashboard([a, b, plot, c, d])
-
-@reporter.view('dashboard b')
-def dashboard_b():
-    a = pd.DataFrame(np.random.randn(20, 20))
-    b = pd.DataFrame(np.random.randn(10, 10))
-    c = pd.DataFrame(np.random.randn(5, 5))
-    d = pd.DataFrame(np.random.randn(1, 1))
-    return Dashboard([a, b, c, d], [[0, 0, 1, 1], [1, 0, 1, 1], [0, 1, 1, 1], [1, 1, 1, 1]])
-
-@reporter.view('dashboard c')
-def dashboard_c():
-    a = pd.DataFrame(np.random.randn(20, 20))
-    b = pd.DataFrame(np.random.randn(10, 10))
-    c = pd.DataFrame(np.random.randn(5, 5))
-    d = pd.DataFrame(np.random.randn(50, 50))
-    return Dashboard([a, b, c, d], [[0, 0, 3, 1], [0, 1, 1, 1], [1, 1, 1, 1], [2, 1, 1, 1]])
-
-@reporter.view('dashboard d')
-def dashboard_d():
-    x = [1, 2, 3, 4, 5]
-    y = [6, 7, 2, 4, 5]
-    plot = figure(title="bokeh example", x_axis_label='x', y_axis_label='y')
-    plot.line(x, y, legend="Temp", line_width=2)
-    a = pd.DataFrame(np.random.randn(20, 20))
-    b = pd.DataFrame(np.random.randn(10, 10))
-    c = pd.DataFrame(np.random.randn(5, 5))
-    d = pd.DataFrame(np.random.randn(50, 50))
-    return Dashboard([plot, b, c, d], row_layout(2, 2))
-
 @reporter.view('convert: str')
 def raw_html():
     return '<h1>Raw HTML</h1><p>If a string is returned, it is assumed to be raw HTML</p>'
@@ -117,32 +70,34 @@ def matplot_fig():
     plt.plot([3,1,4,1,20], 'ks-', mec='w', mew=5, ms=20)
     return plt.gcf()
 
-@reporter.view('convert: pandas.DataFrame')
-def pandas_df():
-    df = pd.DataFrame(np.random.randn(20, 20))
+@reporter.view('convert: pandas.DataFrame', [Int('l'), Int('w')], short='dat')
+def pandas_df(a, b):
+    df = pd.DataFrame(np.random.randn(a, b))
     return df;
 
-@reporter.view('convert: pandas.Series')
-def pandas_series():
-    s = pd.Series([p for p in range(100)])
+@reporter.view('convert: pandas.Series', [Int('c'), Int('d')], short='ser')
+def pandas_series(a, b):
+    s = pd.Series([p for p in range(a * b)])
     return s
 
-@reporter.view('convert: bokeh.plotting.figure.Figure')
-def bokeh_fig():
-    x = [1, 2, 3, 4, 5]
-    y = [6, 7, 2, 4, 5]
+@reporter.view('convert: bokeh.plotting.figure.Figure', [Float('e'), Float('f')], short='bok')
+def bokeh_fig(a, b):
+    x = [1, 2, 3, 4, a]
+    y = [6, 7, 2, 4, b]
     plot = figure(title="bokeh example", x_axis_label='x', y_axis_label='y')
     plot.line(x, y, legend="Temp", line_width=2)
     return plot
 
+reporter.compose_view('composition view', ['dat', 'ser', 'bok'], short='c1')
+reporter.compose_view('compose b', ['bok', 'ser'], short='c2')
+reporter.compose_view('compose d', ['bok', 'ser', 'dat'], row_layout(1, 2))
+
+# compose-ception
+reporter.compose_view('compose c', ['c1', 'c2'], short='c4')
+
 @reporter.view('convert: none of the above (ex. datetime.time)')
 def na():
     return datetime.now()
-
-for i in range(100):
-    @reporter.view('filler report {}'.format(i))
-    def foo():
-        return '<p>hi</p>'
 
 if __name__ == "__main__":
     reporter.run(debug=True)

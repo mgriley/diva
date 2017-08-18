@@ -82,7 +82,7 @@ html, body {
 .dashboard-pane {
   border-style: solid;
   border-color: black;
-  border-width: 2px;
+  border-width: 1px;
   padding: 0.5em;
   overflow: auto; }
 

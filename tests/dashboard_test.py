@@ -1,5 +1,13 @@
 import pytest
-from diva.dashboard import row_layout
+from diva.dashboard import row_layout, get_grid_size
+
+def test_grid_size():
+    size = get_grid_size([[0, 0, 1, 1]])
+    assert size == (1, 1)
+    size = get_grid_size([[0, 0, 1, 1], [1, 0, 1, 1]])
+    assert size == (2, 1)
+    size = get_grid_size(row_layout(1, 2))
+    assert size == (2, 2)
 
 def test_row_layout():
     layout = row_layout(1)

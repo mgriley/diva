@@ -3,6 +3,7 @@ from jsonschema import validate
 from collections import OrderedDict
 from .converters import convert_to_html
 from .widgets import parse_widget_form_data
+from .dashboard import Dashboard
 from .exceptions import *
 from flask import Flask, render_template, request, abort
 
@@ -39,13 +40,20 @@ class Diva():
         """
         return self.server.wsgi_app(environ, start_response)
 
-    def view(self, name, user_widgets=[]):
+    def view(self, name, user_widgets=[], short=None):
         """
-        testing
+        name: the name that will appear in the UI
+        user_widgets: list of Widget objects whose values
+        will be given the user's functon
+        short: a short name, for easy reference to this report later.
+        Defaults to the actual name
         """
+        if short is None:
+            short = name
         def real_decorator(user_func):
             # save a ref to the user's func and widgets
             self.reports.append({
+                'id': short,
                 'name': name,
                 'user_func': user_func,
                 'widgets': user_widgets
@@ -53,6 +61,42 @@ class Diva():
             # the func is not modified
             return user_func
         return real_decorator
+
+    def compose_view(self, name, id_list, layout=None, short=None):
+        """
+        Creates a view that composes the specified views into a single view,
+        arranged according to the given layout.
+
+        id_list: list of IDs/short names of the reports to combine
+        layout: a list of coordinate lists, in the same format as specified in
+        the Dashboard constructor
+        """
+        # get all reports with matching names
+        report_list = [report for report in self.reports if report['id'] in id_list]
+        if len(report_list) < len(id_list):
+            raise ValueError("one of the given reports was not found: {}".format(id_list))
+
+        # concatenate the widgets of the reports
+        all_widgets = []
+        for r in report_list:
+            all_widgets.extend(r['widgets'])
+
+        # register a view that takes the list of all widgets, and gives the 
+        # correct arguments to the correct reports
+        @self.view(name, all_widgets, short)
+        def view_func(*widget_args):
+            # regenerate all reports, passing in the values from the relevant widgets
+            remaining_args = widget_args
+            results = []
+            for r in report_list:
+                num_widgets = len(r['widgets'])
+                # pop this report's widget args from the list
+                arg_list = remaining_args[:num_widgets]
+                remaining_args = remaining_args[num_widgets:]
+                # generate the figure
+                output = r['user_func'](*arg_list)
+                results.append(output)
+            return Dashboard(results, layout)
 
     # func that generates the figure by passing the user func the 
     # parsed form data, then converting the func's output to HTML

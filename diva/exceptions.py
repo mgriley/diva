@@ -3,4 +3,3 @@ class ValidationError(Exception):
 
 class WidgetsError(Exception):
     pass
-
