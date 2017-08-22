@@ -1,3 +1,7 @@
+# not sure why this dir was created in the first place, the package is 
+# in diva/diva
+src
+
 # from the python packaging guide
 *.pyc
 /dist/
