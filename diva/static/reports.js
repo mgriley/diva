@@ -63,9 +63,20 @@ function newReport(reportIndex) {
         var currentPath = window.location.pathname;
 
         // on success, replace the report's HTML with the response
+        // TODO: ensure that any JS included in the returned HTML (via script tags)
+        // is always run
         var callback = function(data) {
+            console.log(data)
+            // update the figure's HTML
             var figureId = '#figure-' + obj.reportIndex;
-            $(figureId).html(data);
+            var figureHTML = data['figureHTML']
+            $(figureId).html(figureHTML);
+
+            // add the utilities to the sidebar
+            var widgetFormId = '#widgetform-' + obj.reportIndex;
+            var utilityHTML = data['utilityHTML'].join('');
+            var utilityTag = $(widgetFormId).find('.utilities');
+            utilityTag.html(utilityHTML);
         }
         $.ajax({
             url: currentPath + 'update',

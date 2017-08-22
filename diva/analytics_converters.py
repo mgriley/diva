@@ -1,6 +1,7 @@
 # use matplotlib with the Agg backend to avoid opening an app
 # to view the matplotlib figures
 from .converters import convert_to_html
+from .utilities import register_util_for_type
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt, mpld3
@@ -14,13 +15,19 @@ from bokeh.embed import components
 def fig_to_html(fig):
     return mpld3.fig_to_html(fig)
 
-# TODO: any way to do this for a plot with multiple figures?
-
 @convert_to_html.register(pd.DataFrame)
 def dataframe_to_html(df):
     # Bootstrap table classes
     css_classes = ['table', 'table-bordered', 'table-hover', 'table-sm']
     return df.to_html(classes=css_classes)    
+
+def df_to_csv(df, data):
+    return df.to_csv()
+
+def generate_df_to_csv(df): 
+    return '<p>heyheyhey</p>'
+
+register_util_for_type(pd.DataFrame, generate_df_to_csv, df_to_csv)
 
 @convert_to_html.register(pd.Series)
 def series_to_html(series):

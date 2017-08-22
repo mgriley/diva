@@ -3,9 +3,10 @@ from jsonschema import validate
 from collections import OrderedDict
 from .converters import convert_to_html
 from .widgets import parse_widget_form_data
+from .utilities import get_utilities_for_value
 from .dashboard import Dashboard
 from .exceptions import *
-from flask import Flask, render_template, request, abort
+from flask import Flask, render_template, request, abort, jsonify
 
 class Diva():
     def __init__(self):
@@ -15,6 +16,7 @@ class Diva():
         self.reports = []
         self.setup_server()
 
+    
     def setup_server(self):
         """
         Sets up an internal Flask server
@@ -28,10 +30,24 @@ class Diva():
         @self.server.route('/update', methods=['POST'])
         def update_figure():
             body = request.get_json()
-            self.validate_request(body)
-            report_index = body['reportIndex']
-            report = self.reports[report_index]
-            return self.generate_figure_html(report, body['widgetValues'])
+            report = self.get_report_from_body(body)
+            self.validate_widget_data(report, body)
+            response_data = self.update_report(report, body['widgetValues'])
+            return jsonify(response_data)
+
+        @self.server.route('/utility', methods=['POST'])
+        def apply_utility():
+            body = request.get_json()
+            report = self.get_report_from_body(body)
+            self.validate_utility_data(report, body)
+            # get the utility
+            utility_index = body['utilityIndex']
+            utility = report['utilities'][utility_index]
+            # apply the utility to the report's current value and 
+            # any user-input sent with the post (for options)
+            current_value = report['current_value']
+            form_data = body['data']
+            return utility['apply'](current_value, form_data)
 
     def __call__(self, environ, start_response):
         """
@@ -39,6 +55,9 @@ class Diva():
         Just delegates the wsgi callable to the underlying flask server
         """
         return self.server.wsgi_app(environ, start_response)
+
+    def run(self, host=None, port=None, debug=None, **options):
+        self.server.run(host, port, debug, **options)
 
     def view(self, name, user_widgets=[], short=None):
         """
@@ -100,7 +119,7 @@ class Diva():
 
     # func that generates the figure by passing the user func the 
     # parsed form data, then converting the func's output to HTML
-    def generate_figure_html(self, report, form_data={}):
+    def update_report(self, report, form_data={}):
         inputs = parse_widget_form_data(report['widgets'], form_data)
         user_func = report['user_func']
         try:
@@ -112,7 +131,15 @@ class Diva():
             and see the Diva docs for help.
             """.format(user_func.__name__, inputs)
             raise WidgetsError(error_message)
-        return convert_to_html(output)
+        utilities = get_utilities_for_value(output)
+        # update the report
+        report['current_value'] = output
+        report['utilities'] = utilities
+        # generate the HTML required to update the UI
+        figure_html = convert_to_html(output)
+        utilityHTML = [util['generate_html'](output) for util in utilities]
+        response = {'figureHTML': figure_html, 'utilityHTML': utilityHTML}
+        return response
 
     # NB: widgets must also be generated b/c jinja render_templates
     # requires an app context to run
@@ -136,37 +163,66 @@ class Diva():
                 'index.html',
                 reports=report_data)
             
+    def validate_widget_data(self, report, json):
+        try:
+            schema = {
+                'type': 'object',
+                'properties': {
+                    'widgetValues': {
+                        'type': 'array'
+                    }
+                },
+                'required': ['widgetValues']
+            }
+            validate(json, schema)
+            # validate all of the given widget values in 'widgetValues'
+            widgets = report['widgets']
+            inputs = json['widgetValues']
+            if len(inputs) != len(widgets):
+                raise ValueError("the widgetValues array has an incorrect number of items")
+            for wid, value in zip(widgets, inputs):
+                wid.validate_input(value)
+        except Exception as e:
+            raise ValidationError(str(e))
+
+    def validate_utility_data(self, report, json):
+        try:
+            schema = {
+                'type': 'object',
+                'properties': {
+                    'utilityIndex': {
+                        'type': 'integer',
+                        'minimum': 0,
+                        'maximum': len(report['utilities']) - 1
+                    },
+                    'data': {
+                    }
+                },
+                'required': ['utilityIndex', 'data']
+            }
+            validate(json, schema)
+        except Exception as e:
+            raise ValidationError(str(e))
+
+    def get_report_from_body(self, body):
+        self.validate_request(body)
+        report_index = body['reportIndex']
+        return self.reports[report_index]
+
     def validate_request(self, json):
         try:
-            base_schema = {
+            schema = {
                 'type': 'object',
                 'properties': {
                     'reportIndex': {
                         'type': 'integer',
                         'minimum': 0,
                         'maximum': len(self.reports) - 1
-                    },
-                    # validated differently by report
-                    'widgetValues': {
-                        'type': 'array'
                     }
                 },
-                'required': ['reportIndex', 'widgetValues'],
+                'required': ['reportIndex'],
             }
-            validate(json, base_schema)
-            report_index = json['reportIndex']
-            report = self.reports[report_index]
-            widgets = report['widgets']
-
-            # validate all of the given widget values in 'widgetValues'
-            inputs = json['widgetValues']
-            if len(inputs) != len(widgets):
-                raise ValueError("the widgetValues array has an incorrect number of items")
-            for wid, value in zip(widgets, inputs):
-                wid.validate_input(value)
-
+            validate(json, schema)
         except Exception as e:
             raise ValidationError(str(e))
-
-    def run(self, host=None, port=None, debug=None, **options):
-        self.server.run(host, port, debug, **options)
+    
