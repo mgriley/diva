@@ -32,9 +32,10 @@ class TestWidgetArgs():
         def sample(a, b):
             return a, b
         
-        form_data = {'a': "1.0", 'b': "2"}
+        form_data = ["1.0", "2"]
         app.generate_figure_html(app.reports[0], form_data)
 
+    @pytest.mark.skip(reason='no long checks this')
     def test_too_many_widgets(self):
         app = Diva()
         with pytest.raises(WidgetsError):
@@ -47,7 +48,7 @@ class TestWidgetArgs():
         @app.view('hi')
         def sample(a):
             return a
-        form_data = {}
+        form_data = []
         with pytest.raises(WidgetsError):
             app.generate_figure_html(app.reports[0], form_data)
 
@@ -56,16 +57,17 @@ class TestWidgetArgs():
         @app.view('hi', [Int('a')])
         def sample(a, b=2):
             return b
-        form_data = {'a': "1"}
+        form_data = ["1"]
         app.generate_figure_html(app.reports[0], form_data)
 
     def test_varargs(self):
         app = Diva()
-        with pytest.raises(WidgetsError):
-            @app.view('hi', [Int('a')])
-            def sample(*varargs):
-                return varargs
+        @app.view('hi', [Int('a')])
+        def sample(*varargs):
+            return varargs
+        app.generate_figure_html(app.reports[0], ["2"])
 
+    @pytest.mark.skip(reason='widgets will always result in kwargs={}')
     def test_kwargs(self):
         app = Diva()
         with pytest.raises(WidgetsError):
@@ -75,21 +77,21 @@ class TestWidgetArgs():
 
 class TestReporter():
     def test_index_bounds(self, minapp):
-        minapp.validate_request({'reportIndex': 0, 'widgetValues': {'bar': 0}})
+        minapp.validate_request({'reportIndex': 0, 'widgetValues': []})
         with pytest.raises(DivaValidationError):
-            minapp.validate_request({'reportIndex': 2, 'widgetValues': {'bar': 0}})
+            minapp.validate_request({'reportIndex': 2, 'widgetValues': []})
         with pytest.raises(DivaValidationError):
-            minapp.validate_request({'reportIndex': -1, 'widgetValues': {'bar': 0}})
+            minapp.validate_request({'reportIndex': -1, 'widgetValues': []})
 
     def test_missing_data(self, minapp):
         with pytest.raises(DivaValidationError):
-            minapp.validate_request({'widgetValues': {'bar': 0}})
+            minapp.validate_request({'widgetValues': [0]})
         with pytest.raises(DivaValidationError):
             minapp.validate_request({'reportIndex': 0})
 
     def missing_widget_value(self):
         with pytest.raises(DivaValidationError):
-            minapp.validate_request({'reportIndex': 0, 'widgetValues': {}})
+            minapp.validate_request({'reportIndex': 0, 'widgetValues': []})
 
 class TestWidgets():
     def test_string(self):

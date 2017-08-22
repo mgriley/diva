@@ -166,7 +166,7 @@ class Diva():
                 wid.validate_input(value)
 
         except Exception as e:
-            raise ValidationError(e.message)
+            raise ValidationError(str(e))
 
     def run(self, host=None, port=None, debug=None, **options):
         self.server.run(host, port, debug, **options)

@@ -300,7 +300,7 @@ class Date(InputTagWidget):
         default: may either be provided as a:
 
         * datetime.date object
-        * string of a date in ISO format (YYYY-mm-dd)
+        * string in ISO format (YYYY-mm-dd)
         * datetime.timedelta object. The date will be current - delta
         * dateutil.relativedelta object. The date will be current - delta
 

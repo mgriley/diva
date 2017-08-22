@@ -114,7 +114,13 @@ def raw_html():
 @reporter.view('convert: matplotlib.figure.Figure')
 def matplot_fig():
     plt.figure()
-    plt.plot([3,1,4,1,20], 'ks-', mec='w', mew=5, ms=20)
+    plt.plot([1, 2, 3, 4], 'ks-', mec='w', mew=5, ms=20)
+    return plt.gcf()
+
+@reporter.view('another matplotlib')
+def matplot_b():
+    plt.figure()
+    plt.plot([5, 6, 7, 7], 'ks-', mec='w', mew=5, ms=20)
     return plt.gcf()
 
 @reporter.view('convert: pandas.DataFrame')

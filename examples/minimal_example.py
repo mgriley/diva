@@ -17,4 +17,4 @@ def bar(size, factor):
     data = [p * factor for p in range(size)]
     return pd.Series(data)
 
-app.run()
+app.run(debug=True)

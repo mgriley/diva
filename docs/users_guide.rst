@@ -29,6 +29,7 @@ You can run the example like::
 
     $ python3 minimal_example.py
     * Running on http://127.0.0.1:5000/ (Press Ctrl+C to quit)
+    ...
 
 Going to the given address in your browser should display:
 
@@ -51,14 +52,7 @@ Basic API
 
 .. function:: Diva.view(name, widgets=[], short=None)
     
-    Meant to be used with decorator syntax. ``name`` is what the view will be called in the web interface. ``widgets`` is an optionally empty list of ``diva.widgets.Widget`` objects. ``short`` allows you to give a short name (an ID if you will) to the report, which allows you to refer to the report later (see ``compose_view``). It will be set to ``name`` by default. Please see the Widgets section for a list of available widgets and what values they pass to the underlying function. Intuitively, the widget values are passed to the function in the order that the widgets appear in the list.
-
-    Consider:
-
-    .. literalinclude:: ../examples/minimal_example.py
-        :pyobject: bar
-
-    Suppose you choose values of 2 and 3.5 for the widgets then reload the report. Internally, ``bar`` will be called like ``bar(a=2, b=3.5)``. To keep things simple, just make the number of widgets the same as the number of function arguments. If your function takes ``*args``, ``**kwargs``, specifies defaults, or is otherwise complex, you must suffer this mild inconvenience:
+    Meant to be used with decorator syntax. ``name`` is what the view will be called in the web interface. ``widgets`` is an optionally empty list of ``diva.widgets.Widget`` objects. ``short`` allows you to give a short name that you can use to refer to the report later (see ``compose_view``). It will be set to ``name`` by default. Please see the Widgets section for a list of available widgets and what values they pass to the underlying function. Intuitively, the widget values are passed to the function in the order that the widgets appear in the list. If your function takes ``**kwargs``, you must suffer this mild inconvenience:
 
     .. literalinclude:: ../examples/other_examples.py
         :pyobject: baz
@@ -66,8 +60,9 @@ Basic API
     .. literalinclude:: ../examples/other_examples.py
         :pyobject: baz_shim
 
-.. functino:: Diva.compose_view(name, view_names, layout=None, short=None)
-    Create a view by composed existing views. ``name`` is the name of the new view, ``view_names`` is a list of short names (see ``short`` in ``view``) of the desired reports, ``layout`` is a Dashboard layout (please see the Dashboard section), and ``short`` is a short name to give to the newly created report (this works the same as ``short`` from ``view``). Note that this function can only be called after you've registered all of the views named in ``view_names``.
+.. function:: Diva.compose_view(name, view_names, layout=None, short=None)
+
+    Creates a view by composing existing views. ``name`` is the name of the new view, ``view_names`` is a list of names (its ``short`` name if one is given, otherwise its UI ``name``) of the desired reports, ``layout`` is a Dashboard layout (please see the Dashboard section), and ``short`` is a short name to give to the newly created report (this works the same as ``short`` from ``view``). Note that this function can only be called after you've registered all of the views named in ``view_names``.
             
 .. function:: Diva.run(host=None, port=None, debug=None, **options)
 
@@ -131,21 +126,19 @@ You can see an example of each conversion on the `demo server <https://fizznow.c
 Dashboards
 ===========
 
-It is often useful to be able to see some figures side by side for comparison. The ``diva.Dashboard`` class and the ``diva.compose_view`` function allow you to create views that arrange plots, tables, etc. in a grid layout. 
+The ``diva.Dashboard`` class and the ``diva.compose_view`` function allow you to create views that arrange plots, tables, etc. in a grid layout. 
 
-.. diva.Dashboard(convertable_list, layout=None)::
-    ``convertable_list`` is a list of types that can be converted to HTML (see the Converters section), such as perhaps ``[my_figure, my_table, my_custom_html]`` (you can even include other Dashboard objects). ``layout`` specifies how the items are sized and positioned in the grid. For most people's needs, ``layout`` is specified by returned the result of a call to ``diva.row_layout``: 
+.. function:: diva.Dashboard(convertable_list, layout=None)::
 
-.. diva.row_layout(*num_columns)::
-    Takes as argument a variable number of integers, where the ith integer gives the number of items to place in row i. Returns a layout compatible with ``Dashboard`` and ``compose_view``. The sum of the numbers must equal the number of items to be arranged. Examples: ``row_layout(1, 1, 1)`` creates a 3-row layout where there is one item per row. ``row_layout(1, 2)`` creates a 2-row layout where there is one item in the first row and two items in the second row (placed side by side, with the row divided in half). 
+    ``convertable_list`` is a list of objects that can be converted to HTML (see the Converters section), such as ``[my_figure, my_table, my_custom_html]`` (you can even include other Dashboard objects). ``layout`` specifies how the items are sized and positioned in the grid. The most convenient way to create a layout is with ``diva.row_layout``.
 
-``row_layout`` should sate most mortals. However, you can also manually specify the ``layout`` argument. It is a list of panes, where a pane is of the form ``[top_left_x, top_left_y, width, height]``. For a 10 by 10 grid container, the top-left corner is (0, 0) and the bottom-right is (10, 10). For example, ``[0, 1, 2, 3]`` occupies the grid space from (0, 1) to (2, 4) on the grid. When giving your list of panes, you can imagine that your grid is any size you want. It doesn't matter because it is scaled to fit its parent div in HTML. For example, layouts ``[[0, 0, 1, 1], [1, 0, 1, 1]]`` and ``[[0, 0, 2, 2], [2, 0, 2, 2]]`` both give a vertically split layout. The first one is not smaller than the second. Note that ``row_layout(2)`` returns this same layout.  
+.. function:: diva.row_layout(*num_columns)::
 
-Here is an example that uses dashboards:
+    The ith integer given is the number of items to place in row i. Returns a layout compatible with ``Dashboard`` and ``compose_view``. Examples: ``row_layout(1, 1, 1)`` creates a 3-row layout where there is one item per row. ``row_layout(1, 2)`` creates a 2-row layout where there is one item in the first row and two items in the second row (placed side by side, with the row divided in half). 
+
+If ``row_layout`` is not enough, you can manually specify the ``layout`` argument. It is a list of ``[top_left_x, top_left_y, width, height]`` lists. For a 10 by 10 grid container, the top-left corner is (0, 0) and the bottom-right is (10, 10). For example, ``[0, 1, 2, 3]`` occupies the grid space from (0, 1) to (2, 4) on the grid. When giving your list of panes, you can imagine that your grid is any size you want. It doesn't matter because it is scaled to fit its parent div in HTML. For example, layouts ``[[0, 0, 1, 1], [1, 0, 1, 1]]`` and ``[[0, 0, 2, 2], [2, 0, 2, 2]]`` both give a vertically split layout. The first one is not smaller than the second. Note that ``row_layout(2)`` returns this same layout.  
 
 .. literalinclude:: ../examples/dashboard_example.py
-
-Perhaps you want to create a dashboard from reports that you've already registered as views. This is what ``compose_view`` is for, see the Jumbo example.
 
 Security
 =========
