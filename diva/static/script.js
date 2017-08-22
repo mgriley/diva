@@ -5,6 +5,14 @@ function changeTab(reportId) {
 
     // display the components for the desired tab
     $('.' + reportId).css('display', 'block');
+
+    // if the report can not yet been opened, load its default
+    var index = parseInt(reportId.split('-')[1])
+    var report = Reports.reportList[index]
+    if (report.notYetSeen) {
+        report.notYetSeen = false;
+        report.update()
+    }
 }
 
 $(document).ready(function() {
@@ -35,5 +43,6 @@ $(document).ready(function() {
     });
 
     // open the first tab
+    // this must be called after the Reports state is configured
     $('.report-option').first().trigger('click');
 });

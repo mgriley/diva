@@ -44,6 +44,9 @@ function newReport(reportIndex) {
         // a Widgets object, as defined above
         widgets: newFigureWidgets()
     };
+
+    // true until the report is opened/viewed
+    obj.notYetSeen = true;
     
     /*
     Use the current values of the widgets to update the HTML displayed 
