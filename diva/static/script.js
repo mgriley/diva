@@ -29,17 +29,8 @@ $(document).ready(function() {
         var report = Reports.create();
         
         // setup the report's user-defined widgets
-        var widgetElements = $('#widgetform-' + index).find('.user-widgets').children();
-        widgetElements.each(function() {
-            // extract name and type from the widget's outer div
-            // , which is of class widgetcontainer (see index.html)
-            var element = $(this);
-            var widgetType = element.data('widget-type');
-            // setup a widget of the requested type, and add to report
-            var setupFunc = Reports.Widgets.setupMap[widgetType];
-            var widget = setupFunc(element);
-            report.widgets.add(widget);
-        });
+        var widgetformParent = $('#widgetform-' + index).find('.user-widgets');
+        report.widgets = Report.Widgets.setupForm(widgetformParent);
     });
 
     // open the first tab

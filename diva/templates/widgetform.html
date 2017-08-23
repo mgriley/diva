@@ -1,0 +1,7 @@
+{% macro widgetform(widgets) %}
+{% for widget in widgets %}
+<div class="widgetcontainer" data-widget-type="{{widget.type}}">
+    {{ widget.html | safe }}
+</div>
+{% endfor %}
+{% endmacro %}

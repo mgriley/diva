@@ -2,7 +2,7 @@ import inspect
 from jsonschema import validate
 from collections import OrderedDict
 from .converters import convert_to_html
-from .widgets import parse_widget_form_data
+from .widgets import widgets_template_data, validate_widget_form_data, parse_widget_form_data
 from .utilities import get_utilities_for_value
 from .dashboard import Dashboard
 from .exceptions import *
@@ -140,51 +140,20 @@ class Diva():
         utilityHTML = [util['generate_html'](output) for util in utilities]
         response = {'figureHTML': figure_html, 'utilityHTML': utilityHTML}
         return response
-
-    # NB: widgets must also be generated b/c jinja render_templates
-    # requires an app context to run
-    def generate_widget_data(self, report):
-        widget_data = []
-        for index, widget in enumerate(report['widgets']):
-            # the widget type is the name of its python class
-            # the JS setup func is Reports.Widgets.setupMap[widget_type]
-            widget_type = type(widget).__name__
-            html = widget.generateHTML(index)
-            data = {'type': widget_type, 'html': html}
-            widget_data.append(data)
-        return widget_data
-            
+                
     def get_index(self):
         report_data = []
         for report in self.reports:
-            widgets = self.generate_widget_data(report)
+            widgets = widgets_template_data(report['widgets'])
             report_data.append({'name': report['name'], 'widgets': widgets})
         return render_template(
                 'index.html',
                 reports=report_data)
             
     def validate_widget_data(self, report, json):
-        try:
-            schema = {
-                'type': 'object',
-                'properties': {
-                    'widgetValues': {
-                        'type': 'array'
-                    }
-                },
-                'required': ['widgetValues']
-            }
-            validate(json, schema)
-            # validate all of the given widget values in 'widgetValues'
-            widgets = report['widgets']
-            inputs = json['widgetValues']
-            if len(inputs) != len(widgets):
-                raise ValueError("the widgetValues array has an incorrect number of items")
-            for wid, value in zip(widgets, inputs):
-                wid.validate_input(value)
-        except Exception as e:
-            raise ValidationError(str(e))
-
+        inputs = json.get('widgetValues', [])
+        validate_widget_data(report['widgets'], inputs)
+        
     def validate_utility_data(self, report, json):
         try:
             schema = {

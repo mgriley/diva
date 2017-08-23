@@ -1,5 +1,5 @@
 from flask import render_template
-from .widgets import parse_widget_form_data
+from .widgets import parse_widget_form_data, validate_widget_form_data, widgets_template_data
 from functools import singledispatch
 
 # map from type to list of utils for that type
@@ -34,11 +34,12 @@ def register_widget_util(ui_name, some_type, gen_widgets, apply_with_params):
     """
     def gen_html(val):
         widgets = gen_widgets(val)
-        # TODO: generate the widget HTML
-        return render_template('utility_button.html', name=ui_name)
+        widget_data = widgets_template_data(widgets)
+        return render_template('utility_button.html', name=ui_name, widgets=widget_data)
 
     def apply_util(val, data):
         widgets = gen_widgets(val)
+        validate_widget_form_data(widgets, data)
         inputs = parse_widget_form_data(widgets, data)
         return apply_with_params(val, *inputs)
 

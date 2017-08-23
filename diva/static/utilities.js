@@ -1,26 +1,47 @@
 // the 'util' arg is the container div tag (class utility) as a JQuery object
+Reports.Utilities.setupMap['basic'] = function(reportIndex, utilityIndex, util) {
+    console.log('setting up simple util');
 
-Reports.Utilities.setupMap['export'] = function(reportIndex, utilityIndex, utility) {
-    console.log('setting up simple util');            
-    var button = utility.find('.utility-button');
-    var onSuccess = function(data) {
-        console.log('received data');
-        console.log(data);
-    };
-    var currentPath = window.location.pathname;
-    var requestBody = {
-        reportIndex: reportIndex,
-        utilityIndex: utilityIndex,
-        data: {}
-    };
-    $(button).on('click', function() {
-        console.log('btn clicked');
-        $.ajax({
+    // helper
+    var submitData = function(data) {
+        var onSuccess = function(responseData) {
+            console.log('received data');
+            console.log(responseData);
+        };
+        var currentPath = window.location.pathname;
+        var requestBody = {
+            reportIndex: reportIndex,
+            utilityIndex: utilityIndex,
+            data: data
+        };
+         $.ajax({
             url: currentPath + 'utility',
             type: 'POST',
             data: JSON.stringify(requestBody),
             contentType: 'application/json',
             success: onSuccess
-        });
+        });   
+    };
+
+    // setup the modal's widget form
+    var modal = utility.find('.utility-modal');
+    var utilityForm = $(modal).find('.utility-form');
+    var widgets = Reports.Widgets.setupForm(utilityForm);
+
+    // upon clicking the button, show the modal
+    var button = utility.find('.utility-button');
+    $(button).on('click', function() {
+        $(modal).modal('show');
+    });
+    
+    // upon submit, submit the widget values
+    $(modal).find('.submit').on('click', function() {
+        var data = widgets.getValues();
+        submitData(data);
+    });
+
+    // upon reset, reset the widget values
+    $(modal).find('.reset').on('click', function() {
+        widgets.resetToDefaults();
     });
 };

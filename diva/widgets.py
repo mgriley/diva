@@ -1,3 +1,4 @@
+from .exceptions import ValidationError
 from flask import render_template
 from datetime import date, time, datetime, timedelta
 from dateutil.relativedelta import *
@@ -400,7 +401,33 @@ class Time(InputTagWidget):
         dt = datetime.strptime(formData, '%H:%M')
         return dt.time()
 
-# given map of form data, return a map of inputs 
+def widgets_template_data(widgets):
+    """
+    The return value of this func should be the input to the widgetform 
+    macro. This generates a widgets form for the given list of widgets.
+    """
+    widget_data = []
+    for index, widget in enumerate(widgets):
+        # the widget type is the name of its python class
+        # the JS setup func is Reports.Widgets.setupMap[widget_type]
+        widget_type = type(widget).__name__
+        html = widget.generateHTML(index)
+        data = {'type': widget_type, 'html': html}
+        widget_data.append(data)
+    return widget_data
+
+def validate_widget_form_data(widgets, inputs):
+    try:
+        # validate all of the given widget values in 'widgetValues'
+        if type(inputs) is not list:
+            raise ValueError("inputs must be an array")    
+        if len(inputs) != len(widgets):
+            raise ValueError("the inputs array has an incorrect number of items")
+        for wid, value in zip(widgets, inputs):
+            wid.validate_input(value)
+    except Exception as e:
+        raise ValidationError(str(e))
+
 def parse_widget_form_data(widgets, form_data):
     """
     Given list of widgets and a list of form data, with one item

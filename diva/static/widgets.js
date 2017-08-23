@@ -5,9 +5,10 @@ setupMap
 */
 
 /*
-This doesn't work. For some reason the currentScript refers to some
+TODO: This doesn't work. For some reason the currentScript refers to some
 script tag that is implicitly added to the end of "head", which 
 screws up the parent/closest call
+
 Helper for setting up utilities, may also be useful for widgets
 Passes the script tag's container to the given setup callback.
 works for:
@@ -24,7 +25,7 @@ var setupUtility = function(callback) {
     });
 }
 
-// Helpers:
+// Helpers for setup:
 
 var resetToDefaultChecked = function(element) {
     var defaultVal = element.prop('defaultChecked');

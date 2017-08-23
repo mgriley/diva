@@ -1,3 +1,4 @@
+{% from 'widgetform.html' import widgetform %}
 <!DOCTYPE html>
 <html class="no-js" lang="">
 <head>
@@ -75,11 +76,7 @@
                     <div class="utilities"></div>
                     <!-- all user-defined widgets --!>
                     <div class="user-widgets">
-                        {% for widget in report.widgets %}
-                        <div class="widgetcontainer" data-widget-type="{{widget.type}}">
-                            {{ widget.html | safe }}
-                        </div>
-                        {% endfor %}
+                        {{ widgetform('user-widgets', report.widgets) }}
                     </div>
                     <!-- if there are user-defined widgets, provide a button to reset to their default values --!>
                     <div class="update-buttons">

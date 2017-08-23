@@ -139,6 +139,25 @@ var Reports = {};
         The functions in the returned object keep a reference to the given JQuery object (closure)
         */
         setupMap: {}
+
+        // Takes a JQuery div containing all of the widgets (via the widgetform macro)
+        // Returns a 'widgets' object (the result of newFigureWidgets)
+        setupForm: function(parentDiv) {
+            var widgetsObj = newFigureWidgets();
+            var widgetElements = parentDiv.children('.widgetcontainer');
+            // setup all of the widgets, adding them to the widgetsObj
+            widgetElements.each(function() {
+                // extract name and type from the widget's outer div
+                // , which is of class widgetcontainer (see index.html)
+                var element = $(this);
+                var widgetType = element.data('widget-type');
+                // setup a widget of the requested type, and add to report
+                var setupFunc = Reports.Widgets.setupMap[widgetType];
+                var widget = setupFunc(element);
+                widgetsObj.add(widget);
+            });   
+            return widgetsObj;
+        };
     };
 
     obj.Utilities = {

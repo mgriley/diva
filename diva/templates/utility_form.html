@@ -1,11 +1,5 @@
 {% from 'widgetform.html' import widgetform %}
-<div class="utility" data-type="basic" >
-    <button
-        type="button"
-        class="btn btn-default utility-button"
-    >{{name}}</button>
-</div>
-<div class="modal fade utility-modal">
+<div class="modal fade">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -16,8 +10,8 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">close</button>
-                <button type="button" class="btn btn-secondary reset">reset</button>
-                <button type="button" class="btn btn-primary submit" data-dismiss="modal">submit</button>
+                <button type="button" class="btn btn-secondary">reset</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">submit</button>
             </div>
         </div>
     </div>
