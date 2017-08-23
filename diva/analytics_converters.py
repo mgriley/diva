@@ -1,7 +1,7 @@
 # use matplotlib with the Agg backend to avoid opening an app
 # to view the matplotlib figures
 from .converters import convert_to_html
-from .utilities import register_util_for_type
+from .utilities import register_simple_util
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt, mpld3
@@ -15,23 +15,28 @@ from bokeh.embed import components
 def fig_to_html(fig):
     return mpld3.fig_to_html(fig)
 
+# @register_simple_util(
+        # 'export to png',
+        # matplotlib.figure.Figure,
+        # [SelectOne('format: ', ['png', 'pdf', 'svg'])])
+# def export_matplot_fig(fig, file_format):
+    # filename = '{}.{}'.format('TODO/filepath', file_format)
+    # return fig.savefig(filename, bbox_inches='tight')
+
 @convert_to_html.register(pd.DataFrame)
 def dataframe_to_html(df):
     # Bootstrap table classes
     css_classes = ['table', 'table-bordered', 'table-hover', 'table-sm']
     return df.to_html(classes=css_classes)    
 
-def df_to_csv(df, data):
-    return df.to_csv()
-
-def generate_df_to_csv(df): 
-    return '<p>heyheyhey</p>'
-
-register_util_for_type(pd.DataFrame, generate_df_to_csv, df_to_csv)
-
 @convert_to_html.register(pd.Series)
 def series_to_html(series):
     return dataframe_to_html(series.to_frame())
+
+@register_simple_util('export to csv', pd.DataFrame)
+@register_simple_util('export to csv', pd.Series)
+def df_to_csv(p):
+    return p.to_csv()
 
 # Keep in mind:
 # Inserting a script tag into the DOM using innerHTML does not

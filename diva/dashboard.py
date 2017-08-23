@@ -1,4 +1,5 @@
 from .converters import convert_to_html
+from .utilities import get_utilities_for_value
 from .utils import render_template
 
 # A 'layout' is a list of [x, y, width, height] items, 1 for each panel
@@ -53,3 +54,7 @@ def dashboard_to_html(dash):
     grid = get_grid(dash)
     return render_template('dashboard.html', grid=grid)
     
+@get_utilities_for_value.register(Dashboard)
+def dashboard_utilities(dash):
+    # compose the utilities of the child elements
+    return [get_utilities_for_value(child) for child in dash.items] 

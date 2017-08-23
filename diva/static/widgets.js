@@ -4,6 +4,26 @@ See the Reports object in reports.js for an explanation of
 setupMap
 */
 
+/*
+This doesn't work. For some reason the currentScript refers to some
+script tag that is implicitly added to the end of "head", which 
+screws up the parent/closest call
+Helper for setting up utilities, may also be useful for widgets
+Passes the script tag's container to the given setup callback.
+works for:
+div parent
+    ...
+    <script>call setupUtility</script>
+div
+*/
+var setupUtility = function(callback) {
+    var currentScript = $(document.currentScript);
+    var parentElement = currentScript.closest('.utility');
+    $(parentElement).ready(function() {
+        callback($(parentElement));
+    });
+}
+
 // Helpers:
 
 var resetToDefaultChecked = function(element) {

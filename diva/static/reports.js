@@ -72,11 +72,21 @@ function newReport(reportIndex) {
             var figureHTML = data['figureHTML']
             $(figureId).html(figureHTML);
 
-            // add the utilities to the sidebar
+            // add the utilities to the sidebars
+            // this should also run the script tags that set them up
             var widgetFormId = '#widgetform-' + obj.reportIndex;
             var utilityHTML = data['utilityHTML'].join('');
             var utilityTag = $(widgetFormId).find('.utilities');
             utilityTag.html(utilityHTML);
+
+            // setup all of the utilities
+            var utilities = utilityTag.children('.utility'); 
+            utilities.each(function(utilityIndex) {
+                var util = $(this)
+                var utilType = util.data('type');
+                var setupFunc = Reports.Utilities.setupMap[utilType];
+                setupFunc(obj.reportIndex, utilityIndex, util);
+            });
         }
         $.ajax({
             url: currentPath + 'update',
@@ -127,6 +137,16 @@ var Reports = {};
             getCurrentValue: noargs function that returns the current value of the widget
         }
         The functions in the returned object keep a reference to the given JQuery object (closure)
+        */
+        setupMap: {}
+    };
+
+    obj.Utilities = {
+        /*
+        Setup map is a dict from utility type (which is specified as data-type in the 
+        div of class utility) to function that takes that parent div and returns nothing.
+        The function is responsible for registering any callbacks that should be called
+        when the user interacts the the util's HTML
         */
         setupMap: {}
     };

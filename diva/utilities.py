@@ -1,38 +1,48 @@
 from flask import render_template
+from .widgets import parse_widget_form_data
+from functools import singledispatch
 
 # map from type to list of utils for that type
 type_utils = {}
 
-def register_util(ui_name, some_type, widgets=[]):
+def register_simple_util(ui_name, some_type, widgets=[]):
     """
+    Helper for register_widget_util
     meant to be used with decorator syntax
-    A helper around general-purpose util registration. This should
-    be sufficient for most utils
+    A helper for utils where the user input options do not depend on the 
+    current value. That is, the options are the same for every value of the
+    given type.
     """
     def decorator(user_func):
         """
-        user_func must take a val, followed by widget-given arguments
+        user_func must be like appy_func followed by widget-set args
         """
-        def generate_html(val):
-            """
-            TODO: Generate an HTML form complete with widgets to meet the user's needs
-            To get the div via jquery in the inline script: look for sibling with the same
-            The script doesn't need to be sent with every util (b/c it doesn't change), but it
-            must be executed with every one. Double-check how this works, may do this automatically
-            via the cache.
-            """
-            return render_template('utility_button.html', 'name': ui_name)
-
-        def get_response(val, data):
-            # TODO: verify that this exists
-            widget_values = data.get('widgetValues', [])
-            # TODO: parse the widget data like normal
-            return user_func(val, *data)
-
-        register_util_for_type(some_type, generate_html, get_response)
+        register_widget_util(ui_name, some_type, lambda val: widgets, user_func)
         return user_func
 
     return decorator
+
+def register_widget_util(ui_name, some_type, gen_widgets, apply_with_params):
+    """
+    Helper for register_util_for_type
+    A helper for creating utilities, using the existing widgets system for params
+
+    gen_widgets: func that takes a figure value and returns a list of widgets for the util
+
+    apply_util: func that takes a figure value followed by a list of args that the widget values will
+    be passed to
+    """
+    def gen_html(val):
+        widgets = gen_widgets(val)
+        # TODO: generate the widget HTML
+        return render_template('utility_button.html', name=ui_name)
+
+    def apply_util(val, data):
+        widgets = gen_widgets(val)
+        inputs = parse_widget_form_data(widgets, data)
+        return apply_with_params(val, *inputs)
+
+    register_util_for_type(some_type, gen_html, apply_util)
 
 def register_util_for_type(my_type, gen_html, apply_util):
     """
@@ -47,9 +57,6 @@ def register_util_for_type(my_type, gen_html, apply_util):
     util = {'generate_html': gen_html, 'apply': apply_util}
     type_utils[my_type].append(util)
 
-def get_utils_for_type(some_type):
-    return type_utils.get(some_type, [])    
-
+@singledispatch
 def get_utilities_for_value(val):
-    utils = get_utils_for_type(type(val))
-    return utils
+    return type_utils.get(type(val), [])    
