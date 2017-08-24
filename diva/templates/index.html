@@ -47,6 +47,10 @@
     <script src="https://cdn.pydata.org/bokeh/release/bokeh-0.12.6.min.js"></script>
     <script src="https://cdn.pydata.org/bokeh/release/bokeh-widgets-0.12.6.min.js"></script>
 
+    <!--to allow utilities to download files on the client side-->
+    <!--from https://github.com/eligrey/FileSaver.js-->
+    <script src="{{ url_for('static', filename='vendor/FileSaver.min.js') }}"></script>
+
     <!-- project-specific setup !-->
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css')}}" >
     <!-- my scripts (NB: must occur in this order) !-->

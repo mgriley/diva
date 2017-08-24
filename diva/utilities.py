@@ -1,6 +1,19 @@
 from flask import render_template
 from .widgets import parse_widget_form_data, validate_widget_form_data, widgets_template_data
 from functools import singledispatch
+from flask import send_file, jsonify
+import base64
+
+def download_from_string(name, content_str):
+    response = {
+        'filename': name,
+        'content': base64.b64encode(bytes(content_str))
+    }
+    return jsonify(response)
+
+def download_from_file(name, filepath):
+    with open(filepath, 'rb') as content_file:
+        return download_from_string(name, content_file.read())
 
 # map from type to list of utils for that type
 type_utils = {}

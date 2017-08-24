@@ -1,9 +1,8 @@
 # use matplotlib with the Agg backend to avoid opening an app
 # to view the matplotlib figures
 from .converters import convert_to_html
-from .utilities import register_simple_util
+from .utilities import register_simple_util, download_from_file, download_from_string
 from .widgets import *
-from flask import send_file
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt, mpld3
@@ -23,11 +22,9 @@ def fig_to_html(fig):
         matplotlib.figure.Figure,
         [String('enter name'), SelectOne('format: ', ['png', 'pdf', 'svg'])])
 def export_matplot_fig(fig, a, file_format):
-    # my_file = tempfile.TemporaryFile()
-    # fig
-    # filename = '{}.{}'.format('TODO/filepath', file_format)
-    # return fig.savefig(filename, bbox_inches='tight')
-    return 'bruhhhh {} {}'.format(a, file_format)
+    my_file = tempfile.NamedTemporaryFile()
+    fig.savefig(my_file.name, bbox_inches='tight', format=file_format)
+    return download_from_file('your_file.{}'.format(file_format), my_file.name)
 
 @convert_to_html.register(pd.DataFrame)
 def dataframe_to_html(df):
@@ -42,13 +39,9 @@ def series_to_html(series):
 @register_simple_util('export to csv', pd.DataFrame)
 @register_simple_util('export to csv', pd.Series)
 def df_to_csv(p):
-    my_file = tempfile.NamedTemporaryFile()
-    print(my_file.name)
-    p.to_csv(my_file.name)
-    response = send_file(my_file.name, mimetype="application/octet-stream", as_attachment=True, attachment_filename="foo.csv")
-    print(response.headers)
-    return response
-
+    csv = p.to_csv()
+    return download_from_string('your_file.csv', csv)
+   
 # Keep in mind:
 # Inserting a script tag into the DOM using innerHTML does not
 # execute any script tags in the transplanted HTML.

@@ -5,8 +5,13 @@ Reports.Utilities.setupMap['basic'] = function(reportIndex, utilityIndex, utilit
     // helper
     var submitData = function(data) {
         var onSuccess = function(responseData) {
-            console.log('received data');
             console.log(responseData);
+            // The server should have responsed with a file, so save it
+            // content is in base64, so decode
+            var content = atob(responseData['content']);
+            var filename = responseData['filename'];
+            var file = new File([content], filename);
+            saveAs(file);
         };
         var currentPath = window.location.pathname;
         var requestBody = {
@@ -28,11 +33,16 @@ Reports.Utilities.setupMap['basic'] = function(reportIndex, utilityIndex, utilit
     var utilityForm = $(modal).find('.utility-form');
     var widgets = Reports.Widgets.setupForm(utilityForm);
 
-    // upon clicking the button, show the modal
+    // if the button takes no widgets, then clicking should submit
+    // otherwise clicking should open the widget form for submitting
     var button = utility.find('.utility-button');
     $(button).on('click', function() {
-        console.log('showing');
-        $(modal).modal('show');
+        var requiresInput = widgets.widgetList.length > 0;
+        if (requiresInput) {
+            $(modal).modal('show');
+        } else {
+            submitData(widgets.getValues());        
+        }
     });
     
     // upon submit, submit the widget values
