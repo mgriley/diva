@@ -138,7 +138,7 @@ var Reports = {};
         }
         The functions in the returned object keep a reference to the given JQuery object (closure)
         */
-        setupMap: {}
+        setupMap: {},
 
         // Takes a JQuery div containing all of the widgets (via the widgetform macro)
         // Returns a 'widgets' object (the result of newFigureWidgets)
@@ -157,7 +157,7 @@ var Reports = {};
                 widgetsObj.add(widget);
             });   
             return widgetsObj;
-        };
+        }
     };
 
     obj.Utilities = {

@@ -2,6 +2,8 @@
 # to view the matplotlib figures
 from .converters import convert_to_html
 from .utilities import register_simple_util
+from .widgets import *
+from flask import send_file
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt, mpld3
@@ -10,18 +12,22 @@ import pandas as pd
 from bokeh.plotting.figure import Figure
 from bokeh.resources import CDN
 from bokeh.embed import components
+import tempfile
 
 @convert_to_html.register(matplotlib.figure.Figure)
 def fig_to_html(fig):
     return mpld3.fig_to_html(fig)
 
-# @register_simple_util(
-        # 'export to png',
-        # matplotlib.figure.Figure,
-        # [SelectOne('format: ', ['png', 'pdf', 'svg'])])
-# def export_matplot_fig(fig, file_format):
+@register_simple_util(
+        'export',
+        matplotlib.figure.Figure,
+        [String('enter name'), SelectOne('format: ', ['png', 'pdf', 'svg'])])
+def export_matplot_fig(fig, a, file_format):
+    # my_file = tempfile.TemporaryFile()
+    # fig
     # filename = '{}.{}'.format('TODO/filepath', file_format)
     # return fig.savefig(filename, bbox_inches='tight')
+    return 'bruhhhh {} {}'.format(a, file_format)
 
 @convert_to_html.register(pd.DataFrame)
 def dataframe_to_html(df):
@@ -36,7 +42,12 @@ def series_to_html(series):
 @register_simple_util('export to csv', pd.DataFrame)
 @register_simple_util('export to csv', pd.Series)
 def df_to_csv(p):
-    return p.to_csv()
+    my_file = tempfile.NamedTemporaryFile()
+    print(my_file.name)
+    p.to_csv(my_file.name)
+    response = send_file(my_file.name, mimetype="application/octet-stream", as_attachment=True, attachment_filename="foo.csv")
+    print(response.headers)
+    return response
 
 # Keep in mind:
 # Inserting a script tag into the DOM using innerHTML does not

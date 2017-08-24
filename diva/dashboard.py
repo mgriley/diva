@@ -1,6 +1,7 @@
 from .converters import convert_to_html
 from .utilities import get_utilities_for_value
 from .utils import render_template
+from functools import partial
 
 # A 'layout' is a list of [x, y, width, height] items, 1 for each panel
 # where x, y is the position of the top-left corner of the panel, and
@@ -56,5 +57,23 @@ def dashboard_to_html(dash):
     
 @get_utilities_for_value.register(Dashboard)
 def dashboard_utilities(dash):
+
+    def gen_html_for_item(dash, util, item_index):
+        return util['generate_html'](dash.items[item_index])
+
+    def apply_for_item(dash, form_data, util, item_index):
+        return util['apply'](dash.items[item_index], form_data)
+
     # compose the utilities of the child elements
-    return [get_utilities_for_value(child) for child in dash.items] 
+    all_utils = []
+    for index, child in enumerate(dash.items):
+        for child_util in get_utilities_for_value(child):
+            # partially apply the util and the child index to the child util
+            # so that the resulting util takes a dashboard object and delegrates
+            # it to the correct util of the correct child
+            util = {}
+            util['generate_html'] = partial(gen_html_for_item, util=child_util, item_index=index)
+            util['apply'] = partial(apply_for_item, util=child_util, item_index=index)
+            all_utils.append(util)
+    return all_utils
+

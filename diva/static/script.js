@@ -30,7 +30,7 @@ $(document).ready(function() {
         
         // setup the report's user-defined widgets
         var widgetformParent = $('#widgetform-' + index).find('.user-widgets');
-        report.widgets = Report.Widgets.setupForm(widgetformParent);
+        report.widgets = Reports.Widgets.setupForm(widgetformParent);
     });
 
     // open the first tab

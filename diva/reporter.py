@@ -31,7 +31,7 @@ class Diva():
         def update_figure():
             body = request.get_json()
             report = self.get_report_from_body(body)
-            self.validate_widget_data(report, body)
+            self.validate_widget_values(report, body)
             response_data = self.update_report(report, body['widgetValues'])
             return jsonify(response_data)
 
@@ -150,9 +150,9 @@ class Diva():
                 'index.html',
                 reports=report_data)
             
-    def validate_widget_data(self, report, json):
+    def validate_widget_values(self, report, json):
         inputs = json.get('widgetValues', [])
-        validate_widget_data(report['widgets'], inputs)
+        validate_widget_form_data(report['widgets'], inputs)
         
     def validate_utility_data(self, report, json):
         try:

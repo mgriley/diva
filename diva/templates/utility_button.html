@@ -4,20 +4,20 @@
         type="button"
         class="btn btn-default utility-button"
     >{{name}}</button>
-</div>
-<div class="modal fade utility-modal">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5>{{ name }}</h5>
-            </div>
-            <div class="modal-body utility-form">
-                {% widgetform(widgets) %}
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">close</button>
-                <button type="button" class="btn btn-secondary reset">reset</button>
-                <button type="button" class="btn btn-primary submit" data-dismiss="modal">submit</button>
+    <div class="modal fade utility-modal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5>{{ name }}</h5>
+                </div>
+                <div class="modal-body utility-form">
+                    {{ widgetform(widgets) }}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">close</button>
+                    <button type="button" class="btn btn-secondary reset">reset</button>
+                    <button type="button" class="btn btn-primary submit" data-dismiss="modal">submit</button>
+                </div>
             </div>
         </div>
     </div>
