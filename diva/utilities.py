@@ -4,16 +4,17 @@ from functools import singledispatch
 from flask import send_file, jsonify
 import base64
 
-def download_from_string(name, content_str):
-    response = {
-        'filename': name,
-        'content': base64.b64encode(bytes(content_str))
-    }
-    return jsonify(response)
-
-def download_from_file(name, filepath):
+def file_response(name, filepath):
     with open(filepath, 'rb') as content_file:
-        return download_from_string(name, content_file.read())
+        file_bytes = content_file.read()
+        encoded_bytes = base64.b64encode(file_bytes)
+        print(encoded_bytes.decode('utf-8'))
+        response = {
+            'filename': name,
+            'content': encoded_bytes.decode('utf-8')
+        }
+        return jsonify(response)
+
 
 # map from type to list of utils for that type
 type_utils = {}

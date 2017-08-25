@@ -1,3 +1,16 @@
+/*
+Must convert strings to array buffers before passing to Blob b/c array
+buffers are for arbitrary binary data.
+see: https://stackoverflow.com/questions/16245767/creating-a-blob-from-a-base64-string-in-javascript
+*/
+var strToArrayBuffer = function(str) {
+    var byteNums = new Array(str.length);
+    for (var i = 0; i < str.length; ++i) {
+        byteNums[i] = str.charCodeAt(i);
+    }
+    return new Uint8Array(byteNums);
+};
+
 // the 'utility' arg is the container div tag (class utility) as a JQuery object
 Reports.Utilities.setupMap['basic'] = function(reportIndex, utilityIndex, utility) {
     console.log('setting up simple util');
@@ -5,13 +18,13 @@ Reports.Utilities.setupMap['basic'] = function(reportIndex, utilityIndex, utilit
     // helper
     var submitData = function(data) {
         var onSuccess = function(responseData) {
-            console.log(responseData);
-            // The server should have responsed with a file, so save it
-            // content is in base64, so decode
-            var content = atob(responseData['content']);
+            // the 'content' field of the response is the string of the 
+            // file data encoded in base64
+            var contentStr = window.atob(responseData['content']);
+            var arrayBuffer = strToArrayBuffer(contentStr);
             var filename = responseData['filename'];
-            var file = new File([content], filename);
-            saveAs(file);
+            var blob = new Blob([arrayBuffer]);
+            saveAs(blob, filename);
         };
         var currentPath = window.location.pathname;
         var requestBody = {
