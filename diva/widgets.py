@@ -6,7 +6,7 @@ from functools import singledispatch
 from jsonschema import validate
 
 class Widget():
-    def generateHTML(self):
+    def generateHTML(self, formid):
         return ''
 
     def parseForm(self, formData):
@@ -20,6 +20,27 @@ class InputTagWidget(Widget):
         return render_template('input_tag_widget.html',
                 description=self.description,
                 attributes=self.attributes)
+
+class Skip(Widget):
+    """
+    A non-interactive widget that just provides a label/header.
+    Useful for clarifying long widget forms
+    """
+    def __init__(self, description):
+        self.description = description
+
+    def generateHTML(self, formid):
+        return render_template('label_widget.html', description=self.description)
+
+    def parseForm(self, form_data):
+        """
+        This widget should be skipped when parsing form data
+        see the should_skip and parse_widget_form_data functions below
+        """
+        pass
+
+    def validate_input(self, form_data):
+        pass
 
 class String(InputTagWidget):
     """
@@ -415,6 +436,12 @@ def widgets_template_data(widgets):
         data = {'type': widget_type, 'html': html}
         widget_data.append(data)
     return widget_data
+ 
+def should_skip(widget):
+    """
+    True if should skip this widget when parsing values, false ow
+    """
+    return type(widget).__name__ == 'Skip'   
 
 def validate_widget_form_data(widgets, inputs):
     try:
@@ -433,5 +460,6 @@ def parse_widget_form_data(widgets, form_data):
     Given list of widgets and a list of form data, with one item
     for each widget, return a list of parsed form data
     """
-    inputs = [wid.parseForm(data) for wid, data in zip(widgets, form_data)]
+    inputs = [wid.parseForm(data) for wid, data in 
+            zip(widgets, form_data) if not should_skip(wid)]
     return inputs

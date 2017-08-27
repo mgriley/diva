@@ -5,6 +5,11 @@ from flask import send_file, jsonify
 import base64
 
 def file_response(name, filepath):
+    """
+    name: when the client downloads the file, it will be called this (ex. "my_file.csv")
+
+    filepath: path to the file that should be sent to the client
+    """
     with open(filepath, 'rb') as content_file:
         file_bytes = content_file.read()
         encoded_bytes = base64.b64encode(file_bytes)
@@ -15,17 +20,30 @@ def file_response(name, filepath):
         }
         return jsonify(response)
 
-
 # map from type to list of utils for that type
 type_utils = {}
 
+def label_utility(ui_name):
+    """
+    Get a label utility with the given name
+    """
+    def gen_html(val):
+        return render_template('utility_label.html', name=ui_name)
+    # this will never be called
+    def apply(val, form_data):
+        pass
+    return {'generate_html': gen_html, 'apply': apply}
+
 def register_simple_util(ui_name, some_type, widgets=[]):
     """
-    Helper for register_widget_util
-    meant to be used with decorator syntax
-    A helper for utils where the user input options do not depend on the 
-    current value. That is, the options are the same for every value of the
-    given type.
+    Helper function for register_widget_util.
+
+    widgets: a list of widgets. The values of these widgets are passed to
+    the decorated function like ``your_func(val, *widget_values)``
+
+    This is meant to decorate a function that takes the view value as its first
+    argument, followed by a list of arguments that are given by widgets. It returns 
+    the result of a call to ``file_response``
     """
     def decorator(user_func):
         """
@@ -38,13 +56,18 @@ def register_simple_util(ui_name, some_type, widgets=[]):
 
 def register_widget_util(ui_name, some_type, gen_widgets, apply_with_params):
     """
-    Helper for register_util_for_type
-    A helper for creating utilities, using the existing widgets system for params
+    ui_name: the name of this utility in the UI
 
-    gen_widgets: func that takes a figure value and returns a list of widgets for the util
+    some_type: this utility will appear in the sidebar whenever your view function
+    returns a value of type ``some_type``
 
-    apply_util: func that takes a figure value followed by a list of args that the widget values will
-    be passed to
+    gen_widgets(val): a function that takes the report value (of the specified type), and 
+    returns a list of widgets. These widget values will be passed like:
+    ``apply_with_params(val, *widget_values)``.
+
+    apply_with_params: a function that takes the report value (of the specified type) as 
+    its first parameter, followed by a list of arguments that are given by widgets. The function must
+    return the result of a call to ``file_response``
     """
     def gen_html(val):
         widgets = gen_widgets(val)

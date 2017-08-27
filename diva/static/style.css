@@ -74,6 +74,19 @@ html, body {
 .update-buttons {
   margin-top: 1em; }
 
+.label-widget {
+  font-size: 1.25em;
+  margin-top: 1em; }
+
+.utilities-pane {
+  margin-top: 2em; }
+
+.utility-label {
+  font-size: 1.25em; }
+
+.utility {
+  margin-bottom: 1em; }
+
 .dashboard {
   display: grid;
   width: 100%;
@@ -85,5 +98,8 @@ html, body {
   border-width: 1px;
   padding: 0.5em;
   overflow: auto; }
+
+.pane-name {
+  font-size: 1.5em; }
 
 /*# sourceMappingURL=style.css.map */

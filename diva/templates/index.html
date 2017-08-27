@@ -76,8 +76,6 @@
                 {% for report in reports %}
                 <form id="widgetform-{{ loop.index0 }}" class="widgetform report-tab report-{{loop.index0}}">
                     <div class="report-title">{{ report.name }}</div>
-                    <!--utilities go here, if any-->
-                    <div class="utilities"></div>
                     <!-- all user-defined widgets --!>
                     <div class="user-widgets">
                         {{ widgetform(report.widgets) }}
@@ -88,6 +86,13 @@
                         {% if report.widgets %}
                         <input class="reset-button btn btn-primary" type="reset" value="restore defaults">
                         {% endif %}
+                    </div>
+                    <!--utilities go here, if any-->
+                    <div class="utilities-pane">
+                        <h4>Utilities</h4>
+                        <div class="utilities">
+                            <p>none</p>
+                        </div>
                     </div>
                 </form>
                 {% endfor %}

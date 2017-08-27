@@ -1,5 +1,5 @@
 from .converters import convert_to_html
-from .utilities import get_utilities_for_value
+from .utilities import get_utilities_for_value, label_utility
 from .utils import render_template
 from functools import partial
 
@@ -41,12 +41,13 @@ def get_grid(dash):
 
     # create a list of panes
     panes = []
-    for item, coord in zip(dash.items, dash.layout):
+    for index, (item, coord) in enumerate(zip(dash.items, dash.layout)):
         pane = {}
         # add 1 to point b/c CSS grids start at (1, 1) not (0, 0)
         css_coord = coord[0] + 1, coord[1] + 1, coord[2], coord[3]
         pane['x'], pane['y'], pane['w'], pane['h'] = css_coord
         pane['html'] = convert_to_html(item)
+        pane['name'] = 'report {}'.format(index) 
         panes.append(pane)
     return {'size': grid_size, 'panes': panes}
  
@@ -67,7 +68,12 @@ def dashboard_utilities(dash):
     # compose the utilities of the child elements
     all_utils = []
     for index, child in enumerate(dash.items):
-        for child_util in get_utilities_for_value(child):
+        child_utilities = get_utilities_for_value(child)
+        if len(child_utilities) > 0:
+            # separate the utilities of different children with a label
+            label = label_utility('report {}'.format(index))
+            all_utils.append(label)
+        for child_util in child_utilities:
             # partially apply the util and the child index to the child util
             # so that the resulting util takes a dashboard object and delegrates
             # it to the correct util of the correct child

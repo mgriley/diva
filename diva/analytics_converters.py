@@ -1,7 +1,7 @@
 # use matplotlib with the Agg backend to avoid opening an app
 # to view the matplotlib figures
 from .converters import convert_to_html
-from .utilities import register_simple_util, file_response
+from .utilities import register_simple_util, register_widget_util, file_response
 from .widgets import *
 import matplotlib
 matplotlib.use('Agg')
@@ -21,10 +21,7 @@ def fig_to_html(fig):
         'export',
         matplotlib.figure.Figure,
         [SelectOne('format: ', ['png', 'pdf', 'svg'])])
-def export_matplot_fig(fig, a, file_format):
-    # with open("sample_export.{}".format(file_format), 'w') as my_file:
-        # fig.savefig(my_file.name, format=file_format)
-    #     return file_response('foobar.png', my_file.name)
+def export_matplot_fig(fig, file_format):
     my_file = tempfile.NamedTemporaryFile()
     fig.savefig(my_file.name, bbox_inches='tight', format=file_format)
     return file_response('your_file.{}'.format(file_format), my_file.name)

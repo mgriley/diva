@@ -140,6 +140,21 @@ If ``row_layout`` is not enough, you can manually specify the ``layout`` argumen
 
 .. literalinclude:: ../examples/dashboard_example.py
 
+Utilities
+==========
+
+Depending on the type that your function returns, utility buttons may be added to the sidebar. If your view function returns a pandas DataFrame, for example, a button will appear in the widgets sidebar allowing you to export it to a .csv file. You can add utilities like this:
+
+.. literalinclude:: ../examples/custom_utility.py
+
+As shown in the example, utilities must return the result of a call to ``file_response``. This triggers a file download on the client side.
+
+.. autofunction:: diva.utilities.register_widget_util
+
+.. autofunction:: diva.utilities.register_simple_util
+
+.. autofunction:: diva.utilities.file_response
+
 Security
 =========
 
@@ -149,7 +164,7 @@ If you are allowing public access to your site, you are responsible for sanitizi
 
 **Password Protection**
 
-diva currently doesn't support password management. It may support simple password protection in the future, but likely not a full user access system. 
+Diva currently doesn't support password management. It may support simple password protection in the future, but likely not a full user access system. 
 
 However, you can modify the underlying Flask object to add your authentication code like this::
 

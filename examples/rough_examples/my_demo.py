@@ -61,11 +61,23 @@ def widgets_test(wstr, wflo, wint, wbool, wso, wss, wcol, wsli, wdate, wtime, wd
         body += "widget class: {}<br />type: {}<br />value: {}<br /><br />".format(class_name, arg_type, f.format(arg))
     return '<p>{}</p>'.format(body)
 
+@reporter.view('Skip wid', [Skip('heyhye'), Int('hey'), Skip('barbar')])
+def skip_sample(i):
+    return i
+
 @reporter.view('convert: Dashboard')
 def dashboard_view():
     a = pd.DataFrame(np.random.randn(20, 20))
     b = pd.DataFrame(np.random.randn(10, 10))
     return Dashboard([a, b], [[0, 0, 1, 1], [1, 0, 1, 1]])
+
+@reporter.view('test dash')
+def test_dash():
+    a = pd.DataFrame(np.random.randn(10, 10));
+    b = pd.DataFrame(np.random.randn(10, 10));
+    plt.figure()
+    plt.plot([1, 2, 3, 4], 'ks-', mec='w', mew=5, ms=20)
+    return Dashboard([a, plt.gcf(), b])
 
 @reporter.view('dashboard nice')
 def dashboard_b():

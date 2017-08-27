@@ -75,18 +75,21 @@ function newReport(reportIndex) {
             // add the utilities to the sidebars
             // this should also run the script tags that set them up
             var widgetFormId = '#widgetform-' + obj.reportIndex;
-            var utilityHTML = data['utilityHTML'].join('');
-            var utilityTag = $(widgetFormId).find('.utilities');
-            utilityTag.html(utilityHTML);
+            htmlArray = data['utilityHTML'];
+            if (htmlArray.length > 0) {
+                var utilityHTML = htmlArray.join('');
+                var utilityTag = $(widgetFormId).find('.utilities');
+                utilityTag.html(utilityHTML);
 
-            // setup all of the utilities
-            var utilities = utilityTag.children('.utility'); 
-            utilities.each(function(utilityIndex) {
-                var util = $(this)
-                var utilType = util.data('type');
-                var setupFunc = Reports.Utilities.setupMap[utilType];
-                setupFunc(obj.reportIndex, utilityIndex, util);
-            });
+                // setup all of the utilities
+                var utilities = utilityTag.children('.utility'); 
+                utilities.each(function(utilityIndex) {
+                    var util = $(this)
+                    var utilType = util.data('type');
+                    var setupFunc = Reports.Utilities.setupMap[utilType];
+                    setupFunc(obj.reportIndex, utilityIndex, util);
+                });
+            }
         }
         $.ajax({
             url: currentPath + 'update',

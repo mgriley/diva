@@ -3,7 +3,7 @@ from diva import Diva
 from diva.widgets import *
 from diva.converters import convert_to_html
 from jsonschema.exceptions import ValidationError
-from diva.exceptions import ValidationError as DivaValidationError, WidgetsError
+from diva.exceptions import ValidationError as DivaValidationError, WidgetsError, WidgetInputError
 
 import matplotlib
 # use the Agg backend, which is non-interactivate (just for PNGs)
@@ -35,7 +35,7 @@ class TestWidgetArgs():
         form_data = ["1.0", "2"]
         app.update_report(app.reports[0], form_data)
 
-    @pytest.mark.skip(reason='no long checks this')
+    @pytest.mark.skip(reason='no longer checks this')
     def test_too_many_widgets(self):
         app = Diva()
         with pytest.raises(WidgetsError):
@@ -49,7 +49,7 @@ class TestWidgetArgs():
         def sample(a):
             return a
         form_data = []
-        with pytest.raises(WidgetsError):
+        with pytest.raises(WidgetInputError):
             app.update_report(app.reports[0], form_data)
 
     def test_defaults(self):

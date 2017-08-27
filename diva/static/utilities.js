@@ -71,3 +71,7 @@ Reports.Utilities.setupMap['basic'] = function(reportIndex, utilityIndex, utilit
         widgets.resetToDefaults();
     });
 };
+
+Reports.Utilities.setupMap['label'] = function() {
+    // it's just a label, so no need for setup 
+};

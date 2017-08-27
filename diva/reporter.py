@@ -2,7 +2,8 @@ import inspect
 from jsonschema import validate
 from collections import OrderedDict
 from .converters import convert_to_html
-from .widgets import widgets_template_data, validate_widget_form_data, parse_widget_form_data
+from .widgets import (widgets_template_data, validate_widget_form_data,
+        parse_widget_form_data, Skip, should_skip)
 from .utilities import get_utilities_for_value
 from .dashboard import Dashboard
 from .exceptions import *
@@ -96,8 +97,10 @@ class Diva():
             raise ValueError("one of the given reports was not found: {}".format(id_list))
 
         # concatenate the widgets of the reports
+        # also add labels between the widget groups
         all_widgets = []
-        for r in report_list:
+        for index, r in enumerate(report_list):
+            all_widgets.append(Skip('report {}'.format(index)))
             all_widgets.extend(r['widgets'])
 
         # register a view that takes the list of all widgets, and gives the 
@@ -108,8 +111,13 @@ class Diva():
             remaining_args = widget_args
             results = []
             for r in report_list:
-                num_widgets = len(r['widgets'])
+                # get the number of widgets that pass their value to the underlying
+                # function (that is, the number that shouldn't be skipped)
+                active_widgets = [w for w in r['widgets'] if not should_skip(w)]
+                num_widgets = len(active_widgets)
                 # pop this report's widget args from the list
+                # note that the Skip/label widgets are not passed to the view func
+                # so there is no need to account for them 
                 arg_list = remaining_args[:num_widgets]
                 remaining_args = remaining_args[num_widgets:]
                 # generate the figure
@@ -125,12 +133,7 @@ class Diva():
         try:
             output = user_func(*inputs)
         except TypeError as err:
-            error_message = """
-            A TypeError was raised when Diva called your function like: {}(**kwargs), where kwargs = {}.
-            Please double-check that you have a valid number of widgets,
-            and see the Diva docs for help.
-            """.format(user_func.__name__, inputs)
-            raise WidgetsError(error_message)
+            raise WidgetInputError(user_func, inputs)
         utilities = get_utilities_for_value(output)
         # update the report
         report['current_value'] = output

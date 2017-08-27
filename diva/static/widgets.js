@@ -72,6 +72,16 @@ for (var i = 0; i < inputTagTypes.length; ++i) {
     };
 }
 
+Reports.Widgets.setupMap['Skip'] = function(widget) {
+    return {
+        getCurrentValue: function() {
+            return 'this is skipped';
+        },
+        resetToDefault: function() {
+        }
+    };
+};
+
 Reports.Widgets.setupMap['Bool'] = function(widget) {
     return {
         getCurrentValue: function() {
