@@ -185,16 +185,10 @@ class SelectSubset(Widget):
                 default=self.default)
 
     def validate_input(self, formData):
-        schema = {
-            'type': 'array',
-            'uniqueItems': True,
-            'additionalItems': False,
-            'items': {
-                'type': 'string',
-                'enum': self.choices
-            }
-        }
-        validate(formData, schema)
+        print(formData)
+        in_list = [choice in self.choices for choice in formData]
+        if not all(in_list):
+            raise ValidationError("Some choice in {} is not in {}", formData, self.choices)
 
 # TODO: keep in hexadecimal for now
 # can later use the more effective:

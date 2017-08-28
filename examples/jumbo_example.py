@@ -2,12 +2,6 @@ from diva import Diva, Dashboard, row_layout
 from diva.widgets import *
 # only required if adding your own converter:
 from diva.converters import convert_to_html
-
-# You should use the 'Agg' backend (for PNGs) when importing matplotlib 
-# b/c otherwise a matplotlib will attempt to open a GUI app
-import matplotlib
-matplotlib.use('Agg')
-import matplotlib.pyplot as plt
  
 import numpy as np
 import pandas as pd
@@ -40,8 +34,8 @@ Many widgets
     Float('a float'),
     Int('an int'),
     Bool('a bool'),
-    SelectOne('choose one', ['foo', 'bar', 'baz']),
-    SelectSubset('select many', ['foo', 'baz', 'baz']),
+    SelectOne('choose one', ['a', 'b', 'c']),
+    SelectSubset('select many', ['foo', 'baz', 'baz'], ['foo']),
     Color('pick a color'),
     Slider('a float'),
     Date('a date'),
@@ -59,7 +53,7 @@ There are many ways to specify the defaults, see the docs for details
     # this defaults to: the exact date in ISO format
     Date('date a', '2017-08-21'),
     # defaults to: 7 days ago
-    Date('date b', relativedelta(weeks=1))
+    Date('date b', relativedelta(weeks=1)),
     # defaults to: the range between the exact dates in ISO format
     DateRange('range a', '2017-08-21', '2017-08-26'),
     # you can also use relative dates
@@ -76,6 +70,7 @@ def date_widgets(date_a, date_b, range_a, range_b, range_c):
 Converter Examples:
 An example of using each type that can be converted to HTML
 is given.
+See the matplotlib example for the matplotlib.figure.Figure converter
 """
 
 """
@@ -84,14 +79,6 @@ A string is assumed to be raw HTML
 @app.view('convert: str')
 def raw_html():
     return '<h1>Raw HTML</h1><p>If a string is returned, it is assumed to be raw HTML</p>'
-
-@app.view('convert: matplotlib.figure.Figure')
-def matplot_fig():
-    # make a new figure
-    plt.figure()
-    plt.plot([3,1,4,1,20], 'ks-', mec='w', mew=5, ms=20)
-    # plt.gcf is short for "get current figure"
-    return plt.gcf()
 
 @app.view('convert: pandas.DataFrame')
 def pandas_df():
@@ -115,9 +102,9 @@ def bokeh_fig():
 If Diva does not support the type, it's string representation is
 converted to HTML
 """
-@app.view('convert: none of the above (ex. datetime.time)')
+@app.view('convert: none of the above (ex. array of ints)')
 def na():
-    return datetime.now()
+    return [i for i in range(10)]
 
 @app.view('convert: Dashboard')
 def dashboard_view():
