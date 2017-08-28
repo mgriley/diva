@@ -23,7 +23,7 @@ When you start working on your project, you must activate the environment with `
 Introduction
 =============
 
-Let's start with a minimal example. You'll need to install diva and pandas from pip.
+Let's start with a simple example. You'll need to install diva and pandas from pip.
 
 .. literalinclude:: ../examples/minimal_example.py
 
@@ -102,6 +102,7 @@ You can see each widget in action on the `demo server <https://fizznow.com>`_. T
 
 .. automodule:: diva.widgets
     :members:
+    :exclude-members: Skip, should_skip, validate_widget_form_data, parse_widget_form_data, widgets_template_data
 
 Converters
 ===========
