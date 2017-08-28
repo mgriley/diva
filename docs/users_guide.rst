@@ -6,13 +6,15 @@ If you are restless, you can see the `demo server <https://fizznow.com>`_ and th
 Setup
 ============
 
-This library requires Python 3. Assuming you already have Python 3 and pip installed, you can setup your project like this::
+This library requires Python 3.4-3.6. Assuming you already have Python 3 and pip installed, you can setup your project like this::
 
     $ mkdir myproj
     $ cd myproj
     $ python3 -m venv myvenv
     $ source myvenv/bin/activate
     $ pip install diva
+
+(you can check your version of Python 3 with ``python3 --version``)
 
 The command ``python3 -m venv myvenv`` creates a directory called ``myvenv`` to handle your project's virtual environment. A virtual environment is a mechanism that gives the illusion (hence "virtual") that your project's version of the Python interpreter and any required libraries are installed locally. This isolates your project from other projects that may use different versions of Python (and thus different library versions). Virtual environments prevent conflicts of the form: Project A uses Python 2 and Project B uses Python3, and both depend on ``somelibrary``, which is installed globally. Project A is broken because it thinks it should use the latest installed version of ``somelibrary``, which only works for Python 3.
 
@@ -21,7 +23,7 @@ When you start working on your project, you must activate the environment with `
 Introduction
 =============
 
-Let's start with a minimal example:
+Let's start with a minimal example. You'll need to install diva and pandas from pip.
 
 .. literalinclude:: ../examples/minimal_example.py
 
