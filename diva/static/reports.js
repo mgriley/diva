@@ -59,14 +59,14 @@ function newReport(reportIndex) {
             reportIndex: obj.reportIndex,
             widgetValues: valueArray
         };
-        console.log('form values: ' + JSON.stringify(updateRequest));
+        //console.log('form values: ' + JSON.stringify(updateRequest));
         var currentPath = window.location.pathname;
 
         // on success, replace the report's HTML with the response
         // TODO: ensure that any JS included in the returned HTML (via script tags)
         // is always run
         var callback = function(data) {
-            console.log(data)
+            //console.log(data)
             // update the figure's HTML
             var figureId = '#figure-' + obj.reportIndex;
             var figureHTML = data['figureHTML']
@@ -106,7 +106,7 @@ function newReport(reportIndex) {
     // update the figure/HTML on submit
     $(widgetFormId).on("submit", function(formEvent) {
         // prevent default get request
-        console.log('submitting');
+        //console.log('submitting');
         formEvent.preventDefault();
         obj.update();
     });
@@ -115,7 +115,7 @@ function newReport(reportIndex) {
     // values of the widgets
     // NA if no user-defined widgets
     $(widgetFormId).on("reset", function(formEvent) {
-        console.log('resetting');
+        //console.log('resetting');
         formEvent.preventDefault();
         obj.widgets.resetToDefaults();
         obj.update();

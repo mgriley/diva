@@ -15,7 +15,8 @@ the axes of the same figure, which can cause confusion.
 
 Since matplotlib maintains internal references to all figures you create,
 they will not actually be garbage collected until you explicitly close them!
-See here for a workaround: 
+This is not shown here b/c I intend to make some kind of workaround,
+something like:
 https://stackoverflow.com/questions/16334588/create-a-figure-that-is-reference-counted/16337909#16337909
 
 These examples are adapted from:

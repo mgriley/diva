@@ -13,7 +13,6 @@ def file_response(name, filepath):
     with open(filepath, 'rb') as content_file:
         file_bytes = content_file.read()
         encoded_bytes = base64.b64encode(file_bytes)
-        print(encoded_bytes.decode('utf-8'))
         response = {
             'filename': name,
             'content': encoded_bytes.decode('utf-8')

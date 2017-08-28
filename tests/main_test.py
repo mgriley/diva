@@ -132,9 +132,9 @@ class TestWidgets():
         w.validate_input([])
         w.validate_input(['a'])
         w.validate_input(['a', 'b'])
-        with pytest.raises(ValidationError):
+        with pytest.raises(DivaValidationError):
             w.validate_input(['a', 'b', 'c'])
-        with pytest.raises(ValidationError):
+        with pytest.raises(DivaValidationError):
             w.validate_input(['a', 'a'])
         assert w.parseForm(['a', 'b']) == ['a', 'b']
 

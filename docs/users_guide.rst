@@ -52,13 +52,7 @@ Basic API
 
 .. function:: Diva.view(name, widgets=[], short=None)
     
-    Meant to be used with decorator syntax. ``name`` is what the view will be called in the web interface. ``widgets`` is an optionally empty list of ``diva.widgets.Widget`` objects. ``short`` allows you to give a short name that you can use to refer to the report later (see ``compose_view``). It will be set to ``name`` by default. Please see the Widgets section for a list of available widgets and what values they pass to the underlying function. Intuitively, the widget values are passed to the function in the order that the widgets appear in the list. If your function takes ``**kwargs``, you must suffer this mild inconvenience:
-
-    .. literalinclude:: ../examples/other_examples.py
-        :pyobject: baz
-
-    .. literalinclude:: ../examples/other_examples.py
-        :pyobject: baz_shim
+    Meant to be used with decorator syntax. ``name`` is what the view will be called in the web interface. ``widgets`` is an optionally empty list of ``diva.widgets.Widget`` objects. ``short`` allows you to give a short name that you can use to refer to the report later (see ``compose_view``). It will be set to ``name`` by default. Your decorated function is called like, ``your_func(*widget_values)``, where ``widget_values`` the list of values of the given widgets. Please see the Widgets section for a list of available widgets and what values they pass to the underlying function.
 
 .. function:: Diva.compose_view(name, view_names, layout=None, short=None)
 
@@ -83,7 +77,7 @@ Basic API
 
 .. function:: Diva.__call__(environ, start_response)
 
-    This is likely only relevant to you if you'd like to deploy the server, in which case you should first read an article on WSGI servers and also refer to `Flask's documentation <http://flask.pocoo.org/docs/0.12/deploying/#deployment>`_. The ``Diva`` object is callable as a WSGI entry point. It simply passes the args to the Flask server's (``self.server``) WSGI entry point and returns the result. Please see the source directory ``diva/examples/demo_server`` for an example.
+    This is likely only relevant to you if you'd like to deploy the server, in which case you should first read an article on WSGI servers and also refer to `Flask's documentation <http://flask.pocoo.org/docs/0.12/deploying/#deployment>`_. The ``Diva`` object is callable as a WSGI entry point. This function passes the args to the Flask server's (``self.server``) WSGI entry point and returns the result. Please see the source directory ``diva/examples/demo_server`` for an example.
 
 Widgets
 ========
@@ -160,7 +154,7 @@ Security
 
 **Input Sanitation**
 
-If you are allowing public access to your site, you are responsible for sanitizing user input. Diva performs some trivial sanitation, like ensuring the value of a string widget is actually passed to your function as a string and not an int. However, if your underlying functions are accessing sensitive information, be careful.
+If you are allowing public access to your site, you are responsible for sanitizing user input. Diva performs some trivial sanitation, like ensuring the value of a string widget is actually passed to your function as a string and not an int. However, if your underlying functions are accessing sensitive information, take heed.
 
 **Password Protection**
 
@@ -181,12 +175,29 @@ However, you can modify the underlying Flask object to add your authentication c
 
 You can modify the Flask object's view functions (`docs here <http://flask.pocoo.org/docs/0.12/api/>`_) to add your auth code. See the function ``setup_server`` from the diva source file ``diva/diva/reporter.py`` to see what endpoints diva uses.
 
-If that doesn't work, things get more complex. Suppose you already have a publically accessible server with a user management system. Perhaps it isn't written in python. You could run diva as a local server (not publically exposed, that is), and setup a password-protected endpoint in your public server that acts as a reverse proxy between your public server and the diva server.
-
-Jumbo Example
+More Examples
 ================ 
 
+You can find many examples in the ``diva/examples`` folder on Github.
+
+Jumbo Example
+
 .. literalinclude:: ../examples/jumbo_example.py
+
+
+matplotlib examples:
+
+.. literalinclude:: ../examples/matplotlib_examples.py
+
+kwargs example:
+
+If your function takes ``**kwargs``, you must suffer this mild inconvenience:
+
+.. literalinclude:: ../examples/other_examples.py
+    :pyobject: baz
+
+.. literalinclude:: ../examples/other_examples.py
+        :pyobject: baz_shim
 
 Alternatives
 =============

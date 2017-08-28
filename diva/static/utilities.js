@@ -13,7 +13,6 @@ var strToArrayBuffer = function(str) {
 
 // the 'utility' arg is the container div tag (class utility) as a JQuery object
 Reports.Utilities.setupMap['basic'] = function(reportIndex, utilityIndex, utility) {
-    console.log('setting up simple util');
 
     // helper
     var submitData = function(data) {
@@ -60,14 +59,12 @@ Reports.Utilities.setupMap['basic'] = function(reportIndex, utilityIndex, utilit
     
     // upon submit, submit the widget values
     $(modal).find('.submit').on('click', function() {
-        console.log('submitting');
         var data = widgets.getValues();
         submitData(data);
     });
 
     // upon reset, reset the widget values
     $(modal).find('.reset').on('click', function() {
-        console.log('resetting');
         widgets.resetToDefaults();
     });
 };

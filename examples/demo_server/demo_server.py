@@ -1,13 +1,10 @@
-# TODO: import reports
 import matplotlib
-# use the Agg backend, which is non-interactivate (just for PNGs)
-# this way, a separate script isn't started by matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from datetime import datetime
-from diva import Diva
+from diva import Diva, Dashboard, row_layout
 from diva.widgets import *
 from bokeh.plotting import figure
 from functools import singledispatch
@@ -87,6 +84,15 @@ def bokeh_fig():
     plot = figure(title="bokeh example", x_axis_label='x', y_axis_label='y')
     plot.line(x, y, legend="Temp", line_width=2)
     return plot
+
+@reporter.view('convert: Dashboard', [Int('enter some num', 5)])
+def dashboard_view(x):
+    a = pd.DataFrame(np.random.randn(x, x))
+    b = pd.DataFrame(np.random.randn(x, x))
+    c = pd.DataFrame(np.random.randn(x, x))
+    # will arrange the views such that a takes up the full first row
+    # and the second row is split between b and c
+    return Dashboard([a, b, c], row_layout(1, 2))
 
 @reporter.view('convert: none of the above (ex. datetime.time)')
 def na():

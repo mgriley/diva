@@ -185,10 +185,10 @@ class SelectSubset(Widget):
                 default=self.default)
 
     def validate_input(self, formData):
-        print(formData)
-        in_list = [choice in self.choices for choice in formData]
-        if not all(in_list):
-            raise ValidationError("Some choice in {} is not in {}", formData, self.choices)
+        has_duplicates = len(set(formData)) < len(formData)
+        is_subset = set(formData).issubset(set(self.choices))
+        if has_duplicates or (not is_subset):
+            raise ValidationError("{} is not a subset of {}", formData, self.choices)
 
 # TODO: keep in hexadecimal for now
 # can later use the more effective:
