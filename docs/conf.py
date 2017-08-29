@@ -97,6 +97,8 @@ html_theme_options = {
     'description': 'An analytics dashboard library',
     'github_user': 'mgriley',
     'github_repo': 'diva',
+    # 'github_button': False,
+    'github_count': False,
     'analytics_id': 'UA-87495443-6',
     'extra_nav_links': {
         'diva @ github': 'https://github.com/mgriley/diva',
