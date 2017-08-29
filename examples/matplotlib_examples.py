@@ -30,7 +30,6 @@ def matplot_fig(x):
     # make a new figure
     fig, ax = plt.subplots()
     ax.plot([3,1,4,1,x], 'ks-', mec='w', mew=5, ms=20)
-    # plt.gcf is short for "get current figure"
     return fig
 
 """
@@ -59,6 +58,15 @@ def multiple_figures():
     fig_a, ax_a = plt.subplots()
     ax_a.plot([1, 2, 3, 4, 5], 'ks-', mec='w', mew=5, ms=20)
     fig_b, ax_b = plt.subplots()
+    ax_b.plot([6, 7, 8, 9, 10], 'ks-', mec='w', mew=5, ms=20)
+    return Dashboard([fig_a, fig_b])
+
+@app.view('matplotlib larger figure', [Int('x', 3)])
+def matplot_fig(x):
+    fig_a, ax_a = plt.subplots(figsize=(4, 4))
+    ax_a.plot([1, 2, 3, 4, 5], 'ks-', mec='w', mew=5, ms=20)
+    # figsize allows you to set the size of the figure in inches
+    fig_b, ax_b = plt.subplots(figsize=(8, 8))
     ax_b.plot([6, 7, 8, 9, 10], 'ks-', mec='w', mew=5, ms=20)
     return Dashboard([fig_a, fig_b])
 
