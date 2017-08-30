@@ -50,6 +50,10 @@ def df_to_csv(p):
 @convert_to_html.register(Figure)
 def bokeh_figure_to_html(figure):
     # NB: cannot just use file_html due to the issue mentioned above
+    # scale up the plot to its container size
+    # TODO: scale_both is desired, but does not work
+    # scale_width makes the figure far too high to fit in the window
+    # figure.sizing_mode = 'scale_width'
     script, div = components(figure)
     return '{}{}'.format(div, script)
 

@@ -83,7 +83,7 @@ def figure_d():
 def figure_e():
     x = [1, 2, 3, 4, 5]
     y = [6, 7, 2, 4, 5]
-    plot = figure(title="bokeh example", x_axis_label='x', y_axis_label='y')
+    plot = figure(title="bokeh example", x_axis_label='x', y_axis_label='y', sizing_mode='scale_width')
     plot.line(x, y, legend="Temp", line_width=2)
     return plot
 

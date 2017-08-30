@@ -152,6 +152,30 @@ As shown in the example, utilities must return the result of a call to ``file_re
 
 .. autofunction:: diva.utilities.file_response
 
+Splitting into multiple files
+==============================
+
+You split your project into multiple files using the extend function:
+
+.. automethod:: diva.reporter.Diva.extend
+
+Here is an example, where foo.py, bar.py, and main.py are in the same directory:
+
+foo.py
+
+.. literalinclude:: ../examples/multiple_files/foo.py
+
+bar.py
+
+.. literalinclude:: ../examples/multiple_files/bar.py
+
+main.py
+
+.. literalinclude:: ../examples/multiple_files/main.py
+
+To show all views, run ``python3 main.py``. If you want to focus your work on the views in foo.py, 
+just run ``python3 foo.py``.
+
 Security
 =========
 

@@ -16,7 +16,6 @@ class Diva():
         """
         self.reports = []
         self.setup_server()
-
     
     def setup_server(self):
         """
@@ -124,6 +123,13 @@ class Diva():
                 output = r['user_func'](*arg_list)
                 results.append(output)
             return Dashboard(results, layout)
+
+    def extend(self, other_diva):
+        """
+        Add all of the views of the given Diva object to this one.
+        This is useful for mutli-file projects
+        """
+        self.reports.extend(other_diva.reports)
 
     # func that generates the figure by passing the user func the 
     # parsed form data, then converting the func's output to HTML
