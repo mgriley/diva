@@ -1,7 +1,7 @@
 User's Guide
 *************
 
-If you are restless, you can see the `demo server <https://fizznow.com>`_ and the Jumbo Example section. Otherwise, here are the instructions:
+If you are restless, you can scroll down to the Jumbo Example section. Otherwise, here are the instructions:
 
 Setup
 ============
@@ -98,7 +98,7 @@ The built-in widgets (available via ``from diva.widgets import *``) are:
 * DateRange
 * Time
 
-You can see each widget in action on the `demo server <https://fizznow.com>`_. The first argument passed to every widget constructor is the description of the widget in the web interface (such as, "choose a scale"). 
+The first argument passed to every widget constructor is the description of the widget in the web interface (such as, "choose a scale"). 
 
 .. automodule:: diva.widgets
     :members:
@@ -116,7 +116,7 @@ Diva attempts to convert the return value of your functions to HTML. The followi
 * bokeh.plotting.figure.Figure
 * *other*: the value is converted to a string and wrapped in HTML
 
-You can see an example of each conversion on the `demo server <https://fizznow.com>`_. Conversion internally uses the `single dispatch decorator from functools <https://docs.python.org/3/library/functools.html>`_, so you can add your own converter like this:
+Conversion internally uses the `single dispatch decorator from functools <https://docs.python.org/3/library/functools.html>`_, so you can add your own converter like this:
 
 .. literalinclude:: ../examples/custom_converter.py
 

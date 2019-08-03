@@ -8,7 +8,7 @@ Diva
 
 Diva is a Python library for creating interactive dashboards. It supports analytics libraries like matplotlib, pandas, and bokeh. MIT Licensed.
 
-The example below will serve a webpage where you can interact with the decorated functions ``foo`` and ``bar``. In this case, the pandas Series objects are converted to HTML tables. Please see the `demo server <https://fizznow.com>`_ and the User's Guide for more details.
+The example below will serve a webpage where you can interact with the decorated functions ``foo`` and ``bar``. In this case, the pandas Series objects are converted to HTML tables. You can see a demo video here: https://vimeo.com/351814466. Please see the User's Guide for more details.
 
 .. literalinclude:: ../examples/minimal_example.py
 
