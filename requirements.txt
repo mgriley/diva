@@ -9,7 +9,7 @@ chardet==3.0.4
 click==6.7
 cycler==0.10.0
 decorator==4.0.11
--e git+https://github.com/mgriley/diva#egg=diva
+-e git+https://github.com/mgriley/diva@4eb18febb34e9e5a9cd54dcb0dd2cc0598ce3d6a#egg=diva
 docutils==0.14
 entrypoints==0.2.2
 Flask==0.12.2
@@ -36,7 +36,7 @@ mpld3==0.3
 nbconvert==5.1.1
 nbformat==4.3.0
 notebook==5.0.0
-numpy==1.12.1
+numpy==1.17.0
 pandas==0.20.1
 pandocfilters==1.4.1
 pexpect==4.2.1
