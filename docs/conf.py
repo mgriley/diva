@@ -102,8 +102,7 @@ html_theme_options = {
     'analytics_id': 'UA-87495443-6',
     'extra_nav_links': {
         'diva @ github': 'https://github.com/mgriley/diva',
-        'diva @ PyPi': 'https://pypi.python.org/pypi/diva',
-        'demo server': 'https://fizznow.com/'
+        'diva @ PyPi': 'https://pypi.python.org/pypi/diva'
     }
 }
 
