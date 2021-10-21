@@ -1,7 +1,7 @@
 alabaster==0.7.10
 appnope==0.1.0
 attrs==19.1.0
-Babel==2.4.0
+Babel==2.9.1
 bkcharts==0.2
 bleach==2.0.0
 bokeh==0.12.6
